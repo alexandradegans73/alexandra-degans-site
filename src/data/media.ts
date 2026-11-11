@@ -5,7 +5,7 @@
  */
 export const film = {
   /** Nombre d'images de la séquence */
-  count: 482,
+  count: 603,
   /** Dossiers des jeux d'images */
   desktop: '/media/film/desktop',
   mobile: '/media/film/mobile',
