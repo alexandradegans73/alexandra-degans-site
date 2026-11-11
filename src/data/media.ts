@@ -18,7 +18,7 @@ export const media = {
   /** Ambiance sonore optionnelle (ElevenLabs), lecture uniquement sur action de l'utilisateur. */
   ambience: '/media/ambiance.mp3',
   /** Portraits & lieux : photos professionnelles à fournir. */
-  portrait: '',
+  portrait: '/media/alexandra-degans-900.webp',
   cabinetBassens: '',
   cabinetMyans: '',
 } as const;

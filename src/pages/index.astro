@@ -1,6 +1,7 @@
 ---
 import Base from '@layouts/Base.astro';
 import ScrollFilm from '@components/ScrollFilm.astro';
+import Portrait from '@components/Portrait.astro';
 import { site, prestations } from '@data/site';
 import { media } from '@data/media';
 
@@ -102,15 +103,18 @@ const histoires = [
     </section>
 
     {/* ---- 6. Alexandra --------------------------------------------- */}
-    <section class="scene scene--right" data-scene aria-labelledby="about-title">
-      <div class="scene__inner container-wide" data-scene-inner>
-        <div class="panel">
-          <p class="eyebrow">Le tronc · Alexandra</p>
-          <h2 id="about-title">Kinésiologue certifiée, <em>formée en continu</em>.</h2>
-          <p class="lead">Formée en kinésiologie, en thérapie par les modes oculaires, en visualisation et en Brain Gym, je poursuis ma formation en psychogénéalogie, massage énergétique et drainage.</p>
-          <p>J’accompagne les bébés, les enfants, les adolescents et les adultes — et aussi les animaux, certifiée en kinésiologie animale par l’EKTC.</p>
-          <a class="link-arrow" href="/a-propos">Faire connaissance
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <section class="scene scene--center" data-scene aria-labelledby="about-title">
+      <div class="scene__inner container" data-scene-inner>
+        <div class="about-duo">
+          <Portrait class="about-duo__portrait" sizes="(min-width: 48em) 22rem, 64vw" />
+          <div class="panel about-duo__panel">
+            <p class="eyebrow">Le tronc · Alexandra</p>
+            <h2 id="about-title">Kinésiologue certifiée, <em>formée en continu</em>.</h2>
+            <p class="lead">Formée en kinésiologie, en thérapie par les modes oculaires, en visualisation et en Brain Gym, je poursuis ma formation en psychogénéalogie, massage énergétique et drainage.</p>
+            <p>J’accompagne les bébés, les enfants, les adolescents et les adultes — et aussi les animaux, certifiée en kinésiologie animale par l’EKTC.</p>
+            <a class="link-arrow" href="/a-propos">Faire connaissance
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
         </div>
       </div>
     </section>
@@ -242,6 +246,13 @@ const histoires = [
   .histoires footer { font-size: var(--fs-sm); margin-top: var(--s-3); }
   .histoires cite { font-style: normal; font-weight: 400; color: var(--c-creme); }
 
+  .about-duo { display: grid; gap: var(--s-5); align-items: end; text-align: left; width: 100%; justify-items: center; }
+  .about-duo :global(.about-duo__portrait) { width: min(64vw, 17rem); }
+  .about-duo__panel { width: 100%; }
+  @media (min-width: 48em) {
+    .about-duo { grid-template-columns: minmax(0, 22rem) minmax(0, 31rem); justify-content: center; gap: var(--s-6); }
+    .about-duo :global(.about-duo__portrait) { width: 100%; }
+  }
   .final-mono { width: 3rem; opacity: 0.85; }
   .final-actions { justify-content: center; }
   .final-phone { font-family: var(--font-display); font-size: var(--fs-h4); }

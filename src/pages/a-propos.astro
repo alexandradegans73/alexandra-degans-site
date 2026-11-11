@@ -3,7 +3,7 @@ import Base from '@layouts/Base.astro';
 import PageHero from '@components/PageHero.astro';
 import CtaBooking from '@components/CtaBooking.astro';
 import { site } from '@data/site';
-import { media } from '@data/media';
+import Portrait from '@components/Portrait.astro';
 
 const formations = [
   { t: 'Kinésiologie', d: 'Kinésiologue certifiée.' },
@@ -25,7 +25,7 @@ const valeurs = [
   description="Alexandra Degans, kinésiologue certifiée à Bassens et Myans (Chambéry) : parcours, formations, approche et valeurs. Membre de la Fédération de la Kinésiologie Professionnelle."
   path="/a-propos"
   heroDark
-  schema={{ '@context': 'https://schema.org', '@type': 'Person', name: 'Alexandra Degans', jobTitle: 'Kinésiologue', worksFor: { '@id': `${site.url}/#business` }, url: `${site.url}/a-propos` }}
+  schema={{ '@context': 'https://schema.org', '@type': 'Person', name: 'Alexandra Degans', jobTitle: 'Kinésiologue', worksFor: { '@id': `${site.url}/#business` }, url: `${site.url}/a-propos`, image: `${site.url}/media/alexandra-degans-900.webp` }}
 >
   <PageHero
     scene="branches"
@@ -36,11 +36,16 @@ const valeurs = [
   </PageHero>
 
   <section class="section" aria-labelledby="philo-title">
-    <div class="container-text prose">
-      <p class="eyebrow" data-reveal>Ma philosophie</p>
-      <h2 id="philo-title" data-split>Le corps <em>sait</em>. Mon rôle est de l’écouter avec vous.</h2>
-      <p class="lead" data-reveal>Chaque personne arrive avec son histoire, son rythme et ses ressources. Mon travail consiste à créer un espace sûr où ces ressources peuvent se réveiller.</p>
-      <p data-reveal>Au fil des séances, j’ai vu combien les émotions s’inscrivent dans le corps, parfois depuis la naissance, parfois depuis plusieurs générations. C’est ce qui m’a conduite à élargir ma pratique : la psychogénéalogie, les soins énergétiques du visage et du corps, le drainage lymphatique, et l’accompagnement des animaux et de leurs humains.</p>
+    <div class="container philo">
+      <div class="philo__portrait" data-reveal>
+        <Portrait eager />
+      </div>
+      <div class="prose">
+        <p class="eyebrow" data-reveal>Ma philosophie</p>
+        <h2 id="philo-title" data-split>Le corps <em>sait</em>. Mon rôle est de l’écouter avec vous.</h2>
+        <p class="lead" data-reveal>Chaque personne arrive avec son histoire, son rythme et ses ressources. Mon travail consiste à créer un espace sûr où ces ressources peuvent se réveiller.</p>
+        <p data-reveal>Au fil des séances, j’ai vu combien les émotions s’inscrivent dans le corps, parfois depuis la naissance, parfois depuis plusieurs générations. C’est ce qui m’a conduite à élargir ma pratique : la psychogénéalogie, les soins énergétiques du visage et du corps, le drainage lymphatique, et l’accompagnement des animaux et de leurs humains.</p>
+      </div>
     </div>
   </section>
 
@@ -83,7 +88,9 @@ const valeurs = [
 </Base>
 
 <style>
-  .portrait { max-width: 22rem; margin-left: auto; }
+  .philo { display: grid; gap: var(--s-8); align-items: center; }
+  .philo__portrait { width: min(100%, 24rem); margin-inline: auto; }
+  @media (min-width: 64em) { .philo { grid-template-columns: 0.8fr 1.2fr; gap: var(--s-10); } }
   .prose h2 { margin-bottom: var(--s-6); }
   .form__grid { display: grid; gap: var(--s-8); }
   @media (min-width: 64em) { .form__grid { grid-template-columns: 0.8fr 1.2fr; } }

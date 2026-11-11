@@ -1,0 +1,23 @@
+---
+/** Portrait d'Alexandra (photo de l'ancien site). Le fond studio sombre se fond dans le vert forêt. */
+interface Props { sizes?: string; eager?: boolean; class?: string }
+const { sizes = '(min-width: 64em) 26rem, 70vw', eager = false, class: cls } = Astro.props;
+---
+<figure class:list={['portrait', cls]}>
+  <picture>
+    <source type="image/avif" srcset="/media/alexandra-degans-480.avif 480w, /media/alexandra-degans-900.avif 900w" sizes={sizes} />
+    <source type="image/webp" srcset="/media/alexandra-degans-480.webp 480w, /media/alexandra-degans-900.webp 900w" sizes={sizes} />
+    <img src="/media/alexandra-degans-900.webp" alt="Alexandra Degans, kinésiologue, souriante en chemise blanche" width="900" height="1125" loading={eager ? 'eager' : 'lazy'} decoding="async" />
+  </picture>
+  <figcaption><img src="/brand/monogramme-creme.svg" alt="" width="72" height="76" loading="lazy" /><span>Alexandra Degans<br /><small>Kinésiologue certifiée</small></span></figcaption>
+</figure>
+
+<style>
+  .portrait { position: relative; margin: 0; border-radius: var(--r-arch); overflow: hidden; background: var(--c-foret-900); aspect-ratio: 4 / 5; isolation: isolate; box-shadow: var(--shadow-lift); }
+  .portrait picture, .portrait picture img { display: block; width: 100%; height: 100%; }
+  .portrait picture img { object-fit: cover; object-position: 50% 20%; mix-blend-mode: lighten; }
+  .portrait::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 52%, rgb(42 49 38 / 0.72) 76%, rgb(42 49 38 / 0.97) 100%); }
+  figcaption { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: var(--s-3); padding: var(--s-5); color: var(--c-creme); font-family: var(--font-display); font-size: var(--fs-lg); line-height: 1.15; }
+  figcaption img { width: 1.9rem; height: auto; }
+  figcaption small { font-family: var(--font-text); font-size: var(--fs-xs); letter-spacing: 0.18em; text-transform: uppercase; color: var(--c-sable); }
+</style>
