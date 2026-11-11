@@ -7,9 +7,13 @@ Modèle : Seedance 2.5, mode `omni_reference`, 16:9, sans son, 10 s par plan. Ch
 | Plan | Image de départ → d'arrivée | Chapitre du site |
 |---|---|---|
 | 1 | L'arbre entier → dans les branches | Ouverture, philosophie, la kinésiologie |
-| 2 | Les branches → les feuilles | Les cinq soins |
-| 3 | Les feuilles → les racines (descente du tronc) | L'approche, Alexandra |
-| 4 | Les racines → l'eau calme | Les lieux, les histoires, le rendez-vous |
+| 2 | Les branches → une grande branche au-dessus de la vallée | Les cinq soins (début) |
+| 3 | La grande branche → les feuilles | Les cinq soins (fin) |
+| 4 | Les feuilles → les racines (descente du tronc) | L'approche, Alexandra |
+| 5 | Les racines → l'eau calme | Les lieux, les histoires |
+| 6 | L'eau → la feuille qui flotte, le calme | Le rendez-vous |
+
+Film final : 6 plans de 10 s en 1920×1080, soit 60 s. Découpé à 8 images/s : 482 images, 32 Mo (ordinateur, 1440 px) et 16 Mo (téléphone, recadrage 3:4 en 720 px). Le site charge d'abord une image sur huit (4 Mo / 2 Mo), puis affine.
 
 Images clés (GPT Image 2.6, photoréalistes, même arbre en référence) : `public/media/scenes/arbre|branches|feuilles|racines|eau.webp`. Elles servent aussi d'ouverture aux pages intérieures.
 
@@ -21,5 +25,5 @@ Images clés (GPT Image 2.6, photoréalistes, même arbre en référence) : `pub
 
 ## Remplacer le film
 1. Assembler les plans en un seul MP4 (ordre 1 → 4).
-2. `scripts/film.sh film.mp4` : découpe en images (ordinateur et téléphone) et met à jour `src/data/media.ts`.
-3. Les repères `data-film-mark` dans `src/pages/index.astro` calent chaque chapitre sur son plan (0.25, 0.5, 0.75).
+2. `FPS=8 W=1440 WM=720 scripts/film.sh film.mp4` : découpe en images (ordinateur et téléphone) et met à jour `src/data/media.ts`.
+3. Les repères `data-film-mark` dans `src/pages/index.astro` calent chaque chapitre sur son plan (0.1667, 0.5, 0.6667, 0.8667).

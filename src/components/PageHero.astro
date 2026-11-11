@@ -13,7 +13,7 @@ const { eyebrow, title, intro, number, scene } = Astro.props;
 const tone = scene ? 'dark' : (Astro.props.tone ?? 'creme');
 ---
 <header class:list={['page-hero', `tone-${tone}`, { 'theme-dark': tone === 'dark', 'theme-sable': tone === 'sable', 'has-scene': scene }]}>
-  {scene && <div class="page-hero__scene" aria-hidden="true"><img src={`/media/scenes/${scene}.webp`} alt="" width="1344" height="752" fetchpriority="high" decoding="async" data-parallax="14" /></div>}
+  {scene && <div class="page-hero__scene" aria-hidden="true"><img src={`/media/scenes/${scene}.webp`} alt="" width="1920" height="1080" fetchpriority="high" decoding="async" data-parallax="14" /></div>}
   <div class="container page-hero__inner">
     <div class="page-hero__text">
       <p class="eyebrow" data-reveal>{eyebrow}</p>
@@ -40,6 +40,8 @@ const tone = scene ? 'dark' : (Astro.props.tone ?? 'creme');
   .page-hero__scene img { width: 100%; height: 116%; object-fit: cover; }
   .page-hero__scene::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(30 36 27 / 0.55), rgb(30 36 27 / 0.2) 35%, rgb(30 36 27 / 0.82)); }
   .has-scene .page-hero__branch, .has-scene .page-hero__num { display: none; }
+  .has-scene .eyebrow { color: var(--c-sable); }
+  .has-scene .eyebrow::before { background: var(--c-sable); }
   .has-scene :global(h1) { text-shadow: 0 2px 30px rgb(20 26 18 / 0.55); }
   .has-scene :global(h1 em) { color: var(--c-sable); }
   .has-scene .page-hero__intro { color: var(--c-creme); text-shadow: 0 1px 18px rgb(20 26 18 / 0.6); }

@@ -5,13 +5,13 @@
  */
 export const film = {
   /** Nombre d'images de la séquence */
-  count: 603,
+  count: 482,
   /** Dossiers des jeux d'images */
   desktop: '/media/film/desktop',
   mobile: '/media/film/mobile',
   ext: 'webp',
   /** true tant que le film affiché est un brouillon basse définition */
-  draft: true,
+  draft: false,
 } as const;
 
 export const media = {

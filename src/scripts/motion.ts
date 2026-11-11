@@ -93,12 +93,17 @@ function setupBookingBar() {
   const bar = document.querySelector<HTMLElement>('[data-booking-bar]');
   const footer = document.getElementById('pied-de-page');
   if (!bar || !footer) return;
+  // Cachée tant que le bouton du haut de page est visible, et devant le pied de page
+  let nearFooter = false;
+  const update = () => bar.classList.toggle('is-hidden', nearFooter || window.scrollY < window.innerHeight * 0.55);
   ScrollTrigger.create({
     trigger: footer,
     start: 'top 85%',
-    onEnter: () => bar.classList.add('is-hidden'),
-    onLeaveBack: () => bar.classList.remove('is-hidden'),
+    onEnter: () => { nearFooter = true; update(); },
+    onLeaveBack: () => { nearFooter = false; update(); },
   });
+  update();
+  window.addEventListener('scroll', update, { passive: true });
 }
 
 /* ------------------------------------------------------------------ */
