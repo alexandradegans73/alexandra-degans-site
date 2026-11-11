@@ -51,6 +51,7 @@ const year = new Date().getFullYear();
       <span>© {year} {site.name}</span>
       <a href="/mentions-legales">Mentions légales</a>
       <a href="/confidentialite">Confidentialité</a>
+      <span class="footer__credit">Site réalisé par <a href="https://fdastudio.fr" target="_blank" rel="noopener">FDA Studio</a> — Antoine Donabella</span>
     </p>
   </div>
 </footer>
@@ -76,5 +77,8 @@ const year = new Date().getFullYear();
   .footer__book { margin-top: var(--s-3); color: var(--c-creme); }
   .footer__legal { position: relative; margin-top: var(--s-9); padding-top: var(--s-6); border-top: 1px solid var(--line-soft); display: grid; gap: var(--s-3); color: var(--c-sable); }
   .footer__legal p { max-width: none; opacity: 0.85; }
-  .footer__links { display: flex; flex-wrap: wrap; gap: var(--s-5); }
+  .footer__links { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); }
+  .footer__credit { margin-left: auto; }
+  .footer__credit a { text-decoration: underline; text-underline-offset: 0.2em; }
+  @media (max-width: 47.99em) { .footer__credit { margin-left: 0; flex-basis: 100%; } }
 </style>
