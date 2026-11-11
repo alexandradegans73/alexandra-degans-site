@@ -1,0 +1,24 @@
+---
+import { site } from '@data/site';
+---
+<section class="places" id="lieux" aria-label="Lieux de consultation">
+  <div class="container places__grid">
+    {site.places.map((p, i) => (
+      <article class="place" data-reveal={String(i * 0.15)}>
+        <p class="caps place__label">{p.label}</p>
+        <h3>{p.city}</h3>
+        <p>{p.street}<br />{p.zip} {p.city}</p>
+        <p class="small muted">{p.note}</p>
+        <a class="link-arrow" href={p.maps} target="_blank" rel="noopener">Itinéraire
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </article>
+    ))}
+  </div>
+</section>
+<style>
+  .places__grid { display: grid; gap: var(--s-5); }
+  @media (min-width: 48em) { .places__grid { grid-template-columns: 1fr 1fr; } }
+  .place { display: grid; gap: var(--s-3); justify-items: start; padding: var(--s-7) var(--s-6); background: var(--c-sable); border-radius: var(--r-arch); min-height: 20rem; align-content: end; }
+  .place h3 { font-size: var(--fs-h2); }
+  .place__label { color: var(--c-sauge); }
+</style>

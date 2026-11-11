@@ -1,0 +1,116 @@
+/* =====================================================================
+   SYSTÈME DE DESIGN — Alexandra Degans · Kinésiologie
+   Toutes les couleurs sont issues de la charte graphique officielle
+   (00_Charte-graphique_Alexandra-Degans.pdf). Ne pas inventer de teinte.
+   ===================================================================== */
+:root {
+  /* --- Couleurs de la charte ------------------------------------------ */
+  --c-foret: #3b4434;        /* Forêt — « Kinésiologie », titres, texte */
+  --c-sauge: #627056;        /* Sauge — logo, aplats, accent principal */
+  --c-sauge-claire: #a7b097; /* Sauge claire — filets, détails, jamais de texte */
+  --c-sable: #d9cab0;        /* Sable — fonds chaleureux */
+  --c-creme: #f3ede2;        /* Crème — fond principal */
+
+  /* Nuances dérivées (mélanges des 5 couleurs, pour la profondeur) */
+  --c-foret-900: #2a3126;    /* fond immersif très sombre */
+  --c-foret-800: #333b2d;
+  --c-sauge-700: #526049;
+  --c-sauge-200: #c8cfbc;
+  --c-sable-300: #e6dcc8;
+  --c-creme-050: #f8f4ec;
+  --c-ivoire: #fbf8f2;       /* réserve la plus claire */
+
+  /* Rôles sémantiques */
+  --bg: var(--c-creme);
+  --bg-alt: var(--c-sable);
+  --bg-dark: var(--c-foret);
+  --fg: var(--c-foret);
+  --fg-soft: #5b6453;        /* texte secondaire (Forêt éclairci), contraste AA sur crème */
+  --fg-on-dark: var(--c-creme);
+  --fg-on-dark-soft: var(--c-sable);
+  --accent: var(--c-sauge);
+  --line: var(--c-sauge-claire);
+  --line-soft: color-mix(in oklab, var(--c-sauge-claire) 45%, transparent);
+
+  /* --- Typographie ---------------------------------------------------- */
+  --font-display: 'Cormorant Garamond', 'Cormorant', Georgia, 'Times New Roman', serif;
+  --font-text: 'Jost', 'Futura', 'Avenir Next', 'Helvetica Neue', Arial, sans-serif;
+
+  /* Échelle fluide (mobile → desktop) */
+  --fs-xs: clamp(0.72rem, 0.68rem + 0.2vw, 0.8rem);
+  --fs-sm: clamp(0.85rem, 0.8rem + 0.2vw, 0.95rem);
+  --fs-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --fs-lg: clamp(1.15rem, 1.05rem + 0.5vw, 1.4rem);
+  --fs-h4: clamp(1.35rem, 1.2rem + 0.8vw, 1.9rem);
+  --fs-h3: clamp(1.7rem, 1.4rem + 1.4vw, 2.5rem);
+  --fs-h2: clamp(2.2rem, 1.6rem + 2.8vw, 4rem);
+  --fs-h1: clamp(2.8rem, 1.8rem + 5vw, 6.4rem);
+  --fs-hero: clamp(3rem, 1.5rem + 7vw, 8rem);
+
+  --lh-tight: 1.02;
+  --lh-snug: 1.2;
+  --lh-text: 1.65;
+  --ls-caps: 0.22em;     /* approche capitale (charte : +16 % nom, +52 % métier) */
+  --ls-caps-wide: 0.42em;
+
+  /* --- Espacements ---------------------------------------------------- */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --s-10: 8rem;
+  --section-y: clamp(5rem, 6vw + 2rem, 10rem);
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+
+  /* --- Largeurs ------------------------------------------------------- */
+  --w-text: 42rem;
+  --w-content: 72rem;
+  --w-wide: 90rem;
+
+  /* --- Rayons, ombres ------------------------------------------------- */
+  --r-sm: 0.25rem;
+  --r-md: 0.75rem;
+  --r-lg: 1.5rem;
+  --r-pill: 999px;
+  --r-arch: 50% 50% 0 0 / 40% 40% 0 0; /* arche du monogramme */
+  --shadow-soft: 0 18px 50px -24px rgb(59 68 52 / 0.35);
+  --shadow-lift: 0 30px 70px -30px rgb(59 68 52 / 0.45);
+
+  /* --- Mouvement ------------------------------------------------------ */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --t-fast: 220ms;
+  --t-base: 480ms;
+  --t-slow: 900ms;
+
+  /* --- Divers --------------------------------------------------------- */
+  --header-h: 5.25rem;
+  --z-header: 50;
+  --z-menu: 60;
+  --z-overlay: 70;
+}
+
+/* Thème sombre local (sections immersives) */
+.theme-dark {
+  --bg: var(--c-foret);
+  --fg: var(--c-creme);
+  --fg-soft: var(--c-sable);
+  --accent: var(--c-sauge-claire);
+  --line: color-mix(in oklab, var(--c-sauge-claire) 55%, transparent);
+  --line-soft: color-mix(in oklab, var(--c-sauge-claire) 25%, transparent);
+  color: var(--fg);
+  background: var(--bg);
+}
+.theme-sable {
+  --bg: var(--c-sable);
+  --fg: var(--c-foret);
+  --line: color-mix(in oklab, var(--c-sauge) 40%, transparent);
+  color: var(--fg);
+  background: var(--bg);
+}

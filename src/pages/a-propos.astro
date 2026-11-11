@@ -1,0 +1,102 @@
+---
+import Base from '@layouts/Base.astro';
+import PageHero from '@components/PageHero.astro';
+import CtaBooking from '@components/CtaBooking.astro';
+import { site } from '@data/site';
+import { media } from '@data/media';
+
+const formations = [
+  { t: 'Kinésiologie', d: 'Kinésiologue certifiée.' },
+  { t: 'Thérapie par les modes oculaires', d: 'Approche proche de l’EMDR.' },
+  { t: 'Visualisation & Brain Gym', d: 'Outils d’accompagnement corporels et mentaux.' },
+  { t: 'Kinésiologie animale', d: 'Certifiée par l’EKTC, complétée par des séminaires en éthologie et comportementalisme.' },
+  { t: 'Formation continue', d: 'Psychogénéalogie, massage énergétique, drainage lymphatique.' },
+];
+const valeurs = [
+  ['Écoute', 'Prendre le temps d’entendre ce qui est dit, et ce qui ne l’est pas.'],
+  ['Respect', 'Avancer à votre rythme, sans jugement ni promesse.'],
+  ['Douceur', 'Des techniques non invasives, pour tous les âges.'],
+  ['Exigence', 'Se former sans cesse pour mieux accompagner.'],
+];
+---
+
+<Base
+  title="À propos d’Alexandra Degans"
+  description="Alexandra Degans, kinésiologue certifiée à Bassens et Myans (Chambéry) : parcours, formations, approche et valeurs. Membre de la Fédération de la Kinésiologie Professionnelle."
+  path="/a-propos"
+  heroDark
+  schema={{ '@context': 'https://schema.org', '@type': 'Person', name: 'Alexandra Degans', jobTitle: 'Kinésiologue', worksFor: { '@id': `${site.url}/#business` }, url: `${site.url}/a-propos` }}
+>
+  <PageHero
+    scene="branches"
+    eyebrow="À propos"
+    title="Alexandra, <em>kinésiologue</em>."
+    intro="Accompagner chacun vers son propre équilibre, avec douceur, précision et beaucoup d’écoute."
+  >
+  </PageHero>
+
+  <section class="section" aria-labelledby="philo-title">
+    <div class="container-text prose">
+      <p class="eyebrow" data-reveal>Ma philosophie</p>
+      <h2 id="philo-title" data-split>Le corps <em>sait</em>. Mon rôle est de l’écouter avec vous.</h2>
+      <p class="lead" data-reveal>Chaque personne arrive avec son histoire, son rythme et ses ressources. Mon travail consiste à créer un espace sûr où ces ressources peuvent se réveiller.</p>
+      <p data-reveal>Au fil des séances, j’ai vu combien les émotions s’inscrivent dans le corps, parfois depuis la naissance, parfois depuis plusieurs générations. C’est ce qui m’a conduite à élargir ma pratique : la psychogénéalogie, les soins énergétiques du visage et du corps, le drainage lymphatique, et l’accompagnement des animaux et de leurs humains.</p>
+    </div>
+  </section>
+
+  <section class="section theme-dark" aria-labelledby="form-title">
+    <div class="container form__grid">
+      <div class="form__head">
+        <p class="eyebrow" data-reveal>Formations</p>
+        <h2 id="form-title" data-split>Se former, <em>toujours</em>.</h2>
+      </div>
+      <ol class="formations" role="list">
+        {formations.map((f, i) => (
+          <li data-reveal={String(i * 0.06)}>
+            <span class="formations__n">{String(i + 1).padStart(2, '0')}</span>
+            <div><h3>{f.t}</h3><p>{f.d}</p></div>
+          </li>
+        ))}
+      </ol>
+    </div>
+    <div class="container affil" data-reveal>
+      {site.affiliations.map((a) => <p>{a}</p>)}
+      <p>Médiation : {site.mediation}</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="val-title">
+    <div class="container">
+      <div class="val__head">
+        <p class="eyebrow" data-reveal>Mes valeurs</p>
+        <h2 id="val-title" data-split>Ce qui guide <em>chaque séance</em>.</h2>
+      </div>
+      <ul class="valeurs" role="list">
+        {valeurs.map(([t, d], i) => (
+          <li data-reveal={String(i * 0.08)}><h3>{t}</h3><p>{d}</p></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBooking title="Faisons <em>connaissance</em>." />
+</Base>
+
+<style>
+  .portrait { max-width: 22rem; margin-left: auto; }
+  .prose h2 { margin-bottom: var(--s-6); }
+  .form__grid { display: grid; gap: var(--s-8); }
+  @media (min-width: 64em) { .form__grid { grid-template-columns: 0.8fr 1.2fr; } }
+  .form__head { display: grid; gap: var(--s-4); align-content: start; }
+  .formations li { display: grid; grid-template-columns: 3rem 1fr; gap: var(--s-4); padding-block: var(--s-5); border-top: 1px solid var(--line-soft); max-width: none; }
+  .formations__n { font-size: var(--fs-xs); letter-spacing: 0.2em; color: var(--c-sauge-claire); padding-top: 0.5rem; }
+  .formations h3 { font-size: var(--fs-h4); }
+  .formations p { color: var(--c-sable); }
+  .affil { margin-top: var(--s-8); padding-top: var(--s-6); border-top: 1px solid var(--line-soft); display: grid; gap: var(--s-2); color: var(--c-sauge-claire); font-size: var(--fs-sm); }
+  .val__head { display: grid; gap: var(--s-4); margin-bottom: var(--s-8); }
+  .valeurs { display: grid; gap: var(--s-6); }
+  @media (min-width: 48em) { .valeurs { grid-template-columns: repeat(4, 1fr); } }
+  .valeurs li { padding-top: var(--s-5); border-top: 1px solid var(--c-sauge); display: grid; gap: var(--s-2); }
+  .valeurs h3 { font-size: var(--fs-h3); font-style: italic; }
+  .valeurs p { color: var(--fg-soft); }
+</style>

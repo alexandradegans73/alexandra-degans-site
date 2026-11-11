@@ -1,0 +1,128 @@
+---
+import Base from '@layouts/Base.astro';
+import PageHero from '@components/PageHero.astro';
+import PriceTable from '@components/PriceTable.astro';
+import Faq from '@components/Faq.astro';
+import CtaBooking from '@components/CtaBooking.astro';
+import { tarifs } from '@data/site';
+
+const heritage = ['Secrets de famille', 'Non-dits', 'Amours cachées', 'Histoires inachevées', 'Deuils brutaux', 'Pertes d’enfants', 'Trahisons', 'Accidents', 'Maladies répétitives', 'Syndromes anniversaires'];
+---
+
+<Base
+  title="Libération des mémoires transgénérationnelles"
+  description="Libération des mémoires transgénérationnelles et des loyautés familiales à Bassens et Myans (Chambéry) : 2 séances, kinésiologie puis soin énergétique, avec Alexandra Degans."
+  path="/memoires-transgenerationnelles"
+  heroDark
+>
+  <PageHero
+    scene="racines"
+    eyebrow="Mémoires transgénérationnelles"
+    title="Déposer ce qui <em>ne vous appartient pas</em>."
+    intro="Les valises que nos parents et grands-parents nous ont transmises contiennent parfois un héritage plus subtil qu’il n’y paraît. Cet accompagnement en deux temps invite à l’alléger."
+    number="02"
+  />
+
+  <section class="section lineage" aria-labelledby="lin-title">
+    <div class="container lineage__grid">
+      <div class="lineage__tree" aria-hidden="true" data-reveal>
+        <svg viewBox="0 0 320 420" fill="none" stroke="var(--c-sauge)" stroke-linecap="round">
+          {/* Généalogie stylisée : trois générations reliées, comme des racines */}
+          <g stroke-width="1.5" stroke="var(--c-sauge-claire)">
+            <path d="M160 360 C 160 300, 90 280, 80 220" /><path d="M160 360 C 160 300, 230 280, 240 220" />
+            <path d="M80 220 C 80 170, 40 150, 40 100" /><path d="M80 220 C 80 170, 120 150, 120 100" />
+            <path d="M240 220 C 240 170, 200 150, 200 100" /><path d="M240 220 C 240 170, 280 150, 280 100" />
+          </g>
+          {[[160, 360, 14], [80, 220, 10], [240, 220, 10], [40, 100, 7], [120, 100, 7], [200, 100, 7], [280, 100, 7]].map(([x, y, r], i) => (
+            <circle cx={x} cy={y} r={r} fill={i === 0 ? 'var(--c-sauge)' : 'var(--c-creme)'} stroke-width="1.5" />
+          ))}
+          <text x="160" y="400" text-anchor="middle" font-family="var(--font-text)" font-size="11" letter-spacing="3" fill="var(--c-sauge)" stroke="none">VOUS</text>
+        </svg>
+      </div>
+      <div class="prose">
+        <h2 id="lin-title" data-split>Hériter d’une histoire <em>qui n’est pas la nôtre</em>.</h2>
+        <p class="lead" data-reveal>Au regard de ce que nos aïeux ont vécu, il peut arriver que nous héritions d’une part de leur histoire.</p>
+        <p data-reveal>Quand ils ont traversé une souffrance importante, une situation injuste ou un conflit, nous pouvons parfois nous retrouver, aujourd’hui, dans une situation semblable. Porter un mal-être qui ne nous appartient pas, ou chercher à réparer un préjudice que nous n’avons pas vécu personnellement.</p>
+        <p data-reveal>C’est ce que l’on appelle, en psychogénéalogie, les <strong>mémoires transgénérationnelles</strong> et les <strong>loyautés familiales</strong> : des fidélités souvent inconscientes qui peuvent nous amener à revivre des souffrances ou à reproduire des schémas.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section theme-sable heritage" aria-labelledby="her-title">
+    <div class="container">
+      <p class="eyebrow" data-reveal>Ce qui se transmet parfois</p>
+      <h2 id="her-title" class="visually-hidden">Ce qui se transmet parfois</h2>
+      <ul class="heritage__list" role="list">
+        {heritage.map((h, i) => <li data-reveal={String((i % 5) * 0.06)}>{h}</li>)}
+      </ul>
+      <p class="heritage__gift display" data-split>Cette libération est un cadeau que vous vous faites — et un cadeau pour vos enfants, en choisissant de ne pas leur transmettre <em>ce qui a été douloureux</em>.</p>
+    </div>
+  </section>
+
+  <section class="section duo" aria-labelledby="duo-title">
+    <div class="container">
+      <div class="duo__head">
+        <p class="eyebrow" data-reveal>Le déroulé</p>
+        <h2 id="duo-title" data-split>Deux séances, <em>deux portes d’entrée</em>.</h2>
+      </div>
+      <div class="duo__grid">
+        <article class="duo__card" data-reveal>
+          <span class="duo__n">Séance 1</span>
+          <h3>Kinésiologie</h3>
+          <p>Elle permet de comprendre le lien, conscient ou inconscient, que vous entretenez avec l’histoire familiale. La libération passe par le corps et par le mental.</p>
+        </article>
+        <span class="duo__link" aria-hidden="true"></span>
+        <article class="duo__card" data-reveal="0.15">
+          <span class="duo__n">Séance 2</span>
+          <h3>Soin énergétique</h3>
+          <p>Allongé(e) et habillé(e), un masque sur les yeux pour favoriser la détente et le lâcher-prise : cette fois, la libération passe par le corps.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="tarif-title">
+    <div class="container grid-2">
+      <div class="flow">
+        <p class="eyebrow" data-reveal>Tarif</p>
+        <h2 id="tarif-title" data-split>L’accompagnement <em>complet</em>.</h2>
+        <p class="notice" data-reveal>La psychogénéalogie propose une lecture symbolique de l’histoire familiale ; ses hypothèses ne constituent pas des faits scientifiquement établis. Cet accompagnement ne remplace pas un suivi psychologique ou médical.</p>
+      </div>
+      <PriceTable rows={tarifs.transgenerationnel} />
+    </div>
+  </section>
+
+  <Faq
+    items={[
+      { q: 'Dois-je connaître toute l’histoire de ma famille ?', a: '<p>Non. Ce que vous savez suffit ; les zones d’ombre font aussi partie du chemin. Un arbre, même incomplet, peut être utile si vous l’avez.</p>' },
+      { q: 'Combien de temps entre les deux séances ?', a: '<p>Le délai se convient ensemble à la fin de la première séance, pour laisser au corps le temps d’intégrer.</p>' },
+      { q: 'Est-ce une thérapie ?', a: '<p>Non. C’est un accompagnement psycho-corporel et énergétique, qui ne remplace pas une psychothérapie ni un suivi médical.</p>' },
+    ]}
+  />
+
+  <CtaBooking title="Alléger <em>l’héritage</em>." />
+</Base>
+
+<style>
+  .lineage__grid { display: grid; gap: var(--s-8); align-items: center; }
+  @media (min-width: 64em) { .lineage__grid { grid-template-columns: 0.7fr 1.3fr; gap: var(--s-10); } }
+  .lineage__tree svg { width: min(100%, 20rem); margin-inline: auto; }
+  .lineage .prose h2 { margin-bottom: var(--s-6); }
+
+  .heritage__list { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-block: var(--s-6) var(--s-9); }
+  .heritage__list li { padding: 0.55em 1.2em; border: 1px solid var(--line); border-radius: var(--r-pill); font-family: var(--font-display); font-size: var(--fs-lg); font-style: italic; background: color-mix(in oklab, var(--c-creme) 40%, transparent); }
+  .heritage__gift { font-size: clamp(1.6rem, 1.1rem + 2vw, 2.8rem); line-height: 1.25; max-width: 32ch; }
+
+  .duo__head { display: grid; gap: var(--s-4); margin-bottom: var(--s-8); max-width: 36rem; }
+  .duo__grid { display: grid; gap: var(--s-5); align-items: center; }
+  @media (min-width: 48em) { .duo__grid { grid-template-columns: 1fr 5rem 1fr; } }
+  .duo__card { padding: var(--s-7) var(--s-6); border-radius: var(--r-arch); background: var(--c-sable); display: grid; gap: var(--s-3); text-align: center; justify-items: center; min-height: 22rem; align-content: center; }
+  .duo__card:last-child { background: var(--c-foret); color: var(--c-creme); }
+  .duo__card:last-child h3 { color: var(--c-creme); }
+  .duo__card:last-child p { color: var(--c-sable); }
+  .duo__n { font-size: var(--fs-xs); letter-spacing: 0.3em; text-transform: uppercase; color: var(--c-sauge); }
+  .duo__card:last-child .duo__n { color: var(--c-sauge-claire); }
+  .duo__card p { max-width: 26rem; }
+  .duo__link { height: 1px; background: var(--line); display: none; }
+  @media (min-width: 48em) { .duo__link { display: block; } }
+</style>

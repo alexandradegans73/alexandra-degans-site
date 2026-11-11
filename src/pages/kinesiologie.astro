@@ -1,0 +1,129 @@
+---
+import Base from '@layouts/Base.astro';
+import PageHero from '@components/PageHero.astro';
+import Steps from '@components/Steps.astro';
+import PriceTable from '@components/PriceTable.astro';
+import Faq from '@components/Faq.astro';
+import CtaBooking from '@components/CtaBooking.astro';
+import { tarifs } from '@data/site';
+
+const domaines = [
+  ['Stress, anxiété, deuil', 'Les périodes de tension ou de perte, quand l’émotion déborde.'],
+  ['Fatigue, manque d’entrain', 'Retrouver de l’élan quand l’énergie s’essouffle.'],
+  ['Sommeil', 'Accompagner les nuits agitées ou trop courtes.'],
+  ['Peurs et phobies', 'Désamorcer une réaction qui prend trop de place.'],
+  ['Dépendances', 'Soutenir un sevrage : tabac, alcool, nourriture…'],
+  ['Relations', 'Conflits de couple, familiaux ou professionnels.'],
+  ['Apprentissages', 'Concentration, difficultés scolaires, troubles DYS, phobie scolaire.'],
+  ['Corps et convalescence', 'Aider à soulager certaines douleurs, accompagner après un accident ou une opération.'],
+  ['Performance', 'Optimiser ses capacités physiques et intellectuelles.'],
+];
+---
+
+<Base
+  title="Kinésiologue à Chambéry"
+  description="La kinésiologie avec Alexandra Degans à Bassens et Myans, près de Chambéry : approche psycho-corporelle douce pour le stress, le sommeil, les peurs, les apprentissages. Séance d’1 h, bébés, enfants, adultes."
+  path="/kinesiologie"
+  heroDark
+>
+  <PageHero
+    scene="arbre"
+    eyebrow="La kinésiologie · Bassens & Myans"
+    title="Écouter ce que <em>le corps sait déjà</em>."
+    intro="Une méthode douce, issue de la médecine chinoise et de la chiropraxie, pour comprendre l’impact des émotions sur le corps et retrouver un équilibre global."
+    number="01"
+  />
+
+  <section class="section" aria-labelledby="def-title">
+    <div class="container def">
+      <div class="def__aside" data-reveal>
+        <p class="caps">Origines</p>
+        <ul role="list">
+          <li>Chiropractie</li><li>Énergétique chinoise</li><li>Neurophysiologie</li><li>Acupuncture</li>
+        </ul>
+      </div>
+      <div class="prose def__body">
+        <h2 id="def-title" data-split>Une approche <em>psycho-corporelle</em>.</h2>
+        <p class="lead" data-reveal>La kinésiologie est une approche globale, douce et respectueuse de la personne. Elle vise à favoriser un état d’équilibre psychique, émotionnel, physique et énergétique en réactivant les ressources propres à chacun.</p>
+        <p data-reveal>À l’aide d’un test musculaire léger, elle interroge la mémoire du corps pour identifier avec précision l’origine d’un blocage. La séance permet alors de libérer la charge émotionnelle qui y est associée et d’en modifier l’impact sur l’organisme.</p>
+        <p data-reveal>Elle s’intéresse aux maux physiques et émotionnels, aux attitudes de vie négatives, aux peurs, à l’héritage familial et aux schémas de comportement acquis.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section domains theme-dark" aria-labelledby="dom-title">
+    <div class="container">
+      <div class="domains__head">
+        <p class="eyebrow" data-reveal>Pour qui, pourquoi ?</p>
+        <h2 id="dom-title" data-split>Des bébés aux adultes, <em>à chaque âge de la vie</em>.</h2>
+        <p class="lead" data-reveal="0.1">J’accompagne les bébés, les enfants, les adolescents et les adultes. Voici les situations pour lesquelles on vient le plus souvent.</p>
+      </div>
+      <ul class="domains__grid" role="list">
+        {domaines.map(([t, d], i) => (
+          <li class="domain" data-reveal={String((i % 3) * 0.08)}>
+            <span class="domain__n">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{t}</h3>
+            <p>{d}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="domains__kids" data-reveal>Chez l’enfant : difficultés d’apprentissage, troubles DYS, phobie scolaire, énurésie, peur du noir…</p>
+    </div>
+  </section>
+
+  <Steps
+    intro="Un thème se travaille généralement sur deux à trois séances, et peut en ouvrir d’autres."
+    steps={[
+      { title: 'Un objectif, ensemble', text: 'Nous échangeons sur ce qui vous amène et définissons un objectif lors de la première séance. Il peut évoluer au fil du temps.' },
+      { title: 'Le dialogue avec le corps', text: 'Habillé(e), allongé(e) ou assis(e), vous restez acteur. Le test musculaire guide la séance vers l’origine du déséquilibre.' },
+      { title: 'Les équilibrations', text: 'Techniques douces — points réflexes, mouvements, visualisation, modes oculaires — pour libérer la charge émotionnelle identifiée.' },
+      { title: 'L’intégration', text: 'Les séances durent environ 1 heure et sont espacées d’environ 3 semaines, le temps que le corps intègre le travail effectué.' },
+    ]}
+  />
+
+  <section class="section" aria-labelledby="tarif-title">
+    <div class="container grid-2">
+      <div class="flow">
+        <p class="eyebrow" data-reveal>Tarif</p>
+        <h2 id="tarif-title" data-split>Une séance, <em>un temps pour vous</em>.</h2>
+        <p data-reveal class="muted">Chaque séance est unique et personnelle. Les séances ont lieu à Bassens ou à Myans, au choix.</p>
+        <p class="notice" data-reveal>Une séance de kinésiologie ne se substitue pas à une consultation médicale. Elle s’inscrit en complément d’un suivi par votre médecin, sans jamais interrompre un traitement.</p>
+      </div>
+      <PriceTable rows={tarifs.kinesiologie} />
+    </div>
+  </section>
+
+  <Faq
+    items={[
+      { q: 'Dois-je venir avec un problème précis ?', a: '<p>Non. Une sensation diffuse, une période difficile ou simplement l’envie d’avancer suffisent. Nous définissons l’objectif ensemble.</p>' },
+      { q: 'Combien de séances faut-il prévoir ?', a: '<p>Un thème se travaille en général sur 2 à 3 séances, espacées d’environ 3 semaines. Le rythme s’ajuste à chacun.</p>' },
+      { q: 'La kinésiologie convient-elle aux enfants et aux bébés ?', a: '<p>Oui. La séance s’adapte à l’âge : pour les plus petits, le parent est présent et peut servir de relais au test musculaire.</p>' },
+      { q: 'Comment m’habiller ?', a: '<p>Venez dans une tenue confortable. Vous restez habillé(e) pendant toute la séance.</p>' },
+      { q: 'La kinésiologie remplace-t-elle un traitement médical ?', a: '<p>Non. Elle ne pose pas de diagnostic et ne remplace ni une consultation ni un traitement médical. Elle peut accompagner, en complément, un suivi existant.</p>' },
+      { q: 'Comment régler la séance ?', a: '<p>Par chèque, espèces, Paylib ou virement.</p>' },
+    ]}
+  />
+
+  <CtaBooking />
+</Base>
+
+<style>
+  .def { display: grid; gap: var(--s-7); }
+  @media (min-width: 64em) { .def { grid-template-columns: 14rem 1fr; gap: var(--s-10); } }
+  .def__aside { border-top: 1px solid var(--line); padding-top: var(--s-4); align-self: start; }
+  .def__aside .caps { color: var(--c-sauge); margin-bottom: var(--s-3); }
+  .def__aside li { font-family: var(--font-display); font-size: var(--fs-lg); }
+  .def__body h2 { margin-bottom: var(--s-6); }
+
+  .domains__head { max-width: 42rem; display: grid; gap: var(--s-4); margin-bottom: var(--s-8); }
+  .domains__head .lead { color: var(--c-sable); }
+  .domains__grid { display: grid; gap: 1px; background: var(--line-soft); border: 1px solid var(--line-soft); border-radius: var(--r-md); overflow: hidden; }
+  @media (min-width: 40em) { .domains__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 64em) { .domains__grid { grid-template-columns: repeat(3, 1fr); } }
+  .domain { background: var(--c-foret); padding: var(--s-6); display: grid; gap: var(--s-2); align-content: start; transition: background var(--t-base); max-width: none; }
+  .domain:hover { background: var(--c-foret-800); }
+  .domain__n { font-size: var(--fs-xs); letter-spacing: 0.2em; color: var(--c-sauge-claire); }
+  .domain h3 { font-size: var(--fs-h4); }
+  .domain p { color: var(--c-sable); font-size: var(--fs-sm); }
+  .domains__kids { margin-top: var(--s-6); font-family: var(--font-display); font-style: italic; font-size: var(--fs-lg); color: var(--c-sable); max-width: none; }
+</style>

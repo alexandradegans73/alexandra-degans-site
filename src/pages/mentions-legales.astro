@@ -1,0 +1,46 @@
+---
+import Base from '@layouts/Base.astro';
+import { site } from '@data/site';
+---
+<Base title="Mentions légales" description="Mentions légales du site d’Alexandra Degans, kinésiologue à Bassens et Myans." path="/mentions-legales" noindex>
+  <section class="section legal">
+    <div class="container-text prose">
+      <p class="eyebrow">Informations légales</p>
+      <h1>Mentions légales</h1>
+      <p class="muted small">En vigueur au [date de mise en ligne — à compléter]</p>
+
+      <p>Conformément aux articles 6-III et 19 de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l’économie numérique (LCEN), les présentes mentions légales sont portées à la connaissance des visiteurs du site alexandradegans-kinesiologie.com (le « Site »).</p>
+
+      <h2>Éditeur et directrice de la publication</h2>
+      <p>Alexandra Degans, entrepreneure individuelle — kinésiologue<br />
+        17 impasse du Gardeny, 73800 Myans<br />
+        Téléphone : <a href={site.phoneHref}>{site.phone}</a> · E-mail : <a href={`mailto:${site.email}`}>{site.email}</a><br />
+        SIRET : [à compléter]</p>
+
+      <h2>Hébergement</h2>
+      <p>GitHub, Inc. (service GitHub Pages) — 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis — <a href="https://github.com" rel="noopener">github.com</a>.</p>
+
+      <h2>Médiation de la consommation</h2>
+      <p>Conformément aux articles L.611-1 et suivants du Code de la consommation, le client peut recourir gratuitement au service de médiation : {site.mediation}.</p>
+
+      <h2>Affiliations professionnelles</h2>
+      <p>{site.affiliations.join('. ')}.</p>
+
+      <h2>Nature des prestations</h2>
+      <p>La kinésiologie, les soins énergétiques et le drainage lymphatique proposés sont des pratiques de bien-être. Ils ne constituent ni un acte médical, ni un diagnostic, ni un traitement, et ne se substituent pas à une consultation médicale, psychologique ou vétérinaire. Aucun traitement en cours ne doit être interrompu sans l’avis du médecin.</p>
+
+      <h2>Propriété intellectuelle</h2>
+      <p>L’ensemble des contenus du Site (textes, logo, monogramme, illustrations, vidéos, sons) est la propriété de l’Éditeur ou fait l’objet d’une autorisation d’utilisation. Toute reproduction, diffusion ou modification sans autorisation préalable est interdite.</p>
+
+      <h2>Accès au Site</h2>
+      <p>Le Site est accessible 7 j/7, 24 h/24, sauf cas de force majeure ou d’interruption liée à la maintenance. L’Éditeur ne saurait être tenu responsable d’une indisponibilité.</p>
+
+      <h2>Liens externes</h2>
+      <p>La prise de rendez-vous s’effectue sur la plateforme Crénolibre, soumise à ses propres conditions et à sa propre politique de confidentialité.</p>
+
+      <h2>Données personnelles</h2>
+      <p>Voir la <a href="/confidentialite">politique de confidentialité</a>.</p>
+    </div>
+  </section>
+</Base>
+<style>.legal { padding-top: calc(var(--header-h) + var(--s-8)); } .legal h1 { font-size: var(--fs-h2); margin-block: var(--s-4) var(--s-3); }</style>

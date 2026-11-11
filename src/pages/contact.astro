@@ -1,0 +1,79 @@
+---
+import Base from '@layouts/Base.astro';
+import PageHero from '@components/PageHero.astro';
+import Places from '@components/Places.astro';
+import { site } from '@data/site';
+---
+
+<Base
+  title="Contact et rendez-vous"
+  description="Prendre rendez-vous avec Alexandra Degans, kinésiologue à Bassens (17 rue Arthur Haulotte) et Myans (17 impasse du Gardeny), près de Chambéry. Tél. 06 76 64 79 09."
+  path="/contact"
+  heroDark
+>
+  <PageHero
+    scene="eau"
+    eyebrow="Contact & rendez-vous"
+    title="Prendre <em>rendez-vous</em>."
+    intro="En ligne en quelques clics, ou par téléphone si vous souhaitez échanger avant votre première séance."
+  />
+
+  <section class="contact" aria-label="Moyens de contact">
+    <div class="container contact__grid">
+      <a class="c-card c-card--main" href={site.booking} target="_blank" rel="noopener" data-reveal>
+        <span class="caps">En ligne · 24 h/24</span>
+        <span class="c-card__title">Réserver ma séance</span>
+        <span class="small">Choisissez le soin, le lieu et le créneau.</span>
+        <span class="c-card__arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="c-card" href={site.phoneHref} data-reveal="0.1">
+        <span class="caps">Téléphone</span>
+        <span class="c-card__title">{site.phone}</span>
+        <span class="small">Appel ou SMS</span>
+      </a>
+      <a class="c-card" href={`mailto:${site.email}`} data-reveal="0.2">
+        <span class="caps">E-mail</span>
+        <span class="c-card__title c-card__title--sm">{site.email}</span>
+        <span class="small">Pour toute question</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="hours-title">
+    <div class="container grid-2">
+      <div>
+        <p class="eyebrow" data-reveal>Horaires</p>
+        <h2 id="hours-title" data-split>Sur <em>rendez-vous</em>.</h2>
+      </div>
+      <div>
+        <dl class="hours" data-reveal>
+          {site.hours.map((h) => (<div><dt>{h.days}</dt><dd>{h.time}</dd></div>))}
+        </dl>
+        <p class="small muted hours__pay" data-reveal>Règlements acceptés : {site.payments}.</p>
+        <p class="small muted" data-reveal>La kinésiologie animale a lieu uniquement à Bassens.</p>
+      </div>
+    </div>
+  </section>
+
+  <Places />
+  <div class="section-spacer"></div>
+</Base>
+
+<style>
+  .contact { margin-top: calc(-1 * var(--s-6)); position: relative; z-index: 1; }
+  .contact__grid { display: grid; gap: var(--s-4); }
+  @media (min-width: 48em) { .contact__grid { grid-template-columns: 1.3fr 1fr 1fr; } }
+  .c-card { position: relative; display: grid; gap: var(--s-2); align-content: end; min-height: 12rem; padding: var(--s-6); border-radius: var(--r-md); background: var(--c-sable); transition: transform var(--t-base) var(--ease-out), box-shadow var(--t-base); }
+  .c-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-soft); }
+  .c-card .caps { color: var(--c-sauge); }
+  .c-card__title { font-family: var(--font-display); font-size: var(--fs-h3); line-height: 1.1; }
+  .c-card__title--sm { font-size: var(--fs-h4); word-break: break-word; }
+  .c-card--main { background: var(--c-foret); color: var(--c-creme); }
+  .c-card--main .caps { color: var(--c-sauge-claire); }
+  .c-card--main .small { color: var(--c-sable); }
+  .c-card__arrow { position: absolute; top: var(--s-5); right: var(--s-6); font-size: var(--fs-h4); }
+  .hours > div { display: flex; justify-content: space-between; gap: var(--s-4); padding-block: var(--s-4); border-top: 1px solid var(--line-soft); font-family: var(--font-display); font-size: var(--fs-h4); }
+  .hours > div:last-child { border-bottom: 1px solid var(--line-soft); }
+  .hours__pay { margin-block: var(--s-5) var(--s-2); }
+  .section-spacer { height: var(--section-y); }
+</style>

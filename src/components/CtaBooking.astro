@@ -1,0 +1,37 @@
+---
+import { site } from '@data/site';
+interface Props { title?: string; text?: string; }
+const { title = 'Prendre un temps <em>pour soi</em>.', text = 'Réservez votre séance en ligne, ou appelez-moi pour échanger sur votre besoin avant de venir.' } = Astro.props;
+---
+<section class="cta theme-dark" aria-labelledby="cta-title">
+  <div class="cta__rings" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="container cta__inner">
+    <img class="cta__mono" src="/brand/monogramme-creme.svg" alt="" width="72" height="76" loading="lazy" decoding="async" data-reveal />
+    <h2 id="cta-title" data-split set:html={title} />
+    <p class="lead cta__text" data-reveal="0.15">{text}</p>
+    <div class="cta__actions" data-reveal="0.3">
+      <a class="btn btn--light" href={site.booking} target="_blank" rel="noopener">Réserver en ligne</a>
+      <a class="cta__phone" href={site.phoneHref}>{site.phone}</a>
+    </div>
+    <p class="small cta__places" data-reveal="0.4">{site.places.map((p) => `${p.street}, ${p.city}`).join('  ·  ')}</p>
+  </div>
+</section>
+
+<style>
+  .cta { position: relative; overflow: clip; padding-block: var(--section-y); text-align: center; }
+  .cta__inner { position: relative; display: grid; justify-items: center; gap: var(--s-5); }
+  .cta__mono { width: 3rem; height: auto; opacity: 0.8; }
+  .cta h2 { max-width: 16ch; }
+  .cta h2 :global(em) { color: var(--c-sable); }
+  .cta__text { color: var(--c-sable); max-width: 32rem; }
+  .cta__actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--s-5) var(--s-7); margin-top: var(--s-3); }
+  .cta__phone { font-family: var(--font-display); font-size: var(--fs-h4); color: var(--c-creme); }
+  .cta__places { color: var(--c-sauge-claire); max-width: none; margin-top: var(--s-4); }
+  .cta__rings { position: absolute; inset: 0; pointer-events: none; }
+  .cta__rings span { position: absolute; left: 50%; top: 50%; translate: -50% -50%; border-radius: 50%; border: 1px solid color-mix(in oklab, var(--c-sauge-claire) 30%, transparent); animation: ring 9s ease-out infinite; }
+  .cta__rings span:nth-child(1) { width: 30rem; height: 30rem; }
+  .cta__rings span:nth-child(2) { width: 30rem; height: 30rem; animation-delay: -3s; }
+  .cta__rings span:nth-child(3) { width: 30rem; height: 30rem; animation-delay: -6s; }
+  @keyframes ring { from { scale: 0.4; opacity: 0.9; } to { scale: 2.6; opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .cta__rings span { animation: none; opacity: 0.4; scale: 1.5; } }
+</style>

@@ -1,0 +1,26 @@
+{
+  "name": "alexandra-degans-site",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site vitrine immersif d'Alexandra Degans, kinésiologue à Bassens et Myans (Chambéry).",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.6.0",
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/jost": "^5.3.0",
+    "astro": "^5.15.0",
+    "gsap": "^3.13.0",
+    "lenis": "^1.3.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "sharp": "^0.34.0",
+    "typescript": "^5.9.0"
+  }
+}

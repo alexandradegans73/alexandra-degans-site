@@ -1,0 +1,161 @@
+---
+import Base from '@layouts/Base.astro';
+import PageHero from '@components/PageHero.astro';
+import PriceTable from '@components/PriceTable.astro';
+import Faq from '@components/Faq.astro';
+import CtaBooking from '@components/CtaBooking.astro';
+import { tarifs } from '@data/site';
+
+const bienfaitsVisage = [
+  ['Éclat', 'Une peau qui paraît plus lumineuse et reposée.'],
+  ['Circulation', 'Des gestes qui accompagnent la circulation sanguine et lymphatique.'],
+  ['Tonicité', 'Un travail des muscles du visage pour un effet tonifiant naturel.'],
+  ['Détente', 'Les tensions du visage, de la mâchoire et du cou se relâchent.'],
+  ['Équilibre', 'L’acupression des points du visage pour harmoniser l’énergie.'],
+  ['Relaxation', 'Un état de calme profond, qui apaise aussi l’esprit.'],
+];
+const centres = [
+  { zone: 'Les pieds', role: 'Centre du mouvement', text: 'Pour vous aider à vous positionner et à avancer.' },
+  { zone: 'Les mains', role: 'Centre de l’action', text: 'Pour saisir les opportunités, donner et recevoir, prendre votre destinée en main.' },
+  { zone: 'Le dos et la tête', role: 'Centre de la pensée', text: 'Pour des idées plus claires, davantage de discernement, des décisions facilitées.' },
+];
+---
+
+<Base
+  title="Soins énergétiques visage et corps à Chambéry"
+  description="Soins énergétiques visage et corps à Bassens et Myans, près de Chambéry : massage énergétique du visage (1 h, forfaits 5 et 10 séances) et soin du corps de la conception à la naissance (2 h)."
+  path="/soins-energetiques"
+  heroDark
+>
+  <PageHero
+    scene="feuilles"
+    eyebrow="Soins énergétiques · visage & corps"
+    title="Un temps suspendu, <em>pour soi</em>."
+    intro="Deux soins pour relâcher les tensions et se reconnecter : un massage énergétique du visage, revitalisant, et un soin du corps qui revisite le chemin de votre naissance."
+    number="04"
+  />
+
+  <nav class="switch container" aria-label="Choisir un soin">
+    <a href="#visage" class="switch__item"><span class="caps">Soin</span> Visage <small>1 h · dès 60 €</small></a>
+    <a href="#corps" class="switch__item"><span class="caps">Soin</span> Corps <small>2 h · 90 €</small></a>
+  </nav>
+
+  {/* ----------------------------- VISAGE ----------------------------- */}
+  <section class="section visage" id="visage" aria-labelledby="visage-title">
+    <div class="container visage__grid">
+      <div class="visage__visual" data-reveal>
+        <div class="frame frame--arch frame--tall">
+          <div class="placeholder-media"><div><span>Mains posées, lumière douce</span><small>Visuel Higgsfield · séquence 04</small></div></div>
+        </div>
+      </div>
+      <div class="prose">
+        <p class="eyebrow" data-reveal>Le visage</p>
+        <h2 id="visage-title" data-split>Réveiller <em>l’éclat</em>, apaiser les traits.</h2>
+        <p class="lead" data-reveal>Ce massage énergétique associe des mouvements rapides et rythmés à des techniques manuelles plus profondes, pour travailler les différentes couches de la peau et des muscles du visage.</p>
+        <p data-reveal>Son approche est globale : massage, acupression et drainage lymphatique se combinent pour revitaliser la peau, accompagner la circulation et révéler l’éclat du visage.</p>
+      </div>
+    </div>
+    <div class="container">
+      <ul class="benefits" role="list">
+        {bienfaitsVisage.map(([t, d], i) => (
+          <li data-reveal={String((i % 3) * 0.08)}><h3>{t}</h3><p>{d}</p></li>
+        ))}
+      </ul>
+      <div class="visage__prices">
+        <PriceTable title="Tarifs · soin du visage" rows={tarifs.visage} />
+      </div>
+    </div>
+  </section>
+
+  {/* ----------------------------- CORPS ------------------------------ */}
+  <section class="section corps theme-dark" id="corps" aria-labelledby="corps-title">
+    <div class="corps__halo" aria-hidden="true"></div>
+    <div class="container">
+      <div class="corps__intro prose">
+        <p class="eyebrow" data-reveal>Le corps</p>
+        <h2 id="corps-title" data-split>De la conception <em>à la naissance</em>.</h2>
+        <p class="lead" data-reveal>Au fil des séances de kinésiologie, j’ai constaté que de nombreux stress étaient liés à la conception ou à la naissance.</p>
+        <p data-reveal>Une conception par PMA, une grossesse non désirée ou difficile à venir, une naissance prématurée, par césarienne ou aux forceps, un projet de naissance non respecté… Autant d’histoires qui peuvent laisser une trace : difficulté à trouver sa place, peur de la séparation, sentiment de rejet, schémas répétitifs, croyances limitantes.</p>
+      </div>
+
+      <div class="corps__ritual">
+        <p class="caps corps__ritual-label" data-reveal>Le rituel</p>
+        <p class="corps__ritual-text" data-reveal>Après un entretien pour comprendre vos besoins, nous abordons le projet de votre conception, la grossesse et votre naissance, jusqu’à votre neuvième mois. Vous restez habillé(e), allongé(e) sur une table de massage chauffée, jusqu’à une relaxation profonde.</p>
+        <ol class="centres" role="list">
+          {centres.map((c, i) => (
+            <li class="centre" data-reveal={String(i * 0.12)}>
+              <span class="centre__n">{i + 1}</span>
+              <h3>{c.zone}</h3>
+              <p class="caps">{c.role}</p>
+              <p>{c.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div class="grid-2 corps__bottom">
+        <div>
+          <h3 class="corps__h" data-reveal>Ce que l’on vient y chercher</h3>
+          <ul class="corps__list" role="list" data-reveal>
+            <li>Se reconnecter à son enfant intérieur</li>
+            <li>Apaisement et lâcher-prise</li>
+            <li>Alléger les mémoires liées à la grossesse et à la naissance</li>
+            <li>Se libérer des schémas répétitifs</li>
+            <li>Apaiser les liens avec sa lignée</li>
+          </ul>
+        </div>
+        <div class="corps__price">
+          <PriceTable rows={tarifs.corps} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Faq
+    items={[
+      { q: 'Faut-il se déshabiller ?', a: '<p>Pour le soin du corps, non : vous restez habillé(e) tout au long de la séance. Le soin du visage se concentre sur le visage et le cou.</p>' },
+      { q: 'Combien de séances pour le visage ?', a: '<p>Une séance offre déjà un vrai moment de détente. Les forfaits de 5 ou 10 séances permettent d’installer un rituel régulier.</p>' },
+      { q: 'Ces soins ont-ils une visée médicale ?', a: '<p>Non. Ce sont des soins de bien-être et de relaxation. Ils ne remplacent ni un avis médical ni un soin dermatologique.</p>' },
+    ]}
+  />
+
+  <CtaBooking title="S’offrir <em>un vrai lâcher-prise</em>." />
+</Base>
+
+<style>
+  .switch { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); margin-top: calc(-1 * var(--s-6)); position: relative; z-index: 2; }
+  .switch__item { display: grid; padding: var(--s-5); border-radius: var(--r-md); background: var(--c-creme); box-shadow: var(--shadow-soft); font-family: var(--font-display); font-size: var(--fs-h4); line-height: 1.1; transition: transform var(--t-base) var(--ease-out); }
+  .switch__item:hover { transform: translateY(-4px); }
+  .switch__item .caps { color: var(--c-sauge); font-family: var(--font-text); }
+  .switch__item small { font-family: var(--font-text); font-size: var(--fs-xs); color: var(--fg-soft); letter-spacing: 0.06em; margin-top: 0.3rem; }
+
+  .visage__grid { display: grid; gap: var(--s-8); align-items: center; margin-bottom: var(--s-9); }
+  @media (min-width: 64em) { .visage__grid { grid-template-columns: 0.8fr 1.2fr; gap: var(--s-10); } }
+  .visage__visual { max-width: 24rem; }
+  .benefits { display: grid; gap: var(--s-6) var(--s-7); margin-bottom: var(--s-9); }
+  @media (min-width: 40em) { .benefits { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 64em) { .benefits { grid-template-columns: repeat(3, 1fr); } }
+  .benefits li { border-top: 1px solid var(--line); padding-top: var(--s-4); display: grid; gap: var(--s-2); }
+  .benefits h3 { font-size: var(--fs-h4); font-style: italic; }
+  .benefits p { color: var(--fg-soft); }
+  .visage__prices { display: flex; justify-content: flex-end; }
+
+  .corps { overflow: clip; }
+  .corps__halo { position: absolute; width: 60rem; height: 60rem; right: -20rem; top: -10rem; border-radius: 50%; background: radial-gradient(circle, color-mix(in oklab, var(--c-sauge) 50%, transparent), transparent 65%); pointer-events: none; }
+  .corps__intro { position: relative; max-width: 44rem; }
+  .corps__intro h2 { margin-bottom: var(--s-6); }
+  .corps__intro .lead, .corps__intro p { color: var(--c-sable); }
+  .corps__ritual { position: relative; margin-block: var(--s-9); }
+  .corps__ritual-label { color: var(--c-sauge-claire); margin-bottom: var(--s-3); }
+  .corps__ritual-text { font-family: var(--font-display); font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2.1rem); line-height: 1.35; max-width: 40ch; color: var(--c-creme); }
+  .centres { display: grid; gap: var(--s-5); margin-top: var(--s-8); }
+  @media (min-width: 48em) { .centres { grid-template-columns: repeat(3, 1fr); } }
+  .centre { padding: var(--s-6); border: 1px solid var(--line-soft); border-radius: var(--r-arch); text-align: center; display: grid; gap: var(--s-2); justify-items: center; padding-top: var(--s-8); }
+  .centre__n { width: 2.6rem; height: 2.6rem; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--c-sauge-claire); font-family: var(--font-display); font-size: var(--fs-lg); color: var(--c-sauge-claire); margin-bottom: var(--s-3); }
+  .centre h3 { font-size: var(--fs-h4); color: var(--c-creme); }
+  .centre .caps { color: var(--c-sauge-claire); }
+  .centre p:last-child { color: var(--c-sable); }
+  .corps__h { font-size: var(--fs-h4); margin-bottom: var(--s-4); color: var(--c-creme); }
+  .corps__list li { padding-block: var(--s-3); border-bottom: 1px solid var(--line-soft); color: var(--c-sable); font-family: var(--font-display); font-size: var(--fs-lg); }
+  .corps__price :global(.prices__detail), .corps__price :global(.prices__caption) { color: var(--c-sable); }
+</style>

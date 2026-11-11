@@ -1,0 +1,31 @@
+---
+interface Row { label: string; detail?: string; price: string; note?: string }
+interface Props { title?: string; rows: Row[]; caption?: string; }
+const { title, rows, caption = 'Tarifs communiqués à titre indicatif, à confirmer lors de la prise de rendez-vous. Règlement par chèque, espèces, Paylib ou virement.' } = Astro.props;
+---
+<div class="prices" data-reveal>
+  {title && <h3 class="prices__title">{title}</h3>}
+  <ul role="list" class="prices__list">
+    {rows.map((r) => (
+      <li class="prices__row">
+        <span class="prices__label">{r.label}{r.detail && <span class="prices__detail">{r.detail}</span>}</span>
+        <span class="prices__dots" aria-hidden="true"></span>
+        <span class="prices__price">{r.price}{r.note && <small>{r.note}</small>}</span>
+      </li>
+    ))}
+  </ul>
+  {caption && <p class="prices__caption small muted">{caption}</p>}
+</div>
+
+<style>
+  .prices { max-width: 40rem; }
+  .prices__title { margin-bottom: var(--s-5); font-size: var(--fs-h4); }
+  .prices__row { display: flex; align-items: baseline; gap: var(--s-3); padding-block: var(--s-4); border-top: 1px solid var(--line-soft); max-width: none; }
+  .prices__row:last-child { border-bottom: 1px solid var(--line-soft); }
+  .prices__label { display: grid; font-family: var(--font-display); font-size: var(--fs-lg); line-height: 1.2; }
+  .prices__detail { font-family: var(--font-text); font-size: var(--fs-xs); letter-spacing: 0.08em; color: var(--fg-soft); margin-top: 0.2rem; }
+  .prices__dots { flex: 1; border-bottom: 1px dotted var(--line); transform: translateY(-0.35em); min-width: 1.5rem; }
+  .prices__price { font-family: var(--font-display); font-size: var(--fs-h4); white-space: nowrap; display: grid; text-align: right; }
+  .prices__price small { font-family: var(--font-text); font-size: var(--fs-xs); color: var(--fg-soft); letter-spacing: 0.05em; }
+  .prices__caption { margin-top: var(--s-4); }
+</style>

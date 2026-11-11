@@ -1,0 +1,80 @@
+---
+import { site, prestations } from '@data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer theme-dark" id="pied-de-page">
+  <div class="footer__glow" aria-hidden="true"></div>
+  <div class="container-wide footer__inner">
+    <div class="footer__brand">
+      <img src="/brand/logo-vertical-creme.svg" alt="Alexandra Degans, kinésiologie" width="220" height="200" loading="lazy" decoding="async" />
+      <p class="footer__tagline">{site.tagline}</p>
+    </div>
+
+    <div class="footer__col">
+      <p class="caps footer__title">Les soins</p>
+      <ul role="list">
+        {prestations.map((p) => <li><a href={p.path}>{p.name}</a></li>)}
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <p class="caps footer__title">Cabinets</p>
+      <ul role="list" class="footer__places">
+        {site.places.map((p) => (
+          <li>
+            <a href={p.maps} target="_blank" rel="noopener">
+              <strong>{p.city}</strong><br />{p.street}<br />{p.zip} {p.city}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="small">À quelques minutes de Chambéry · stationnement gratuit</p>
+    </div>
+
+    <div class="footer__col">
+      <p class="caps footer__title">Contact</p>
+      <ul role="list">
+        <li><a href={site.phoneHref}>{site.phone}</a></li>
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li><a href="/contact">Horaires &amp; accès</a></li>
+        <li><a class="link-arrow footer__book" href={site.booking} target="_blank" rel="noopener">Réserver une séance
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container-wide footer__legal">
+    <p class="small">{site.affiliations.join(' · ')}<br />Médiation de la consommation : {site.mediation}</p>
+    <p class="small">La kinésiologie et les soins proposés ne se substituent pas à un suivi médical ou vétérinaire.</p>
+    <p class="small footer__links">
+      <span>© {year} {site.name}</span>
+      <a href="/mentions-legales">Mentions légales</a>
+      <a href="/confidentialite">Confidentialité</a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer { position: relative; overflow: hidden; padding-block: var(--s-10) var(--s-7); }
+  .footer__glow {
+    position: absolute; inset: auto -20% -40% -20%; height: 70%; pointer-events: none;
+    background: radial-gradient(50% 60% at 50% 100%, color-mix(in oklab, var(--c-sauge) 55%, transparent), transparent 70%);
+  }
+  .footer__inner { position: relative; display: grid; gap: var(--s-8); grid-template-columns: 1fr; }
+  @media (min-width: 40em) { .footer__inner { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 64em) { .footer__inner { grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: var(--s-7); } }
+  .footer__brand img { width: 11rem; height: auto; }
+  .footer__tagline { font-family: var(--font-display); font-style: italic; font-size: var(--fs-lg); margin-top: var(--s-5); color: var(--c-sable); }
+  .footer__title { color: var(--c-sauge-claire); margin-bottom: var(--s-4); }
+  .footer li + li { margin-top: var(--s-2); }
+  .footer a { transition: color var(--t-fast); }
+  .footer a:hover { color: var(--c-sauge-claire); }
+  .footer__places li + li { margin-top: var(--s-4); }
+  .footer__places strong { font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 400; }
+  .footer__places + .small { margin-top: var(--s-4); color: var(--c-sable); opacity: 0.8; }
+  .footer__book { margin-top: var(--s-3); color: var(--c-creme); }
+  .footer__legal { position: relative; margin-top: var(--s-9); padding-top: var(--s-6); border-top: 1px solid var(--line-soft); display: grid; gap: var(--s-3); color: var(--c-sable); }
+  .footer__legal p { max-width: none; opacity: 0.85; }
+  .footer__links { display: flex; flex-wrap: wrap; gap: var(--s-5); }
+</style>

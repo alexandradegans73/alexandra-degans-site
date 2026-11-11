@@ -1,0 +1,44 @@
+---
+interface Item { q: string; a: string }
+interface Props { items: Item[]; title?: string; eyebrow?: string }
+const { items, title = 'Questions fréquentes', eyebrow = 'Pour y voir clair' } = Astro.props;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((i) => ({ '@type': 'Question', name: i.q, acceptedAnswer: { '@type': 'Answer', text: i.a.replace(/<[^>]+>/g, '') } })),
+};
+---
+<section class="faq section" aria-labelledby="faq-title">
+  <div class="container faq__grid">
+    <div>
+      <p class="eyebrow" data-reveal>{eyebrow}</p>
+      <h2 id="faq-title" data-reveal>{title}</h2>
+    </div>
+    <div class="faq__list">
+      {items.map((i, k) => (
+        <details class="faq__item" data-faq data-reveal={String(k * 0.05)}>
+          <summary><span>{i.q}</span><i aria-hidden="true"></i></summary>
+          <div class="faq__answer" set:html={i.a} />
+        </details>
+      ))}
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</section>
+
+<style>
+  .faq__grid { display: grid; gap: var(--s-7); }
+  @media (min-width: 64em) { .faq__grid { grid-template-columns: 0.8fr 1.2fr; } }
+  .faq__grid h2 { margin-top: var(--s-4); }
+  .faq__item { border-top: 1px solid var(--line-soft); }
+  .faq__item:last-child { border-bottom: 1px solid var(--line-soft); }
+  summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--s-5); padding-block: var(--s-5); font-family: var(--font-display); font-size: var(--fs-h4); line-height: 1.25; }
+  summary::-webkit-details-marker { display: none; }
+  summary i { position: relative; flex: 0 0 auto; width: 1.4rem; height: 1.4rem; border-radius: 50%; border: 1px solid var(--line); transition: background var(--t-base), transform var(--t-base) var(--ease-out); }
+  summary i::before, summary i::after { content: ''; position: absolute; left: 50%; top: 50%; background: currentColor; width: 0.65rem; height: 1px; transform: translate(-50%, -50%); transition: transform var(--t-base) var(--ease-out); }
+  summary i::after { transform: translate(-50%, -50%) rotate(90deg); }
+  details[open] summary i { background: var(--c-sauge); border-color: var(--c-sauge); color: var(--c-creme); }
+  details[open] summary i::after { transform: translate(-50%, -50%) rotate(0); }
+  .faq__answer { padding-bottom: var(--s-6); color: var(--fg-soft); }
+  .faq__answer :global(p + p) { margin-top: 0.8em; }
+</style>

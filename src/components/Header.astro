@@ -1,0 +1,165 @@
+---
+import { nav, site, prestations } from '@data/site';
+interface Props { dark?: boolean }
+const { dark = false } = Astro.props;
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<header class:list={['site-header', { 'is-dark': dark }]} data-header>
+  <div class="site-header__inner container-wide">
+    <a href="/" class="site-header__brand" aria-label="Alexandra Degans, kinésiologie — accueil">
+      <img class="brand brand--light" src="/brand/logo-horizontal.svg" alt="" width="826" height="135" decoding="async" />
+      <img class="brand brand--dark" src="/brand/logo-horizontal-creme.svg" alt="" width="826" height="135" decoding="async" />
+    </a>
+
+    <nav class="site-header__nav" aria-label="Navigation principale">
+      <ul role="list">
+        <li class="has-sub">
+          <a href="/#prestations" aria-current={prestations.some((p) => p.path === current) ? 'true' : undefined}>Les soins</a>
+          <div class="sub" role="group" aria-label="Les soins">
+            {prestations.map((p) => (
+              <a href={p.path} aria-current={p.path === current ? 'page' : undefined}>
+                <span class="sub__name">{p.name}</span>
+                <span class="sub__short">{p.short}</span>
+              </a>
+            ))}
+          </div>
+        </li>
+        <li><a href="/a-propos" aria-current={current === '/a-propos' ? 'page' : undefined}>À propos</a></li>
+        <li><a href="/contact" aria-current={current === '/contact' ? 'page' : undefined}>Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a class="btn btn--ghost site-header__cta" href={site.booking} target="_blank" rel="noopener">Prendre rendez-vous</a>
+      <button class="burger" type="button" aria-expanded="false" aria-controls="menu-mobile" data-menu-toggle>
+        <span class="burger__label">Menu</span>
+        <span class="burger__lines" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="menu" id="menu-mobile" data-menu hidden>
+  <div class="menu__inner">
+    <p class="eyebrow">Les soins</p>
+    <ul role="list" class="menu__list">
+      {prestations.map((p, i) => (
+        <li style={`--i:${i}`}><a href={p.path}><span class="menu__num">0{i + 1}</span>{p.name}</a></li>
+      ))}
+    </ul>
+    <ul role="list" class="menu__secondary">
+      {nav.slice(5).map((n, i) => (
+        <li style={`--i:${i + 5}`}><a href={n.path}>{n.label}</a></li>
+      ))}
+    </ul>
+    <div class="menu__foot">
+      <a class="btn btn--light" href={site.booking} target="_blank" rel="noopener">Prendre rendez-vous</a>
+      <a class="menu__phone" href={site.phoneHref}>{site.phone}</a>
+      <p class="small">{site.places.map((p) => `${p.city}`).join(' · ')} — près de Chambéry</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .site-header {
+    position: fixed; inset-inline: 0; top: 0; z-index: var(--z-header);
+    height: var(--header-h);
+    --hdr-fg: var(--c-foret);
+    color: var(--hdr-fg);
+    transition: background var(--t-base) var(--ease-out), box-shadow var(--t-base), transform var(--t-base) var(--ease-out), height var(--t-base);
+  }
+  .site-header.is-dark:not(.is-scrolled) { --hdr-fg: var(--c-creme); }
+  .site-header.is-scrolled {
+    height: calc(var(--header-h) - 1rem);
+    background: color-mix(in oklab, var(--c-creme) 86%, transparent);
+    backdrop-filter: blur(14px) saturate(1.1);
+    -webkit-backdrop-filter: blur(14px) saturate(1.1);
+    box-shadow: 0 1px 0 var(--line-soft);
+  }
+  .site-header.is-hidden { transform: translateY(-110%); }
+  .site-header__inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: var(--s-5); }
+
+  .site-header__brand { display: block; height: 2.2rem; flex: 0 0 auto; }
+  .brand { height: 100%; width: auto; }
+  .brand--dark { display: none; }
+  .site-header.is-dark:not(.is-scrolled) .brand--light { display: none; }
+  .site-header.is-dark:not(.is-scrolled) .brand--dark { display: block; }
+  @media (max-width: 30em) { .site-header__brand { height: 1.75rem; } }
+
+  .site-header__nav { display: none; }
+  @media (min-width: 64em) {
+    .site-header__nav { display: block; }
+    .site-header__nav > ul { display: flex; gap: var(--s-7); }
+    .site-header__nav a {
+      font-size: var(--fs-xs); letter-spacing: var(--ls-caps); text-transform: uppercase; font-weight: 400;
+      padding-block: var(--s-2);
+      background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0% 1px;
+      transition: background-size var(--t-base) var(--ease-out);
+    }
+    .site-header__nav a:hover, .site-header__nav a:focus-visible, .site-header__nav a[aria-current] { background-size: 100% 1px; }
+    .has-sub { position: relative; }
+    .sub {
+      position: absolute; top: calc(100% + 0.6rem); left: 50%; transform: translate(-50%, 8px);
+      min-width: 20rem; padding: var(--s-4); border-radius: var(--r-md);
+      background: var(--c-creme); color: var(--c-foret); box-shadow: var(--shadow-lift);
+      border: 1px solid var(--line-soft);
+      opacity: 0; visibility: hidden; transition: opacity var(--t-base) var(--ease-out), transform var(--t-base) var(--ease-out), visibility 0s linear var(--t-base);
+      display: grid; gap: 2px;
+    }
+    .sub::before { content: ''; position: absolute; left: 0; right: 0; top: -0.8rem; height: 0.8rem; }
+    .has-sub:hover .sub, .has-sub:focus-within .sub { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s; }
+    .sub a { display: grid; padding: var(--s-3) var(--s-4); border-radius: var(--r-sm); background: none; text-transform: none; letter-spacing: 0; }
+    .sub a:hover, .sub a:focus-visible { background: color-mix(in oklab, var(--c-sable) 55%, transparent); }
+    .sub__name { font-family: var(--font-display); font-size: 1.25rem; line-height: 1.2; }
+    .sub__short { font-size: var(--fs-xs); color: var(--fg-soft); }
+  }
+
+  .site-header__actions { display: flex; align-items: center; gap: var(--s-4); }
+  .site-header__cta { display: none; }
+  @media (min-width: 48em) { .site-header__cta { display: inline-flex; padding-block: 0.75em; } }
+  .site-header.is-dark:not(.is-scrolled) .site-header__cta { --btn-fg: var(--c-creme); border-color: color-mix(in oklab, var(--c-creme) 50%, transparent); }
+
+  .burger { display: inline-flex; align-items: center; gap: var(--s-3); padding: var(--s-2); color: inherit; min-height: 44px; }
+  .burger__label { font-size: var(--fs-xs); letter-spacing: var(--ls-caps); text-transform: uppercase; font-weight: 400; }
+  .burger__lines { position: relative; width: 28px; height: 14px; }
+  .burger__lines i { position: absolute; left: 0; right: 0; height: 1px; background: currentColor; transition: transform var(--t-base) var(--ease-out), top var(--t-base) var(--ease-out); }
+  .burger__lines i:first-child { top: 0; }
+  .burger__lines i:last-child { top: 13px; }
+  .burger[aria-expanded='true'] { color: var(--c-creme); }
+  .burger[aria-expanded='true'] i:first-child { top: 6.5px; transform: rotate(45deg); }
+  .burger[aria-expanded='true'] i:last-child { top: 6.5px; transform: rotate(-45deg); }
+  @media (min-width: 64em) { .burger { display: none; } }
+
+  /* Menu mobile plein écran */
+  .menu {
+    position: fixed; inset: 0; z-index: var(--z-menu);
+    background: var(--c-foret); color: var(--c-creme);
+    display: grid; align-content: center;
+    padding: calc(var(--header-h) + var(--s-4)) var(--gutter) var(--s-7);
+    overflow-y: auto;
+    clip-path: circle(0% at calc(100% - 3rem) 2.6rem);
+    transition: clip-path var(--t-slow) var(--ease-in-out);
+  }
+  .menu[hidden] { display: none; }
+  .menu.is-open { clip-path: circle(150% at calc(100% - 3rem) 2.6rem); }
+  .menu__inner { display: grid; gap: var(--s-6); width: min(100%, 36rem); margin-inline: auto; }
+  .menu .eyebrow { color: var(--c-sauge-claire); }
+  .menu__list a {
+    display: flex; align-items: baseline; gap: var(--s-4);
+    font-family: var(--font-display); font-size: clamp(1.9rem, 6.5vw, 2.6rem); line-height: 1.15; padding-block: 0.3em;
+    border-bottom: 1px solid color-mix(in oklab, var(--c-sauge-claire) 25%, transparent);
+  }
+  .menu__num { font-family: var(--font-text); font-size: var(--fs-xs); letter-spacing: 0.2em; color: var(--c-sauge-claire); }
+  .menu__secondary { display: flex; gap: var(--s-6); }
+  .menu__secondary a { font-size: var(--fs-sm); letter-spacing: var(--ls-caps); text-transform: uppercase; font-weight: 400; }
+  .menu__foot { display: grid; gap: var(--s-4); justify-items: start; }
+  .menu__phone { font-family: var(--font-display); font-size: var(--fs-h4); }
+  .menu li { opacity: 0; transform: translateY(14px); transition: opacity var(--t-base) var(--ease-out), transform var(--t-base) var(--ease-out); transition-delay: calc(120ms + var(--i, 0) * 45ms); }
+  .menu.is-open li { opacity: 1; transform: none; }
+  body.menu-open { overflow: hidden; }
+  body.menu-open .site-header { --hdr-fg: var(--c-creme); background: transparent; box-shadow: none; backdrop-filter: none; }
+  body.menu-open .brand--light { display: none; }
+  body.menu-open .brand--dark { display: block; }
+  @media (prefers-reduced-motion: reduce) { .menu { transition: none; } .menu li { transition: none; } }
+</style>

@@ -1,0 +1,20 @@
+---
+import Base from '@layouts/Base.astro';
+---
+<Base title="Page introuvable" description="Cette page n’existe pas ou a été déplacée." path="/404" noindex>
+  <section class="nf">
+    <img src="/brand/monogramme.svg" alt="" width="72" height="76" />
+    <h1>Ce chemin <em>s’est perdu</em> entre les branches.</h1>
+    <p class="lead muted">La page que vous cherchez a peut-être changé d’adresse avec le nouveau site.</p>
+    <div class="nf__links">
+      <a class="btn" href="/">Revenir à l’accueil</a>
+      <a class="link-arrow" href="/#prestations">Voir les soins</a>
+    </div>
+  </section>
+</Base>
+<style>
+  .nf { min-height: 90svh; display: grid; place-content: center; justify-items: center; text-align: center; gap: var(--s-5); padding: calc(var(--header-h) + var(--s-6)) var(--gutter) var(--s-8); }
+  .nf img { width: 3rem; }
+  .nf h1 { font-size: var(--fs-h2); max-width: 18ch; }
+  .nf__links { display: flex; gap: var(--s-6); align-items: center; flex-wrap: wrap; justify-content: center; }
+</style>

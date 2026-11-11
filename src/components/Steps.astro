@@ -1,0 +1,41 @@
+---
+/** Déroulé d'une séance : ligne qui se trace au scroll, étapes qui s'éclairent. */
+interface Step { title: string; text: string; }
+interface Props { steps: Step[]; eyebrow?: string; title?: string; intro?: string }
+const { steps, eyebrow = 'Le déroulé', title = 'Comment se passe <em>une séance</em> ?', intro } = Astro.props;
+---
+<section class="steps section theme-sable" aria-labelledby="steps-title">
+  <div class="container steps__grid">
+    <div class="steps__head">
+      <p class="eyebrow" data-reveal>{eyebrow}</p>
+      <h2 id="steps-title" data-split set:html={title} />
+      {intro && <p class="muted" data-reveal="0.2">{intro}</p>}
+    </div>
+    <ol class="steps__list" role="list" data-steps>
+      <span class="steps__line" aria-hidden="true"><i data-step-line></i></span>
+      {steps.map((s, i) => (
+        <li class="steps__item" data-step>
+          <span class="steps__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <div>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .steps__grid { display: grid; gap: var(--s-8); }
+  @media (min-width: 64em) { .steps__grid { grid-template-columns: 0.8fr 1.2fr; } .steps__head { position: sticky; top: calc(var(--header-h) + var(--s-6)); align-self: start; } }
+  .steps__head { display: grid; gap: var(--s-4); }
+  .steps__list { position: relative; padding-left: 4.5rem; display: grid; gap: var(--s-7); }
+  .steps__line { position: absolute; left: 1.2rem; top: 0.6rem; bottom: 0.6rem; width: 1px; background: var(--line-soft); }
+  .steps__line i { position: absolute; inset: 0; background: var(--c-sauge); transform: scaleY(0); transform-origin: top; display: block; }
+  .steps__item { position: relative; }
+  .steps__num { position: absolute; left: -4.5rem; top: 0; width: 2.4rem; height: 2.4rem; display: grid; place-items: center; border-radius: 50%; background: var(--c-creme); border: 1px solid var(--line); font-size: var(--fs-xs); letter-spacing: 0.1em; color: var(--c-sauge); }
+  .steps__item h3 { font-size: var(--fs-h4); margin-bottom: var(--s-2); }
+  .steps__item p { color: var(--fg-soft); }
+  :global(.no-js) .steps__line i { transform: none; }
+</style>

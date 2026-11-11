@@ -1,0 +1,158 @@
+---
+import Base from '@layouts/Base.astro';
+import PageHero from '@components/PageHero.astro';
+import PriceTable from '@components/PriceTable.astro';
+import Faq from '@components/Faq.astro';
+import CtaBooking from '@components/CtaBooking.astro';
+import { tarifs } from '@data/site';
+---
+
+<Base
+  title="Drainage lymphatique à Chambéry · ventre et jambes"
+  description="Drainage lymphatique du ventre et des jambes à Bassens et Myans, près de Chambéry : gestes doux pour la sensation de jambes lourdes, les ballonnements et la rétention d’eau. Séances et forfaits."
+  path="/drainage-lymphatique"
+  heroDark
+>
+  <PageHero
+    scene="eau"
+    eyebrow="Drainage lymphatique"
+    title="Retrouver <em>la légèreté</em>."
+    intro="Une technique de massage doux qui accompagne la circulation de la lymphe, ce liquide clair qui participe à l’élimination des déchets et aux défenses de l’organisme. Deux univers : le ventre et les jambes."
+    number="05"
+  />
+
+  <section class="section lymph" aria-labelledby="lymph-title">
+    <div class="container lymph__grid">
+      <div class="prose">
+        <h2 id="lymph-title" data-split>Une circulation <em>sans pompe</em>.</h2>
+        <p class="lead" data-reveal>Contrairement au sang, la lymphe n’a pas de cœur pour la propulser : elle dépend des mouvements des muscles et de la respiration.</p>
+        <p data-reveal>Pendant la séance, des pressions légères, lentes et précises suivent le sens du système lymphatique. Elles accompagnent la lymphe vers les ganglions, où elle est filtrée, et contribuent à une sensation de confort et de légèreté.</p>
+      </div>
+      <figure class="flow-viz" aria-hidden="true" data-reveal>
+        <svg viewBox="0 0 300 300" fill="none" stroke-linecap="round">
+          <circle cx="150" cy="150" r="120" stroke="var(--c-sauge-claire)" stroke-width="1" stroke-dasharray="2 8" />
+          <circle cx="150" cy="150" r="80" stroke="var(--c-sauge-claire)" stroke-width="1" stroke-dasharray="2 8" />
+          <path class="flow-viz__path" d="M150 30 A120 120 0 0 1 270 150" stroke="var(--c-sauge)" stroke-width="2.5" />
+          <path class="flow-viz__path" d="M150 230 A80 80 0 0 1 70 150" stroke="var(--c-sauge)" stroke-width="2.5" style="animation-delay:-2s" />
+          <circle cx="150" cy="150" r="6" fill="var(--c-sauge)" />
+        </svg>
+      </figure>
+    </div>
+  </section>
+
+  <nav class="split" aria-label="Choisir une zone">
+    <a class="split__half split__half--ventre" href="#ventre">
+      <span class="caps">Univers 01</span>
+      <span class="split__title">Le ventre</span>
+      <span class="small">1 h · dès 60 €</span>
+    </a>
+    <a class="split__half split__half--jambes" href="#jambes">
+      <span class="caps">Univers 02</span>
+      <span class="split__title">Les jambes</span>
+      <span class="small">75 min · dès 70 €</span>
+    </a>
+  </nav>
+
+  {/* ----------------------------- VENTRE ----------------------------- */}
+  <section class="section zone" id="ventre" aria-labelledby="ventre-title">
+    <div class="container zone__grid">
+      <div class="prose">
+        <p class="eyebrow" data-reveal>Le ventre</p>
+        <h2 id="ventre-title" data-split>Apaiser <em>le centre</em>.</h2>
+        <p class="lead" data-reveal>Ballonnements, lourdeurs, sensation de ventre gonflé : un ralentissement de la circulation lymphatique dans l’abdomen peut accentuer cet inconfort.</p>
+        <p data-reveal>Des pressions légères et des mouvements lents aident la lymphe à mieux circuler dans cette zone, pour un meilleur confort digestif et une sensation de légèreté.</p>
+        <h3 data-reveal>Le geste</h3>
+        <p data-reveal>On commence par les chaînes lymphatiques des clavicules et des aisselles, pour ouvrir le passage. Puis le ventre est travaillé en quatre cadrans autour du nombril, dans le sens des aiguilles d’une montre : la main se pose, s’étire doucement et guide la peau, sans pression excessive. Le travail inclut la zone sous les côtes et le diaphragme, ainsi que les ganglions de l’aine.</p>
+        <h3 data-reveal>Combien de séances ?</h3>
+        <p data-reveal>Une sensation de légèreté peut apparaître dès la première séance. Pour un effet plus durable, on recommande généralement un cycle de 4 à 10 séances, espacées d’environ une semaine, puis un entretien ponctuel.</p>
+        <h3 data-reveal>Et la perte de poids ?</h3>
+        <p data-reveal>Le drainage lymphatique n’est pas une méthode d’amincissement et ne remplace ni une alimentation équilibrée ni une activité physique. En réduisant la sensation de rétention d’eau, il peut toutefois donner une silhouette visuellement plus légère, de façon temporaire.</p>
+      </div>
+      <aside class="zone__aside">
+        <svg class="zone__map" viewBox="0 0 200 200" fill="none" stroke="var(--c-sauge)" aria-hidden="true">
+          <circle cx="100" cy="100" r="70" stroke-width="1" stroke="var(--c-sauge-claire)" />
+          <path d="M100 30v140M30 100h140" stroke-width="1" stroke="var(--c-sauge-claire)" stroke-dasharray="2 5" />
+          <path d="M100 45 A55 55 0 0 1 155 100" stroke-width="2" />
+          <path d="M155 100 A55 55 0 0 1 100 155" stroke-width="2" />
+          <path d="M100 155 A55 55 0 0 1 45 100" stroke-width="2" />
+          <path d="M45 100 A55 55 0 0 1 100 45" stroke-width="2" />
+          <circle cx="100" cy="100" r="4" fill="var(--c-sauge)" />
+        </svg>
+        <PriceTable title="Tarifs · ventre" rows={tarifs.ventre} caption="" />
+      </aside>
+    </div>
+  </section>
+
+  {/* ----------------------------- JAMBES ----------------------------- */}
+  <section class="section zone theme-sable" id="jambes" aria-labelledby="jambes-title">
+    <div class="container zone__grid">
+      <div class="prose">
+        <p class="eyebrow" data-reveal>Les jambes</p>
+        <h2 id="jambes-title" data-split>Des jambes <em>plus légères</em>.</h2>
+        <p class="lead" data-reveal>Sollicitées toute la journée, debout comme assis, les jambes sont souvent les premières à ressentir une circulation ralentie.</p>
+        <ul data-reveal>
+          <li><strong>Gonflements</strong> — aider à limiter l’accumulation de liquide aux chevilles, aux mollets, aux genoux.</li>
+          <li><strong>Jambes lourdes</strong> — atténuer l’inconfort d’une station debout ou assise prolongée.</li>
+          <li><strong>Souplesse</strong> — réduire l’impression de raideur ou de jambes « engourdies ».</li>
+          <li><strong>Récupération</strong> — accompagner la détente des tissus après un effort physique.</li>
+          <li><strong>Relaxation</strong> — un rythme doux et régulier qui détend le corps et l’esprit.</li>
+        </ul>
+      </div>
+      <aside class="zone__aside">
+        <PriceTable title="Tarifs · jambes" rows={tarifs.jambes} caption="" />
+      </aside>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="combo-title">
+    <div class="container grid-2">
+      <div class="flow">
+        <p class="eyebrow" data-reveal>Le soin complet</p>
+        <h2 id="combo-title" data-split>Ventre <em>et</em> jambes.</h2>
+        <p data-reveal class="muted">Pour un confort complet, les deux drainages peuvent être associés dans une même séance.</p>
+        <div class="notice" data-reveal>
+          <p><strong>Précautions.</strong> Le drainage lymphatique est déconseillé en cas d’infection, de troubles circulatoires importants, d’insuffisance cardiaque ou rénale. Pendant la grossesse ou en cas de pathologie non stabilisée, demandez l’avis de votre médecin avant de prendre rendez-vous.</p>
+          <p style="margin-top:.6em">Quelques réactions passagères sont possibles après la séance (légère fatigue, envie d’uriner plus fréquente). Ce soin de bien-être ne remplace pas un traitement médical, notamment en cas de lymphœdème.</p>
+        </div>
+      </div>
+      <PriceTable title="Forfaits ventre + jambes" rows={tarifs.ventreJambes} />
+    </div>
+  </section>
+
+  <Faq
+    items={[
+      { q: 'Le drainage lymphatique fait-il mal ?', a: '<p>Non. Les gestes sont lents, légers et enveloppants. Beaucoup de personnes s’y détendent profondément.</p>' },
+      { q: 'Comment me préparer ?', a: '<p>Évitez un repas copieux juste avant un drainage du ventre, et pensez à bien vous hydrater après la séance.</p>' },
+      { q: 'Peut-on faire un drainage enceinte ?', a: '<p>Uniquement avec l’accord de votre médecin ou de votre sage-femme.</p>' },
+      { q: 'Faut-il un certificat médical ?', a: '<p>Non pour un soin de bien-être. En revanche, en cas de pathologie circulatoire, cardiaque, rénale ou de traitement en cours, demandez d’abord l’avis de votre médecin.</p>' },
+    ]}
+  />
+
+  <CtaBooking title="Retrouver <em>de la légèreté</em>." />
+</Base>
+
+<style>
+  .lymph__grid { display: grid; gap: var(--s-8); align-items: center; }
+  @media (min-width: 64em) { .lymph__grid { grid-template-columns: 1.2fr 0.8fr; } }
+  .lymph .prose h2 { margin-bottom: var(--s-6); }
+  .flow-viz svg { width: min(100%, 18rem); margin-inline: auto; }
+  .flow-viz__path { stroke-dasharray: 60 400; animation: flow 6s linear infinite; }
+  @keyframes flow { to { stroke-dashoffset: -460; } }
+  @media (prefers-reduced-motion: reduce) { .flow-viz__path { animation: none; stroke-dasharray: none; } }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; min-height: clamp(14rem, 40vw, 26rem); }
+  .split__half { display: grid; align-content: end; gap: var(--s-2); padding: var(--s-6) var(--gutter); transition: flex var(--t-slow), background var(--t-base); position: relative; overflow: hidden; }
+  .split__half--ventre { background: var(--c-sauge); color: var(--c-creme); }
+  .split__half--jambes { background: var(--c-foret); color: var(--c-creme); }
+  .split__half .caps { color: var(--c-sable); }
+  .split__half .small { color: var(--c-sable); }
+  .split__title { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 4.5rem); line-height: 1; }
+  .split__half::after { content: '→'; position: absolute; right: var(--gutter); top: var(--s-6); font-size: var(--fs-h4); transition: transform var(--t-base) var(--ease-out); }
+  .split__half:hover::after { transform: translate(6px, 6px) rotate(45deg); }
+
+  .zone__grid { display: grid; gap: var(--s-8); }
+  @media (min-width: 64em) { .zone__grid { grid-template-columns: 1.2fr 0.8fr; gap: var(--s-10); } .zone__aside { position: sticky; top: calc(var(--header-h) + var(--s-6)); align-self: start; } }
+  .zone .prose h2 { margin-bottom: var(--s-6); }
+  .zone__map { width: 9rem; margin-bottom: var(--s-6); }
+  .notice p { max-width: none; }
+</style>

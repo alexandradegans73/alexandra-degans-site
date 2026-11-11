@@ -1,0 +1,27 @@
+---
+/**
+ * FILM PILOTÉ PAR LE SCROLL — l'arbre de vie (Higgsfield).
+ * Le film est découpé en images (public/media/film/<jeu>/f-0001.webp…) et
+ * dessiné dans un canvas fixe : la position dans la page choisit l'image.
+ * Pour remplacer le film : `npm run film -- chemin/video.mp4` (voir scripts/film.sh).
+ */
+import { film } from '@data/media';
+---
+<div class="film" data-film data-count={film.count} data-desktop={film.desktop} data-mobile={film.mobile} data-ext={film.ext} aria-hidden="true">
+  <canvas data-film-canvas></canvas>
+  <div class="film__veil" data-film-veil></div>
+  <div class="film__grain"></div>
+</div>
+<div class="film-progress" aria-hidden="true"><i data-film-bar></i></div>
+
+<style>
+  .film { position: fixed; inset: 0; z-index: -1; background: var(--c-foret-900); overflow: hidden; }
+  .film canvas { width: 100%; height: 100%; display: block; }
+  .film__veil { position: absolute; inset: 0; background:
+      linear-gradient(180deg, rgb(30 36 27 / 0.55) 0%, rgb(30 36 27 / 0.18) 28%, rgb(30 36 27 / 0.22) 60%, rgb(30 36 27 / 0.7) 100%); }
+  .film__grain { position: absolute; inset: -50%; opacity: 0.06; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .film-progress { position: fixed; right: clamp(0.6rem, 1.6vw, 1.4rem); top: 50%; translate: 0 -50%; height: 28vh; width: 1px; background: rgb(243 237 226 / 0.25); z-index: 5; }
+  .film-progress i { position: absolute; inset: 0; background: var(--c-creme); transform-origin: top; transform: scaleY(0); display: block; }
+  @media (max-width: 47.99em) { .film-progress { display: none; } }
+</style>

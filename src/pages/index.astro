@@ -1,0 +1,265 @@
+---
+import Base from '@layouts/Base.astro';
+import ScrollFilm from '@components/ScrollFilm.astro';
+import { site, prestations } from '@data/site';
+import { media } from '@data/media';
+
+const description =
+  'Alexandra Degans, kinésiologue à Bassens et Myans près de Chambéry : kinésiologie, libération des mémoires transgénérationnelles, kinésiologie animale, soins énergétiques visage et corps, drainage lymphatique. Prise de rendez-vous en ligne.';
+
+const etapes = [
+  { n: 'I', t: 'Écouter', d: 'Un objectif défini ensemble, qui évolue au fil des séances. Nous avançons à votre rythme.' },
+  { n: 'II', t: 'Ressentir', d: 'Le test musculaire ouvre un dialogue avec le corps, là où les mots ne suffisent pas toujours.' },
+  { n: 'III', t: 'Libérer', d: 'Des équilibrations douces pour alléger la charge émotionnelle et retrouver de l’élan.' },
+];
+const histoires = [
+  { who: 'Foggy', tag: 'chien très fusionnel', text: 'Il a fallu redéfinir un cadre pour que chacun retrouve sa juste place — et Foggy, sa place de chien.' },
+  { who: 'Pomponnette', tag: 'chatte adoptée à 8 ans', text: 'Elle avait surtout besoin de temps. Sa maîtresse a appris à être moins pressante et à ne plus comparer.' },
+  { who: 'Ubert', tag: '2 ans, stress en voiture', text: 'L’origine a été identifiée dès la première séance. Le retour s’est fait dans le plus grand calme.' },
+];
+---
+
+<Base title="Accueil" description={description} path="/" heroDark>
+  <ScrollFilm />
+
+  <div class="film-page">
+    {/* ---- 1. Ouverture : les racines ------------------------------- */}
+    <section class="scene scene--hero" data-scene aria-label="Introduction">
+      <div class="scene__inner container-wide" data-scene-inner>
+        <p class="hero-mark"><img src="/brand/monogramme-creme.svg" alt="" width="72" height="76" /><span class="caps">Kinésiologie · Chambéry</span></p>
+        <h1 class="hero-title">Retrouver l’équilibre, <em>à votre rythme.</em></h1>
+        <p class="lead hero-sub">Kinésiologie, soins énergétiques et drainage lymphatique à Bassens et Myans. Un accompagnement doux, précis et profondément humain.</p>
+        <div class="hero-actions">
+          <a class="btn btn--light" href={site.booking} target="_blank" rel="noopener">Prendre rendez-vous</a>
+          <a class="link-arrow" href="#prestations">Entrer dans l’arbre
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+        </div>
+      </div>
+      <button class="sound" type="button" aria-pressed="false" data-sound-toggle data-src={media.ambience}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 10v4h3l5 4V6L7 10H4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        <span data-sound-label>Ambiance sonore</span>
+      </button>
+      <p class="scroll-hint caps" aria-hidden="true"><i></i>Défiler</p>
+    </section>
+
+    {/* ---- 2. Philosophie ------------------------------------------ */}
+    <section class="scene scene--center" data-scene aria-label="Philosophie">
+      <div class="scene__inner container-text" data-scene-inner>
+        <p class="eyebrow">L’arbre de vie</p>
+        <p class="display quote">Le corps garde la mémoire de ce que nous traversons. La kinésiologie lui donne la parole, doucement, pour <em>libérer ce qui pèse</em> et laisser revenir l’équilibre.</p>
+        <p class="sign">— Alexandra Degans</p>
+      </div>
+    </section>
+
+    {/* ---- 3. La kinésiologie : le tronc ---------------------------- */}
+    <section class="scene scene--left" data-scene aria-labelledby="intro-title">
+      <div class="scene__inner container-wide" data-scene-inner>
+        <div class="panel">
+          <p class="eyebrow">Entrer dans l’arbre</p>
+          <h2 id="intro-title">Une approche globale, <em>douce et précise</em>.</h2>
+          <p class="lead">Née de la rencontre entre la chiropractie, l’énergétique chinoise, la neurophysiologie et l’acupuncture, la kinésiologie est une technique psycho-corporelle qui s’adresse à tous les âges de la vie.</p>
+          <p>Par un test musculaire léger, elle interroge la mémoire du corps pour identifier l’origine d’un blocage, libérer la charge émotionnelle qui en découle et réactiver les ressources propres à chacun.</p>
+        </div>
+      </div>
+    </section>
+
+    {/* ---- 4. Les cinq branches ------------------------------------ */}
+    <div id="prestations" data-film-mark="0.25">
+      <section class="scene scene--center scene--short" data-scene aria-label="Les soins">
+        <div class="scene__inner container-text" data-scene-inner>
+          <p class="eyebrow">Cinq branches</p>
+          <h2>Chaque branche est <em>un chemin</em> vers vous.</h2>
+        </div>
+      </section>
+
+      {prestations.map((p, i) => (
+        <section class:list={['scene', i % 2 === 0 ? 'scene--right' : 'scene--left']} data-scene aria-labelledby={`b-${p.slug}`}>
+          <div class="scene__inner container-wide" data-scene-inner>
+            <a class="panel branch" href={p.path}>
+              <span class="branch__num">Branche 0{i + 1}</span>
+              <h3 id={`b-${p.slug}`} class="branch__name">{p.name}</h3>
+              <p class="branch__short">{p.short}</p>
+              <p>{p.intro}</p>
+              <p class="branch__meta caps">{p.duration} · {p.price}</p>
+              <span class="link-arrow">Découvrir
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </a>
+          </div>
+        </section>
+      ))}
+    </div>
+
+    {/* ---- 5. L'approche -------------------------------------------- */}
+    <section class="scene scene--center" data-scene data-film-mark="0.5" aria-labelledby="approach-title">
+      <div class="scene__inner container" data-scene-inner>
+        <p class="eyebrow">Les feuilles</p>
+        <h2 id="approach-title">Chaque séance est <em>unique</em>, parce que vous l’êtes.</h2>
+        <ol class="etapes" role="list">
+          {etapes.map((e) => (<li><span>{e.n}</span><h3>{e.t}</h3><p>{e.d}</p></li>))}
+        </ol>
+        <p class="small note">La kinésiologie ne se substitue pas à une consultation médicale, ni à un suivi vétérinaire pour les animaux.</p>
+      </div>
+    </section>
+
+    {/* ---- 6. Alexandra --------------------------------------------- */}
+    <section class="scene scene--right" data-scene aria-labelledby="about-title">
+      <div class="scene__inner container-wide" data-scene-inner>
+        <div class="panel">
+          <p class="eyebrow">Le tronc · Alexandra</p>
+          <h2 id="about-title">Kinésiologue certifiée, <em>formée en continu</em>.</h2>
+          <p class="lead">Formée en kinésiologie, en thérapie par les modes oculaires, en visualisation et en Brain Gym, je poursuis ma formation en psychogénéalogie, massage énergétique et drainage.</p>
+          <p>J’accompagne les bébés, les enfants, les adolescents et les adultes — et aussi les animaux, certifiée en kinésiologie animale par l’EKTC.</p>
+          <a class="link-arrow" href="/a-propos">Faire connaissance
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    {/* ---- 7. Les lieux --------------------------------------------- */}
+    <section class="scene scene--center" id="lieux" data-scene data-film-mark="0.75" aria-labelledby="places-title">
+      <div class="scene__inner container" data-scene-inner>
+        <p class="eyebrow">Les racines · deux lieux d’ancrage</p>
+        <h2 id="places-title">Bassens et Myans, <em>à quelques minutes</em> de Chambéry.</h2>
+        <div class="lieux">
+          {site.places.map((p) => (
+            <a class="lieu" href={p.maps} target="_blank" rel="noopener">
+              <h3>{p.city}</h3>
+              <p>{p.street}<br />{p.zip} {p.city}</p>
+              <p class="small">{p.note}</p>
+              <span class="link-arrow">Itinéraire
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* ---- 8. Histoires --------------------------------------------- */}
+    <section class="scene scene--center" id="temoignages" data-scene aria-labelledby="testi-title">
+      <div class="scene__inner container" data-scene-inner>
+        <p class="eyebrow">Histoires à quatre pattes</p>
+        <h2 id="testi-title">Quelques histoires <em>de nos compagnons</em>.</h2>
+        <div class="histoires">
+          {histoires.map((t) => (
+            <blockquote><p>« {t.text} »</p><footer><cite>{t.who}</cite> · {t.tag}</footer></blockquote>
+          ))}
+        </div>
+        <p class="small note">Récits rédigés par Alexandra à partir de séances de kinésiologie animale.</p>
+      </div>
+    </section>
+
+    {/* ---- 9. L'arbre entier : rendez-vous --------------------------- */}
+    <section class="scene scene--center scene--final" data-scene="stay" aria-labelledby="cta-title">
+      <div class="scene__inner container-text" data-scene-inner>
+        <img class="final-mono" src="/brand/monogramme-creme.svg" alt="" width="72" height="76" loading="lazy" />
+        <p class="eyebrow">L’eau · le calme</p>
+        <h2 id="cta-title">Prendre un temps <em>pour soi</em>.</h2>
+        <p class="lead">Réservez votre séance en ligne, ou appelez-moi pour échanger sur votre besoin avant de venir.</p>
+        <div class="hero-actions final-actions">
+          <a class="btn btn--light" href={site.booking} target="_blank" rel="noopener">Réserver en ligne</a>
+          <a class="final-phone" href={site.phoneHref}>{site.phone}</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  /* Page-film : tout le contenu flotte au-dessus du film de l'arbre */
+  .film-page { color: var(--c-creme); --fg: var(--c-creme); --fg-soft: var(--c-sable); --accent: var(--c-sable); --line: rgb(243 237 226 / 0.4); }
+  .film-page :is(h1, h2, h3) { color: var(--c-creme); text-shadow: 0 2px 30px rgb(20 26 18 / 0.55); }
+  .film-page :is(h1, h2, h3, .display) em { color: var(--c-sable); }
+  .film-page p { text-shadow: 0 1px 18px rgb(20 26 18 / 0.6); }
+  .film-page .eyebrow { color: var(--c-sable); }
+  .film-page .link-arrow { color: var(--c-creme); }
+
+  .scene { position: relative; min-height: 135svh; display: grid; align-items: center; padding-block: 18svh; }
+  .scene--short { min-height: 90svh; }
+  .scene--hero { min-height: 120svh; align-items: start; padding-top: 0; }
+  .scene--hero .scene__inner { min-height: 100svh; display: grid; align-content: end; gap: var(--s-5); padding-top: calc(var(--header-h) + var(--s-4)); padding-bottom: clamp(5rem, 12vh, 8rem); }
+  .scene--final { min-height: 130svh; align-items: end; padding-bottom: 22svh; }
+  .scene__inner { display: grid; gap: var(--s-5); }
+  .scene--center .scene__inner { text-align: center; justify-items: center; }
+  .scene--left .scene__inner { justify-items: start; }
+  .scene--right .scene__inner { justify-items: end; }
+
+  /* Panneau de verre : lisible sans masquer le film */
+  .panel {
+    display: grid; gap: var(--s-4); width: min(100%, 31rem);
+    padding: clamp(1.5rem, 3vw, 2.6rem);
+    border-radius: var(--r-lg);
+    background: linear-gradient(160deg, rgb(42 49 38 / 0.62), rgb(42 49 38 / 0.38));
+    backdrop-filter: blur(14px) saturate(1.1); -webkit-backdrop-filter: blur(14px) saturate(1.1);
+    border: 1px solid rgb(243 237 226 / 0.16);
+    box-shadow: 0 30px 80px -40px rgb(10 14 8 / 0.8);
+  }
+  .panel h2 { font-size: var(--fs-h3); }
+  .panel p:not(.lead):not(.eyebrow) { color: var(--c-sable); }
+
+  .hero-mark { display: flex; align-items: center; gap: var(--s-4); color: var(--c-sable); }
+  .hero-mark img { width: 2.6rem; }
+  .hero-title { font-size: clamp(2.8rem, 1.2rem + 5.2vw + 2vh, 6.6rem); line-height: 0.98; max-width: 14ch; }
+  .hero-title em { display: block; }
+  .hero-sub { max-width: 34rem; color: var(--c-creme); }
+  .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-5) var(--s-6); }
+  .scroll-hint { position: absolute; left: 50%; top: calc(100svh - 3.2rem); translate: -50% 0; display: none; align-items: center; gap: var(--s-3); color: var(--c-sable); }
+  .scroll-hint i { width: 1px; height: 2.4rem; background: linear-gradient(var(--c-sable), transparent); animation: hint 2.4s ease-in-out infinite; transform-origin: top; }
+  @keyframes hint { 0%, 100% { transform: scaleY(0.4); opacity: 0.4; } 50% { transform: scaleY(1); opacity: 1; } }
+  @media (min-width: 64em) { .scroll-hint { display: flex; } }
+  .sound { position: absolute; right: var(--gutter); top: calc(100svh - 4.2rem); display: inline-flex; align-items: center; gap: var(--s-2); color: var(--c-sable); font-size: var(--fs-xs); letter-spacing: 0.18em; text-transform: uppercase; font-weight: 400; padding: var(--s-2) var(--s-3); border-radius: var(--r-pill); border: 1px solid rgb(217 202 176 / 0.4); backdrop-filter: blur(8px); }
+  .sound[aria-pressed='true'] { color: var(--c-creme); background: rgb(98 112 86 / 0.5); }
+  .sound svg { width: 1.1rem; height: 1.1rem; }
+  @media (max-width: 63.99em) { .sound { top: calc(var(--header-h) + 0.2rem); } }
+
+  .quote { font-size: clamp(1.6rem, 1.1rem + 2.4vw, 3rem); line-height: 1.25; max-width: 28ch; text-shadow: 0 2px 30px rgb(20 26 18 / 0.7); }
+  .sign { font-family: var(--font-display); font-style: italic; font-size: var(--fs-lg); color: var(--c-sable); }
+  .scene--center h2 { max-width: 20ch; }
+
+  .branch { transition: transform var(--t-base) var(--ease-out), border-color var(--t-base); }
+  .branch:hover, .branch:focus-visible { transform: translateY(-6px); border-color: rgb(243 237 226 / 0.45); }
+  .branch__num { font-size: var(--fs-xs); letter-spacing: var(--ls-caps-wide); text-transform: uppercase; color: var(--c-sauge-claire); }
+  .branch__name { font-size: clamp(1.9rem, 1.2rem + 2.2vw, 3.1rem); line-height: 1.05; overflow-wrap: anywhere; hyphens: auto; }
+  .branch__short { font-family: var(--font-display); font-style: italic; font-size: var(--fs-lg); color: var(--c-creme) !important; }
+  .branch__meta { color: var(--c-sauge-claire) !important; }
+
+  .etapes { display: grid; gap: var(--s-4); margin-top: var(--s-5); width: 100%; text-align: left; }
+  @media (min-width: 48em) { .etapes { grid-template-columns: repeat(3, 1fr); } }
+  .etapes li, .lieu, .histoires blockquote {
+    padding: var(--s-6); border-radius: var(--r-md); display: grid; gap: var(--s-2); align-content: start; max-width: none;
+    background: rgb(42 49 38 / 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgb(243 237 226 / 0.14);
+  }
+  .etapes span { font-family: var(--font-display); font-size: var(--fs-h3); color: var(--c-sauge-claire); line-height: 1; }
+  .etapes h3 { font-size: var(--fs-h4); }
+  .etapes p, .lieu p, .histoires footer { color: var(--c-sable); }
+  .note { color: var(--c-sable); opacity: 0.85; max-width: none; }
+
+  .lieux, .histoires { display: grid; gap: var(--s-4); margin-top: var(--s-5); width: 100%; text-align: left; }
+  @media (min-width: 48em) { .lieux { grid-template-columns: 1fr 1fr; max-width: 46rem; } .histoires { grid-template-columns: repeat(3, 1fr); } }
+  .lieu h3 { font-size: var(--fs-h3); }
+  .lieu { transition: border-color var(--t-base); }
+  .lieu:hover { border-color: rgb(243 237 226 / 0.45); }
+  .histoires blockquote p { font-family: var(--font-display); font-size: var(--fs-lg); line-height: 1.4; }
+  .histoires footer { font-size: var(--fs-sm); margin-top: var(--s-3); }
+  .histoires cite { font-style: normal; font-weight: 400; color: var(--c-creme); }
+
+  .final-mono { width: 3rem; opacity: 0.85; }
+  .final-actions { justify-content: center; }
+  .final-phone { font-family: var(--font-display); font-size: var(--fs-h4); }
+
+  @media (max-width: 47.99em) {
+    .scene { min-height: 115svh; padding-block: 14svh; }
+    .scene--left .scene__inner, .scene--right .scene__inner { justify-items: stretch; }
+    .panel { width: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) { .scene { min-height: 0; padding-block: var(--s-9); } .scroll-hint i { animation: none; } }
+</style>
+
+<style is:global>
+  /* En-tête sur la page-film : reste sombre et translucide */
+  body[data-hero-dark] .site-header.is-scrolled { --hdr-fg: var(--c-creme); background: rgb(42 49 38 / 0.55); box-shadow: 0 1px 0 rgb(243 237 226 / 0.12); }
+  body[data-hero-dark] .site-header.is-scrolled .brand--light { display: none; }
+  body[data-hero-dark] .site-header.is-scrolled .brand--dark { display: block; }
+  body[data-hero-dark] .site-header.is-scrolled .site-header__cta { --btn-fg: var(--c-creme); border-color: rgb(243 237 226 / 0.5); }
+  body[data-hero-dark] { background: var(--c-foret-900); }
+  body[data-hero-dark] .footer { position: relative; z-index: 1; }
+</style>
