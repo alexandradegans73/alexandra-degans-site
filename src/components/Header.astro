@@ -158,7 +158,8 @@ const current = Astro.url.pathname.replace(/\/$/, '') || '/';
   .menu li { opacity: 0; transform: translateY(14px); transition: opacity var(--t-base) var(--ease-out), transform var(--t-base) var(--ease-out); transition-delay: calc(120ms + var(--i, 0) * 45ms); }
   .menu.is-open li { opacity: 1; transform: none; }
   body.menu-open { overflow: hidden; }
-  body.menu-open .site-header { --hdr-fg: var(--c-creme); background: transparent; box-shadow: none; backdrop-filter: none; }
+  body.menu-open .site-header { --hdr-fg: var(--c-creme); background: transparent; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; z-index: calc(var(--z-menu) + 1); transform: none; }
+  body.menu-open .site-header__cta { display: none; }
   body.menu-open .brand--light { display: none; }
   body.menu-open .brand--dark { display: block; }
   @media (prefers-reduced-motion: reduce) { .menu { transition: none; } .menu li { transition: none; } }
