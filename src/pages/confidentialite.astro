@@ -2,33 +2,64 @@
 import Base from '@layouts/Base.astro';
 import { site } from '@data/site';
 ---
-<Base title="Politique de confidentialité" description="Politique de confidentialité et cookies du site d’Alexandra Degans." path="/confidentialite" noindex>
+<Base title="Politique de confidentialité" description="Politique de confidentialité et cookies du site d’Alexandra Degans : données collectées, prise de rendez-vous en ligne, durées de conservation et vos droits." path="/confidentialite" noindex>
   <section class="section legal">
     <div class="container-text prose">
       <p class="eyebrow">RGPD</p>
       <h1>Politique de confidentialité</h1>
+      <p class="small muted">Dernière mise à jour : 12 novembre 2026</p>
 
       <h2>En résumé</h2>
-      <p>Ce site ne dépose <strong>aucun cookie</strong>, n’utilise <strong>aucun outil de mesure d’audience</strong> et ne collecte <strong>aucune donnée personnelle</strong> lors de votre navigation. Il n’y a donc pas de bandeau de consentement.</p>
+      <p>Ce site ne dépose <strong>aucun cookie</strong> et n’utilise <strong>aucun outil de mesure d’audience</strong> : il n’y a donc pas de bandeau de consentement. Des données personnelles sont collectées uniquement lorsque vous prenez rendez-vous, et seulement ce qui est nécessaire pour organiser votre séance.</p>
+      <p><strong>Merci de ne jamais transmettre d’information de santé</strong> par le site ou par e-mail : vous en parlerez de vive voix pendant la séance.</p>
 
       <h2>Responsable du traitement</h2>
-      <p>Alexandra Degans — <a href={`mailto:${site.email}`}>{site.email}</a> — {site.phone}.</p>
+      <p>Alexandra Degans, entrepreneure individuelle (SIRET {site.siret}) — <a href={`mailto:${site.email}`}>{site.email}</a> — {site.phone}.</p>
 
-      <h2>Prise de rendez-vous</h2>
-      <p>La réservation en ligne s’effectue sur la plateforme Crénolibre. Les informations que vous y saisissez (nom, coordonnées, créneau) sont traitées pour la seule gestion de votre rendez-vous, selon les conditions de cette plateforme.</p>
+      <h2>Prise de rendez-vous en ligne</h2>
+      <p>Vous pouvez réserver et payer une séance directement sur ce site. Nous recueillons alors :</p>
+      <ul>
+        <li>vos nom, téléphone et adresse e-mail ;</li>
+        <li>le soin choisi, le lieu, la date et l’heure du rendez-vous ;</li>
+        <li>une précision pratique facultative (par exemple le nom de votre animal) ;</li>
+        <li>le statut du paiement et, le cas échéant, du remboursement.</li>
+      </ul>
+      <p><strong>Pourquoi :</strong> réserver votre créneau, encaisser le paiement, vous envoyer la confirmation et le lien d’annulation, rembourser en cas d’annulation, et organiser la séance.</p>
+      <p><strong>Base légale :</strong> l’exécution du contrat de prestation que vous concluez en réservant, et nos obligations comptables pour les pièces de paiement.</p>
+      <p>Vos données bancaires sont saisies uniquement sur la page de paiement sécurisée de Stripe : elles ne transitent jamais par ce site et nous n’y avons pas accès.</p>
+      <p>Certaines prestations peuvent encore être réservées sur la plateforme Crénolibre. Dans ce cas, les informations que vous y saisissez sont traitées selon les conditions de cette plateforme.</p>
+
+      <h2>Qui reçoit vos données</h2>
+      <p>Vos données ne sont ni vendues ni louées. Elles sont confiées uniquement aux prestataires techniques nécessaires au fonctionnement de la réservation :</p>
+      <ul>
+        <li><strong>Cloudflare</strong> : enregistrement des rendez-vous ;</li>
+        <li><strong>Stripe</strong> : paiement en ligne et remboursements ;</li>
+        <li><strong>Resend</strong> : envoi des e-mails de confirmation et d’annulation ;</li>
+        <li><strong>Google</strong> : inscription du rendez-vous dans l’agenda professionnel d’Alexandra ;</li>
+        <li><strong>GitHub</strong> : hébergement du site, qui peut enregistrer techniquement l’adresse IP des visiteurs à des fins de sécurité.</li>
+      </ul>
+      <p>Ces sociétés sont d’origine américaine. Les transferts de données hors de l’Union européenne qui peuvent en résulter sont encadrés par le Data Privacy Framework UE–États-Unis ou par les clauses contractuelles types de la Commission européenne.</p>
+
+      <h2>Durées de conservation</h2>
+      <ul>
+        <li><strong>Rendez-vous et coordonnées :</strong> 3 ans après votre dernier rendez-vous, puis suppression.</li>
+        <li><strong>Réservation non finalisée</strong> (paiement abandonné) : supprimée dans les mêmes conditions, sans autre usage.</li>
+        <li><strong>Pièces comptables</strong> (montant, date, nature de la prestation) : 10 ans, comme l’exige la loi.</li>
+      </ul>
 
       <h2>Échanges par téléphone et e-mail</h2>
-      <p>Les informations que vous transmettez directement sont utilisées uniquement pour répondre à votre demande et organiser vos séances. Elles ne sont ni vendues ni transmises à des tiers, et sont conservées le temps nécessaire au suivi, puis supprimées.</p>
-
-      <h2>Hébergement</h2>
-      <p>Le site est hébergé par GitHub Pages, qui peut enregistrer techniquement l’adresse IP des visiteurs à des fins de sécurité, conformément à sa propre politique.</p>
+      <p>Les informations que vous transmettez directement sont utilisées uniquement pour répondre à votre demande et organiser vos séances. Elles ne sont transmises à personne et sont conservées le temps nécessaire au suivi, dans la limite de 3 ans après le dernier contact.</p>
 
       <h2>Ambiance sonore et vidéos</h2>
       <p>Les vidéos et le son du site sont hébergés sur le site lui-même : aucun service tiers (YouTube, Vimeo…) n’est appelé. Le son ne se déclenche jamais sans action de votre part.</p>
 
+      <h2>Sécurité</h2>
+      <p>Le site est servi uniquement en HTTPS. L’accès aux données de réservation est limité à Alexandra Degans et à son prestataire technique (FDA Studio).</p>
+
       <h2>Vos droits</h2>
-      <p>Vous disposez d’un droit d’accès, de rectification, d’effacement, de limitation et d’opposition sur vos données. Pour l’exercer : <a href={`mailto:${site.email}`}>{site.email}</a>. Vous pouvez aussi adresser une réclamation à la CNIL (<a href="https://www.cnil.fr" rel="noopener">cnil.fr</a>).</p>
+      <p>Vous disposez d’un droit d’accès, de rectification, d’effacement, de limitation, d’opposition et de portabilité sur vos données. Pour l’exercer, écrivez à <a href={`mailto:${site.email}`}>{site.email}</a> : une réponse vous sera apportée dans un délai d’un mois. Les pièces comptables ne peuvent pas être effacées avant la fin de leur durée légale de conservation.</p>
+      <p>Si vous estimez que vos droits ne sont pas respectés, vous pouvez adresser une réclamation à la CNIL (<a href="https://www.cnil.fr" rel="noopener">cnil.fr</a>).</p>
     </div>
   </section>
 </Base>
-<style>.legal { padding-top: calc(var(--header-h) + var(--s-8)); } .legal h1 { font-size: var(--fs-h2); margin-block: var(--s-4) var(--s-6); }</style>
+<style>.legal { padding-top: calc(var(--header-h) + var(--s-8)); } .legal h1 { font-size: var(--fs-h2); margin-block: var(--s-4) var(--s-6); } .legal ul { padding-left: 1.2em; list-style: disc; }</style>
