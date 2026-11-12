@@ -4,7 +4,7 @@ Les articles sont des fichiers Markdown dans `src/content/blog/`. Le nom du fich
 `src/content/blog/mon-article.md` → `https://alexandradegans-kinesiologie.com/blog/mon-article`.
 
 La liste des sujets prévus est dans `docs/calendrier-editorial.json` (statut « à écrire » ou « publié »).
-Un article est publié automatiquement le 1er et le 15 de chaque mois (tâche planifiée), ou à la main
+Deux articles sont publiés automatiquement chaque semaine, le lundi et le jeudi (tâche planifiée), ou à la main
 en envoyant le fichier sur la branche `main` : GitHub Actions reconstruit et met le site en ligne.
 
 ## En-tête obligatoire

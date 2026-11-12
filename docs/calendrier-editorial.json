@@ -8,7 +8,16 @@
     "service": "/kinesiologie",
     "scene": "arbre",
     "angle": "Rassurer la personne qui n’a jamais consulté : définition simple, origines, test musculaire, déroulé en 4 temps.",
-    "plan": ["Définition simple", "Origines", "Le test musculaire", "Déroulé d’une séance", "Pour qui ?", "Combien de séances", "Ce que la kinésiologie n’est pas", "Venir près de Chambéry"],
+    "plan": [
+      "Définition simple",
+      "Origines",
+      "Le test musculaire",
+      "Déroulé d’une séance",
+      "Pour qui ?",
+      "Combien de séances",
+      "Ce que la kinésiologie n’est pas",
+      "Venir près de Chambéry"
+    ],
     "status": "publié"
   },
   {
@@ -20,11 +29,19 @@
     "service": "/kinesiologie-animale",
     "scene": "branches",
     "angle": "Faible concurrence en Savoie : expliquer la séance, la place du maître, la complémentarité vétérinaire et éducateur.",
-    "plan": ["En quelques mots", "Pour quels animaux", "Situations", "Déroulé de la séance", "Une histoire (Ubert)", "Formation", "Infos pratiques"],
+    "plan": [
+      "En quelques mots",
+      "Pour quels animaux",
+      "Situations",
+      "Déroulé de la séance",
+      "Une histoire (Ubert)",
+      "Formation",
+      "Infos pratiques"
+    ],
     "status": "publié"
   },
   {
-    "date": "2026-12-01",
+    "date": "2026-11-16",
     "slug": "kinesiologue-ou-kinesitherapeute-difference",
     "title": "Kinésiologue ou kinésithérapeute : quelle différence ?",
     "keyword": "kinésiologue kinésithérapeute différence",
@@ -32,23 +49,18 @@
     "service": "/kinesiologie",
     "scene": "arbre",
     "angle": "Lever la confusion en toute honnêteté : le kinésithérapeute est un professionnel de santé diplômé d’État, remboursé ; le kinésiologue propose un accompagnement de bien-être, non réglementé, non remboursé par la Sécurité sociale (certaines mutuelles peuvent participer : inviter à vérifier). Quand aller voir l’un, quand l’autre, et pourquoi les deux peuvent se compléter.",
-    "plan": ["Deux mots qui se ressemblent", "Le kinésithérapeute : un professionnel de santé", "Le kinésiologue : un accompagnement de bien-être", "Tableau comparatif (formation, cadre, remboursement, objectif)", "Peut-on consulter les deux ?", "Comment bien choisir son kinésiologue"],
+    "plan": [
+      "Deux mots qui se ressemblent",
+      "Le kinésithérapeute : un professionnel de santé",
+      "Le kinésiologue : un accompagnement de bien-être",
+      "Tableau comparatif (formation, cadre, remboursement, objectif)",
+      "Peut-on consulter les deux ?",
+      "Comment bien choisir son kinésiologue"
+    ],
     "status": "à écrire"
   },
   {
-    "date": "2026-12-15",
-    "slug": "chien-chat-stresse-bruits-fetes-fin-annee",
-    "title": "Chien ou chat stressé par les pétards des fêtes : comment l’accompagner ?",
-    "keyword": "chien stressé pétards",
-    "intention": "informationnelle saisonnière",
-    "service": "/kinesiologie-animale",
-    "scene": "branches",
-    "angle": "Conseils de bon sens pour le réveillon (environnement calme, ne pas punir, rester serein soi-même), signes de stress à reconnaître, quand voir le vétérinaire, et ce que la kinésiologie animale peut apporter sur la durée.",
-    "plan": ["Pourquoi les bruits font si peur", "Reconnaître les signes de stress", "Préparer la soirée", "Le jour J : les bons réflexes", "Quand consulter le vétérinaire", "Travailler la peur sur la durée"],
-    "status": "à écrire"
-  },
-  {
-    "date": "2027-01-01",
+    "date": "2026-11-19",
     "slug": "combien-de-seances-kinesiologie-prix",
     "title": "Combien de séances de kinésiologie faut-il prévoir, et pour quel budget ?",
     "keyword": "combien de séances kinésiologie",
@@ -56,23 +68,18 @@
     "service": "/kinesiologie",
     "scene": "feuilles",
     "angle": "Répondre franchement : un thème = 2 à 3 séances en général, rythme qui s’ajuste, séance d’1 h à 70 € à Bassens et Myans, moyens de paiement, mutuelles à vérifier soi-même. Ne pas donner d’intervalle précis entre les séances.",
-    "plan": ["Il n’y a pas de nombre fixe", "Un thème, deux à trois séances", "Quand revenir ?", "Le prix d’une séance près de Chambéry", "Mutuelles : ce qu’il faut vérifier", "Réserver"],
+    "plan": [
+      "Il n’y a pas de nombre fixe",
+      "Un thème, deux à trois séances",
+      "Quand revenir ?",
+      "Le prix d’une séance près de Chambéry",
+      "Mutuelles : ce qu’il faut vérifier",
+      "Réserver"
+    ],
     "status": "à écrire"
   },
   {
-    "date": "2027-01-15",
-    "slug": "kinesiologie-stress-examens",
-    "title": "Partiels, bac, concours : la kinésiologie pour aborder les examens plus sereinement",
-    "keyword": "kinésiologie examens stress",
-    "intention": "informationnelle",
-    "service": "/kinesiologie",
-    "scene": "feuilles",
-    "angle": "Pour étudiants, lycéens et parents : le stress avant un examen, ce que la séance travaille (confiance, concentration, peur du trou noir), quelques mouvements de Brain Gym faciles à refaire seul, quand venir (pas la veille).",
-    "plan": ["Le stress des examens", "Ce qu’on travaille en séance", "Trois exercices simples à refaire chez soi", "Quand prendre rendez-vous", "Et pour les plus jeunes"],
-    "status": "à écrire"
-  },
-  {
-    "date": "2027-02-01",
+    "date": "2026-11-23",
     "slug": "kinesiologie-enfant-bebe",
     "title": "Kinésiologie pour enfant et bébé : à partir de quel âge, et pour quoi ?",
     "keyword": "kinésiologie enfant",
@@ -80,11 +87,18 @@
     "service": "/kinesiologie",
     "scene": "racines",
     "angle": "Rassurer les parents : la séance s’adapte à l’âge, le parent sert de relais pour les tout-petits, situations courantes (changements, peurs, école), toujours en complément du médecin, de l’orthophoniste ou du psychologue.",
-    "plan": ["Dès quel âge ?", "Comment se passe la séance avec un tout-petit", "Avec un enfant et un adolescent", "Les situations fréquentes", "Le rôle du parent", "En complément des autres professionnels"],
+    "plan": [
+      "Dès quel âge ?",
+      "Comment se passe la séance avec un tout-petit",
+      "Avec un enfant et un adolescent",
+      "Les situations fréquentes",
+      "Le rôle du parent",
+      "En complément des autres professionnels"
+    ],
     "status": "à écrire"
   },
   {
-    "date": "2027-02-15",
+    "date": "2026-11-26",
     "slug": "loyautes-familiales-memoires-transgenerationnelles",
     "title": "Loyautés familiales et mémoires transgénérationnelles : de quoi parle-t-on ?",
     "keyword": "loyautés familiales",
@@ -92,23 +106,36 @@
     "service": "/memoires-transgenerationnelles",
     "scene": "racines",
     "angle": "Présenter la psychogénéalogie comme une grille de lecture et non une vérité scientifique établie ; ce qu’on appelle loyauté invisible ; l’accompagnement en deux séances (kinésiologie + soin énergétique, 140 €).",
-    "plan": ["Ce qu’on hérite sans le savoir", "La notion de loyauté familiale", "Une grille de lecture, pas une science exacte", "Comment je l’aborde en séance", "Les deux séances", "Infos pratiques"],
+    "plan": [
+      "Ce qu’on hérite sans le savoir",
+      "La notion de loyauté familiale",
+      "Une grille de lecture, pas une science exacte",
+      "Comment je l’aborde en séance",
+      "Les deux séances",
+      "Infos pratiques"
+    ],
     "status": "à écrire"
   },
   {
-    "date": "2027-03-01",
+    "date": "2026-11-30",
     "slug": "drainage-lymphatique-jambes-deroulement",
     "title": "Drainage lymphatique des jambes : déroulé, rythme et précautions",
     "keyword": "drainage lymphatique jambes Chambéry",
     "intention": "informationnelle / locale",
     "service": "/drainage-lymphatique",
     "scene": "eau",
-    "angle": "Avant les beaux jours : ce qu’est la lymphe, comment se passe la séance de 75 min, les contre-indications (demander l’avis du médecin), sensation de légèreté sans promesse minceur, forfaits.",
-    "plan": ["La lymphe en deux mots", "Le déroulé d’une séance", "Combien de séances", "Les précautions et contre-indications", "Tarifs et forfaits"],
+    "angle": "ce qu’est la lymphe, comment se passe la séance de 75 min, les contre-indications (demander l’avis du médecin), sensation de légèreté sans promesse minceur, forfaits.",
+    "plan": [
+      "La lymphe en deux mots",
+      "Le déroulé d’une séance",
+      "Combien de séances",
+      "Les précautions et contre-indications",
+      "Tarifs et forfaits"
+    ],
     "status": "à écrire"
   },
   {
-    "date": "2027-03-15",
+    "date": "2026-12-03",
     "slug": "massage-energetique-visage",
     "title": "Le massage énergétique du visage : à quoi s’attendre pendant 45 minutes",
     "keyword": "massage énergétique visage",
@@ -116,11 +143,17 @@
     "service": "/soins-energetiques",
     "scene": "feuilles",
     "angle": "Expérience sensorielle du soin, détente et lâcher-prise, pas de promesse anti-âge ou dermatologique ; forfaits 5 et 10 séances.",
-    "plan": ["Un soin du visage pas comme les autres", "Le déroulé", "Ce que l’on ressent", "Ce que ce soin n’est pas", "Une séance ou un forfait ?"],
+    "plan": [
+      "Un soin du visage pas comme les autres",
+      "Le déroulé",
+      "Ce que l’on ressent",
+      "Ce que ce soin n’est pas",
+      "Une séance ou un forfait ?"
+    ],
     "status": "à écrire"
   },
   {
-    "date": "2027-04-01",
+    "date": "2026-12-07",
     "slug": "massage-du-ventre-drainage",
     "title": "Pourquoi prendre soin de son ventre ? Le drainage lymphatique du ventre expliqué",
     "keyword": "drainage lymphatique ventre",
@@ -128,11 +161,54 @@
     "service": "/drainage-lymphatique",
     "scene": "eau",
     "angle": "Le ventre comme centre émotionnel et physique ; déroulé de la séance d’1 h ; sensations possibles ; précautions (grossesse, pathologies : avis médical) ; formation Belly Révolution.",
-    "plan": ["Le ventre, un centre", "Comment se passe la séance", "Ce que l’on peut ressentir après", "Précautions", "Tarifs et forfaits"],
+    "plan": [
+      "Le ventre, un centre",
+      "Comment se passe la séance",
+      "Ce que l’on peut ressentir après",
+      "Précautions",
+      "Tarifs et forfaits"
+    ],
     "status": "à écrire"
   },
   {
-    "date": "2027-04-15",
+    "date": "2026-12-10",
+    "slug": "kinesiologie-stress-examens",
+    "title": "Partiels, bac, concours : la kinésiologie pour aborder les examens plus sereinement",
+    "keyword": "kinésiologie examens stress",
+    "intention": "informationnelle",
+    "service": "/kinesiologie",
+    "scene": "feuilles",
+    "angle": "Avant les partiels de janvier et le bac blanc, pour étudiants, lycéens et parents : le stress avant un examen, ce que la séance travaille (confiance, concentration, peur du trou noir), quelques mouvements de Brain Gym faciles à refaire seul, quand venir (pas la veille).",
+    "plan": [
+      "Le stress des examens",
+      "Ce qu’on travaille en séance",
+      "Trois exercices simples à refaire chez soi",
+      "Quand prendre rendez-vous",
+      "Et pour les plus jeunes"
+    ],
+    "status": "à écrire"
+  },
+  {
+    "date": "2026-12-14",
+    "slug": "chien-chat-stresse-bruits-fetes-fin-annee",
+    "title": "Chien ou chat stressé par les pétards des fêtes : comment l’accompagner ?",
+    "keyword": "chien stressé pétards",
+    "intention": "informationnelle saisonnière",
+    "service": "/kinesiologie-animale",
+    "scene": "branches",
+    "angle": "Conseils de bon sens pour le réveillon (environnement calme, ne pas punir, rester serein soi-même), signes de stress à reconnaître, quand voir le vétérinaire, et ce que la kinésiologie animale peut apporter sur la durée.",
+    "plan": [
+      "Pourquoi les bruits font si peur",
+      "Reconnaître les signes de stress",
+      "Préparer la soirée",
+      "Le jour J : les bons réflexes",
+      "Quand consulter le vétérinaire",
+      "Travailler la peur sur la durée"
+    ],
+    "status": "à écrire"
+  },
+  {
+    "date": "2026-12-17",
     "slug": "soin-energetique-corps-conception-naissance",
     "title": "Le soin énergétique du corps « de la conception à la naissance »",
     "keyword": "soin énergétique corps Chambéry",
@@ -140,7 +216,13 @@
     "service": "/soins-energetiques",
     "scene": "racines",
     "angle": "Présenter ce soin d’1 h avec douceur, sans affirmation scientifique ; pour qui ; ce que l’on vit pendant ; lien avec le travail transgénérationnel.",
-    "plan": ["Un soin qui revisite un chemin", "Pour qui ?", "Le déroulé", "Après le soin", "Infos pratiques"],
+    "plan": [
+      "Un soin qui revisite un chemin",
+      "Pour qui ?",
+      "Le déroulé",
+      "Après le soin",
+      "Infos pratiques"
+    ],
     "status": "à écrire"
   }
 ]
