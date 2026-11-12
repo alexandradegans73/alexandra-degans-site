@@ -452,8 +452,8 @@ const curveAt = (curve: [number, number][], p: number) => {
   return curve[curve.length - 1][1];
 };
 const SOUND_CURVES: Record<string, { max: number; curve: [number, number][] }> = {
-  vent: { max: 0.85, curve: [[0, 1], [0.08, 1], [0.19, 0], [1, 0]] },
-  feuillage: { max: 0.55, curve: [[0, 0], [0.08, 0], [0.17, 1], [0.58, 1], [0.68, 0.3], [0.8, 0], [1, 0]] },
+  vent: { max: 0.65, curve: [[0, 1], [0.08, 1], [0.19, 0], [1, 0]] },
+  feuillage: { max: 0.42, curve: [[0, 0], [0.08, 0], [0.17, 1], [0.58, 1], [0.68, 0.3], [0.8, 0], [1, 0]] },
   gouttes: { max: 0.6, curve: [[0, 0], [0.7, 0], [0.82, 1], [1, 1]] },
 };
 function setupSound() {

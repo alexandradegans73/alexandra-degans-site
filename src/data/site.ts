@@ -16,7 +16,7 @@ export const site = {
   instagramHandle: 'alexandra.degans',
   hours: [
     { days: 'Lundi – Vendredi', time: '9 h – 20 h' },
-    { days: 'Samedi', time: '9 h – 15 h' },
+    { days: 'Samedi', time: '9 h – 14 h 30' },
   ],
   payments: 'Chèques, espèces, Paylib, virement',
   affiliations: [
