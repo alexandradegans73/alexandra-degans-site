@@ -12,6 +12,8 @@ gsap.registerPlugin(ScrollTrigger);
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 const isDesktop = () => window.matchMedia('(min-width: 64em)').matches;
+/** Avancement du film de l'arbre (0 → 1), mis à jour au scroll */
+let filmProgress = 0;
 
 /* ------------------------------------------------------------------ */
 /* Défilement lissé (Lenis) — chargé à la demande                      */
@@ -269,6 +271,8 @@ function setupFilm() {
     const pr = progressAt(window.scrollY);
     gsap.to(state, { frame: pr * (count - 1), duration: 0.7, ease: 'power2.out', overwrite: true, onUpdate: draw });
     if (bar) bar.style.transform = `scaleY(${pr})`;
+    filmProgress = pr;
+    document.dispatchEvent(new CustomEvent('film:progress', { detail: pr }));
   };
   measure(); onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -276,6 +280,7 @@ function setupFilm() {
 
   // Chaque scène se révèle quand elle arrive au centre de l'écran
   gsap.utils.toArray<HTMLElement>('[data-scene]').forEach((scene) => {
+    if (scene.dataset.scene === 'branch') return; // animées à part (setupBranches)
     const inner = scene.querySelector('[data-scene-inner]');
     if (!inner) return;
     gsap.fromTo(inner, { autoAlpha: 0, y: 60 }, {
@@ -288,6 +293,51 @@ function setupFilm() {
         scrollTrigger: { trigger: scene, start: 'bottom 55%', end: 'bottom 15%', scrub: 0.6 },
       });
     }
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/* Branches : un trait oblique s'allonge avec le scroll, puis ouvre le  */
+/* cadre par son coin ; tout se replie en sens inverse en avançant.     */
+/* Aucune étape figée : chaque pixel de scroll fait avancer l'ouverture. */
+/* ------------------------------------------------------------------ */
+function setupBranches() {
+  if (reduceMotion) return;
+  gsap.utils.toArray<HTMLElement>('[data-branch]').forEach((scene) => {
+    const trace = scene.querySelector<HTMLElement>('[data-branch-line]');
+    const dot = scene.querySelector('[data-branch-dot]');
+    const frame = scene.querySelector<HTMLElement>('[data-branch-frame]');
+    const items = scene.querySelectorAll('[data-branch-item]');
+    if (!trace || !dot || !frame) return;
+    const fromRight = !!scene.querySelector('.branch--from-right');
+    const st = { line: 0, open: 0 };
+    const setClip = (el: HTMLElement, v: string) => { el.style.clipPath = v; el.style.setProperty('-webkit-clip-path', v); };
+    const draw = () => {
+      // Le trait se découvre depuis son point de départ (le conteneur est déjà retourné en miroir côté droit)
+      const l = (1 - st.line) * 100;
+      setClip(trace, `inset(-6px ${l}% ${l}% -6px)`);
+      // Le cadre s'ouvre depuis le coin où arrive le trait (haut-gauche, ou haut-droit en miroir)
+      const r = (1 - st.open) * 100;
+      setClip(frame, fromRight ? `inset(0% 0% ${r}% ${r}%)` : `inset(0% ${r}% ${r}% 0%)`);
+    };
+    gsap.set(dot, { scale: 0 });
+    gsap.set(items, { autoAlpha: 0, y: 14 });
+    draw();
+    gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: { trigger: scene, start: 'top 12%', end: 'bottom 96%', scrub: 0.4 },
+    })
+      // — ouverture —
+      .to(dot, { scale: 1, duration: 0.03 }, 0)
+      .to(st, { line: 1, duration: 0.17, onUpdate: draw }, 0.02)                 // le trait s'allonge
+      .to(st, { open: 1, duration: 0.19, onUpdate: draw }, 0.19)                 // le cadre s'ouvre depuis le coin
+      .to(items, { autoAlpha: 1, y: 0, duration: 0.06, stagger: 0.025 }, 0.33)  // les informations se déploient
+      // — fermeture, plus on avance dans l'arbre —
+      .to(items, { autoAlpha: 0, y: -10, duration: 0.045, stagger: { each: 0.015, from: 'end' } }, 0.6)
+      .to(st, { open: 0, duration: 0.17, onUpdate: draw }, 0.69)
+      .to(st, { line: 0, duration: 0.11, onUpdate: draw }, 0.86)
+      .to(dot, { scale: 0, duration: 0.02 }, 0.97)
+      .to({}, { duration: 0.01 }, 0.99);
   });
 }
 
@@ -386,29 +436,68 @@ function setupFaq() {
 
 /* ------------------------------------------------------------------ */
 /* Ambiance sonore (optionnelle, jamais automatique)                   */
+/* Musique + trois ambiances dont le volume suit le film :             */
+/* vent léger loin de l'arbre, feuillage dans l'arbre, gouttes à l'eau */
 /* ------------------------------------------------------------------ */
+type Layer = { el: HTMLAudioElement; max: number; curve: [number, number][] };
+/** Interpolation linéaire par points [avancement du film, volume 0–1] */
+const curveAt = (curve: [number, number][], p: number) => {
+  if (p <= curve[0][0]) return curve[0][1];
+  for (let k = 1; k < curve.length; k++) {
+    if (p <= curve[k][0]) {
+      const [x0, y0] = curve[k - 1], [x1, y1] = curve[k];
+      return y0 + ((p - x0) / (x1 - x0)) * (y1 - y0);
+    }
+  }
+  return curve[curve.length - 1][1];
+};
+const SOUND_CURVES: Record<string, { max: number; curve: [number, number][] }> = {
+  vent: { max: 0.85, curve: [[0, 1], [0.08, 1], [0.19, 0], [1, 0]] },
+  feuillage: { max: 0.55, curve: [[0, 0], [0.08, 0], [0.17, 1], [0.58, 1], [0.68, 0.3], [0.8, 0], [1, 0]] },
+  gouttes: { max: 0.6, curve: [[0, 0], [0.7, 0], [0.82, 1], [1, 1]] },
+};
 function setupSound() {
   const btn = document.querySelector<HTMLButtonElement>('[data-sound-toggle]');
   if (!btn) return;
   const src = btn.dataset.src;
   if (!src) { btn.hidden = true; return; }
-  let audio: HTMLAudioElement | null = null;
+  let music: HTMLAudioElement | null = null;
+  let layers: Layer[] = [];
+  let on = false;
   const label = btn.querySelector('[data-sound-label]');
-  const setState = (on: boolean) => {
-    btn.setAttribute('aria-pressed', String(on));
-    if (label) label.textContent = on ? 'Couper le son' : 'Ambiance sonore';
+  const setState = (v: boolean) => {
+    on = v;
+    btn.setAttribute('aria-pressed', String(v));
+    if (label) label.textContent = v ? 'Couper le son' : 'Ambiance sonore';
+  };
+  const make = (url: string) => { const a = new Audio(url); a.loop = true; a.volume = 0; a.preload = 'auto'; return a; };
+  const mix = (dur = 0.8) => {
+    if (!on) return;
+    layers.forEach((l) => gsap.to(l.el, { volume: curveAt(l.curve, filmProgress) * l.max, duration: dur, overwrite: true }));
   };
   btn.addEventListener('click', async () => {
-    if (!audio) {
-      audio = new Audio(src); audio.loop = true; audio.volume = 0; audio.preload = 'auto';
+    if (!music) {
+      music = make(src);
+      const names = (btn.dataset.layers || '').split(',').filter(Boolean);
+      layers = names.map((n) => ({ el: make(`/media/sons/${n}.mp3`), ...SOUND_CURVES[n] }));
     }
-    if (audio.paused) {
-      try { await audio.play(); gsap.to(audio, { volume: 0.45, duration: 2.5 }); setState(true); } catch { /* lecture refusée */ }
+    if (!on) {
+      try {
+        await music.play();
+        layers.forEach((l) => l.el.play().catch(() => {}));
+        setState(true);
+        gsap.to(music, { volume: 0.4, duration: 2.5, overwrite: true });
+        mix(2.5);
+      } catch { /* lecture refusée par le navigateur */ }
     } else {
-      gsap.to(audio, { volume: 0, duration: 1.2, onComplete: () => audio?.pause() }); setState(false);
+      setState(false);
+      [music, ...layers.map((l) => l.el)].forEach((a) => gsap.to(a, { volume: 0, duration: 1.2, overwrite: true, onComplete: () => a.pause() }));
     }
   });
-  document.addEventListener('visibilitychange', () => { if (document.hidden && audio && !audio.paused) { audio.pause(); setState(false); } });
+  document.addEventListener('film:progress', () => mix());
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && on) { setState(false); [music, ...layers.map((l) => l.el)].forEach((a) => a?.pause()); }
+  });
 }
 
 /* ------------------------------------------------------------------ */
@@ -417,6 +506,7 @@ function init() {
   setupMenu();
   setupSmoothScroll();
   setupFilm();
+  setupBranches();
   setupReveals();
   setupTree();
   setupParallax();

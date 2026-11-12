@@ -2,7 +2,7 @@
 import Base from '@layouts/Base.astro';
 import ScrollFilm from '@components/ScrollFilm.astro';
 import Portrait from '@components/Portrait.astro';
-import { site, prestations } from '@data/site';
+import { site, prestations, avis } from '@data/site';
 import { media } from '@data/media';
 
 const description =
@@ -12,11 +12,6 @@ const etapes = [
   { n: 'I', t: 'Écouter', d: 'Un objectif défini ensemble, qui évolue au fil des séances. Nous avançons à votre rythme.' },
   { n: 'II', t: 'Ressentir', d: 'Le test musculaire ouvre un dialogue avec le corps, là où les mots ne suffisent pas toujours.' },
   { n: 'III', t: 'Libérer', d: 'Des équilibrations douces pour alléger la charge émotionnelle et retrouver de l’élan.' },
-];
-const histoires = [
-  { who: 'Foggy', tag: 'chien très fusionnel', text: 'Il a fallu redéfinir un cadre pour que chacun retrouve sa juste place — et Foggy, sa place de chien.' },
-  { who: 'Pomponnette', tag: 'chatte adoptée à 8 ans', text: 'Elle avait surtout besoin de temps. Sa maîtresse a appris à être moins pressante et à ne plus comparer.' },
-  { who: 'Ubert', tag: '2 ans, stress en voiture', text: 'L’origine a été identifiée dès la première séance. Le retour s’est fait dans le plus grand calme.' },
 ];
 ---
 
@@ -36,7 +31,7 @@ const histoires = [
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
         </div>
       </div>
-      <button class="sound" type="button" aria-pressed="false" data-sound-toggle data-src={media.ambience}>
+      <button class="sound" type="button" aria-pressed="false" data-sound-toggle data-src={media.ambience} data-layers={media.layers.join(',')}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 10v4h3l5 4V6L7 10H4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
         <span data-sound-label>Ambiance sonore</span>
       </button>
@@ -74,17 +69,32 @@ const histoires = [
       </section>
 
       {prestations.map((p, i) => (
-        <section class:list={['scene', i % 2 === 0 ? 'scene--right' : 'scene--left']} data-scene aria-labelledby={`b-${p.slug}`}>
-          <div class="scene__inner container-wide" data-scene-inner>
-            <a class="panel branch" href={p.path}>
-              <span class="branch__num">Branche 0{i + 1}</span>
-              <h3 id={`b-${p.slug}`} class="branch__name">{p.name}</h3>
-              <p class="branch__short">{p.short}</p>
-              <p>{p.intro}</p>
-              <p class="branch__meta caps">{p.duration} · {p.price}</p>
-              <span class="link-arrow">Découvrir
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-            </a>
+        <section class:list={['scene', 'scene--branch', i % 2 === 0 ? 'scene--right' : 'scene--left']} data-scene="branch" data-branch aria-labelledby={`b-${p.slug}`}>
+          <div class="scene__inner container-wide">
+            <article class:list={['branch', i % 2 === 0 ? 'branch--from-left' : 'branch--from-right']}>
+              {/* Trait oblique qui part de la branche et vient ouvrir le cadre par son coin */}
+              <span class="branch__leader" aria-hidden="true">
+                <span class="branch__trace" data-branch-line><svg viewBox="0 0 100 100" preserveAspectRatio="none" fill="none"><line x1="0" y1="0" x2="100" y2="100" vector-effect="non-scaling-stroke" /></svg></span>
+                <i class="branch__dot" data-branch-dot></i>
+              </span>
+              <div class="branch__frame" data-branch-frame>
+                <div class="branch__body">
+                  <header class="branch__head" data-branch-item>
+                    <span class="branch__num">Branche 0{i + 1}</span>
+                    <h3 id={`b-${p.slug}`} class="branch__name">{p.name}</h3>
+                  </header>
+                  <p class="branch__short" data-branch-item>{p.short}</p>
+                  <p class="branch__intro" data-branch-item>{p.intro}</p>
+                  <ul class="branch__details" role="list" data-branch-item>
+                    {p.details.map((d) => (
+                      <li><span class="branch__d-label">{d.label}</span><span class="branch__d-duration">{d.duration}</span><span class="branch__d-price">{d.price}</span></li>
+                    ))}
+                  </ul>
+                  <a class="link-arrow" href={p.path} data-branch-item>Découvrir<span class="visually-hidden"> : {p.name}</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+                </div>
+              </div>
+            </article>
           </div>
         </section>
       ))}
@@ -110,8 +120,8 @@ const histoires = [
           <div class="panel about-duo__panel">
             <p class="eyebrow">Le tronc · Alexandra</p>
             <h2 id="about-title">Kinésiologue certifiée, <em>formée en continu</em>.</h2>
-            <p class="lead">Formée en kinésiologie, en thérapie par les modes oculaires, en visualisation et en Brain Gym, je poursuis ma formation en psychogénéalogie, massage énergétique et drainage.</p>
-            <p>J’accompagne les bébés, les enfants, les adolescents et les adultes — et aussi les animaux, certifiée en kinésiologie animale par l’EKTC.</p>
+            <p class="lead">Formée en kinésiologie, en thérapie par les modes oculaires, en visualisation et en Brain Gym.</p>
+            <p>J’accompagne les bébés, les enfants, les adolescents et les adultes — et aussi les animaux.</p>
             <a class="link-arrow" href="/a-propos">Faire connaissance
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
           </div>
@@ -138,17 +148,22 @@ const histoires = [
       </div>
     </section>
 
-    {/* ---- 8. Histoires --------------------------------------------- */}
+    {/* ---- 8. Avis Google ------------------------------------------- */}
     <section class="scene scene--center" id="temoignages" data-scene aria-labelledby="testi-title">
       <div class="scene__inner container" data-scene-inner>
-        <p class="eyebrow">Histoires à quatre pattes</p>
-        <h2 id="testi-title">Quelques histoires <em>de nos compagnons</em>.</h2>
-        <div class="histoires">
-          {histoires.map((t) => (
-            <blockquote><p>« {t.text} »</p><footer><cite>{t.who}</cite> · {t.tag}</footer></blockquote>
+        <p class="eyebrow">Ils en parlent</p>
+        <h2 id="testi-title">Des mots <em>laissés sur Google</em>.</h2>
+        <div class="avis">
+          {avis.items.map((t) => (
+            <blockquote>
+              <span class="avis__stars" role="img" aria-label="5 étoiles sur 5">★★★★★</span>
+              <p>« {t.text} »</p>
+              <footer>Avis Google</footer>
+            </blockquote>
           ))}
         </div>
-        <p class="small note">Récits rédigés par Alexandra à partir de séances de kinésiologie animale.</p>
+        <a class="link-arrow" href={site.googleReviews} target="_blank" rel="noopener">{avis.note} · {avis.total} avis — tout lire sur Google
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       </div>
     </section>
 
@@ -219,32 +234,60 @@ const histoires = [
   .sign { font-family: var(--font-display); font-style: italic; font-size: var(--fs-lg); color: var(--c-sable); }
   .scene--center h2 { max-width: 20ch; }
 
-  .branch { transition: transform var(--t-base) var(--ease-out), border-color var(--t-base); }
-  .branch:hover, .branch:focus-visible { transform: translateY(-6px); border-color: rgb(243 237 226 / 0.45); }
-  .branch__num { font-size: var(--fs-xs); letter-spacing: var(--ls-caps-wide); text-transform: uppercase; color: var(--c-sauge-claire); }
-  .branch__name { font-size: clamp(1.9rem, 1.2rem + 2.2vw, 3.1rem); line-height: 1.05; overflow-wrap: anywhere; hyphens: auto; }
-  .branch__short { font-family: var(--font-display); font-style: italic; font-size: var(--fs-lg); color: var(--c-creme) !important; }
-  .branch__meta { color: var(--c-sauge-claire) !important; }
+  /* Branche : un trait oblique part de la branche, s'allonge, puis ouvre le cadre par son coin.
+     Tout suit le scroll en continu, et se replie en sens inverse quand on avance dans l'arbre. */
+  .scene--branch { display: block; min-height: 230svh; padding-block: 0; }
+  .scene--branch .scene__inner { position: sticky; top: 0; min-height: 100svh; align-content: center; padding-block: calc(var(--header-h) + 0.5rem) 5.5rem; }
+  .branch { --lw: clamp(2.5rem, 13vw, 12rem); --lh: clamp(3rem, 15svh, 9rem); display: grid; grid-template-columns: var(--lw) minmax(0, 30rem); grid-template-rows: var(--lh) auto; width: fit-content; max-width: 100%; }
+  .branch--from-right { grid-template-columns: minmax(0, 30rem) var(--lw); }
+  .branch__leader { grid-column: 1; grid-row: 1; position: relative; }
+  .branch--from-right .branch__leader { grid-column: 2; transform: scaleX(-1); }
+  .branch__trace { position: absolute; inset: 0; display: block; }
+  .branch__leader svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .branch__leader line { stroke: var(--c-creme); stroke-width: 1.5; stroke-linecap: round; filter: drop-shadow(0 0 6px rgb(243 237 226 / 0.7)); }
+  .branch__dot { position: absolute; left: 0; top: 0; width: 0.6rem; height: 0.6rem; margin: -0.3rem 0 0 -0.3rem; border-radius: 50%; background: var(--c-creme); box-shadow: 0 0 0 5px rgb(243 237 226 / 0.2), 0 0 18px rgb(243 237 226 / 0.8); }
+  .branch__frame {
+    grid-column: 2; grid-row: 2;
+    border-radius: 0 var(--r-lg) var(--r-lg) var(--r-lg);
+    background: linear-gradient(170deg, rgb(42 49 38 / 0.68), rgb(42 49 38 / 0.44));
+    backdrop-filter: blur(14px) saturate(1.1); -webkit-backdrop-filter: blur(14px) saturate(1.1);
+    border: 1px solid rgb(243 237 226 / 0.45);
+    box-shadow: 0 30px 80px -40px rgb(10 14 8 / 0.8);
+  }
+  .branch--from-right .branch__frame { grid-column: 1; border-radius: var(--r-lg) 0 var(--r-lg) var(--r-lg); }
+  .branch__body { display: grid; gap: var(--s-4); padding: clamp(1.3rem, 3vw, 2.4rem); }
+  .branch__head { display: grid; gap: var(--s-2); }
+  .branch__num { font-size: var(--fs-xs); letter-spacing: var(--ls-caps-wide); text-transform: uppercase; color: var(--c-sable); }
+  .branch__name { font-size: clamp(1.8rem, 1.2rem + 2vw, 2.9rem); line-height: 1.05; overflow-wrap: anywhere; hyphens: auto; }
+  .branch__intro { color: var(--c-sable); }
+  .branch__short { font-family: var(--font-display); font-style: italic; font-size: var(--fs-lg); }
+  .branch__details { display: grid; }
+  .branch__details li { display: grid; grid-template-columns: 1fr auto auto; gap: var(--s-4); align-items: baseline; padding-block: var(--s-3); border-top: 1px solid rgb(243 237 226 / 0.16); max-width: none; }
+  .branch__details li:last-child { border-bottom: 1px solid rgb(243 237 226 / 0.16); }
+  .branch__d-label { font-family: var(--font-display); font-size: var(--fs-lg); }
+  .branch__d-duration { font-size: var(--fs-xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-sable); }
+  .branch__d-price { font-family: var(--font-display); font-size: var(--fs-h4); min-width: 3.2em; text-align: right; }
 
   .etapes { display: grid; gap: var(--s-4); margin-top: var(--s-5); width: 100%; text-align: left; }
   @media (min-width: 48em) { .etapes { grid-template-columns: repeat(3, 1fr); } }
-  .etapes li, .lieu, .histoires blockquote {
+  .etapes li, .lieu, .avis blockquote {
     padding: var(--s-6); border-radius: var(--r-md); display: grid; gap: var(--s-2); align-content: start; max-width: none;
     background: rgb(42 49 38 / 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgb(243 237 226 / 0.14);
   }
   .etapes span { font-family: var(--font-display); font-size: var(--fs-h3); color: var(--c-sauge-claire); line-height: 1; }
   .etapes h3 { font-size: var(--fs-h4); }
-  .etapes p, .lieu p, .histoires footer { color: var(--c-sable); }
+  .etapes p, .lieu p, .avis footer { color: var(--c-sable); }
   .note { color: var(--c-sable); opacity: 0.85; max-width: none; }
 
-  .lieux, .histoires { display: grid; gap: var(--s-4); margin-top: var(--s-5); width: 100%; text-align: left; }
-  @media (min-width: 48em) { .lieux { grid-template-columns: 1fr 1fr; max-width: 46rem; } .histoires { grid-template-columns: repeat(3, 1fr); } }
+  .lieux, .avis { display: grid; gap: var(--s-4); margin-top: var(--s-5); width: 100%; text-align: left; }
+  @media (min-width: 48em) { .lieux { grid-template-columns: 1fr 1fr; max-width: 46rem; } .avis { grid-template-columns: repeat(3, 1fr); } }
   .lieu h3 { font-size: var(--fs-h3); }
   .lieu { transition: border-color var(--t-base); }
   .lieu:hover { border-color: rgb(243 237 226 / 0.45); }
-  .histoires blockquote p { font-family: var(--font-display); font-size: var(--fs-lg); line-height: 1.4; }
-  .histoires footer { font-size: var(--fs-sm); margin-top: var(--s-3); }
-  .histoires cite { font-style: normal; font-weight: 400; color: var(--c-creme); }
+  .avis blockquote { align-content: space-between; gap: var(--s-4); min-height: 13rem; }
+  .avis blockquote p { font-family: var(--font-display); font-size: var(--fs-h4); line-height: 1.3; font-style: italic; }
+  .avis__stars { color: var(--c-sable); letter-spacing: 0.25em; font-size: var(--fs-sm); }
+  .avis footer { font-size: var(--fs-xs); letter-spacing: var(--ls-caps); text-transform: uppercase; }
 
   .about-duo { display: grid; gap: var(--s-5); align-items: end; text-align: left; width: 100%; justify-items: center; }
   .about-duo :global(.about-duo__portrait) { width: min(64vw, 17rem); }
@@ -259,10 +302,14 @@ const histoires = [
 
   @media (max-width: 47.99em) {
     .scene { min-height: 115svh; padding-block: 14svh; }
+    .scene--branch { min-height: 220svh; padding-block: 0; }
     .scene--left .scene__inner, .scene--right .scene__inner { justify-items: stretch; }
     .panel { width: 100%; }
+    .branch { --lw: 2.2rem; --lh: 3.2rem; width: 100%; grid-template-columns: var(--lw) minmax(0, 1fr); }
+    .branch--from-right { grid-template-columns: minmax(0, 1fr) var(--lw); }
+    .branch__intro { font-size: var(--fs-sm); }
   }
-  @media (prefers-reduced-motion: reduce) { .scene { min-height: 0; padding-block: var(--s-9); } .scroll-hint i { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .scene { min-height: 0; padding-block: var(--s-9); } .scene--branch { min-height: 0; } .scene--branch .scene__inner { position: static; min-height: 0; padding-block: var(--s-7); } .scroll-hint i { animation: none; } }
 </style>
 
 <style is:global>

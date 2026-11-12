@@ -24,6 +24,8 @@ export const site = {
     'Membre de la Fédération Française des Pratiques Alternatives Professionnelles',
   ],
   mediation: 'CNPM Médiation — adhérente n° CNPM32916',
+  siren: '953 944 154',
+  googleReviews: 'https://www.google.com/maps/place/?q=place_id:ChIJpVBP6peti0cR6ICIh4BDzqU',
   places: [
     {
       id: 'bassens',
@@ -60,6 +62,8 @@ export type Prestation = {
   intro: string;
   duration: string;
   price: string;
+  /** Lignes affichées dans le cadre de la branche (accueil) */
+  details: { label: string; duration: string; price: string }[];
   branch: 'top' | 'upper-left' | 'upper-right' | 'left' | 'right';
 };
 
@@ -72,8 +76,9 @@ export const prestations: Prestation[] = [
     short: 'Écouter ce que le corps sait déjà.',
     intro:
       'Une approche psycho-corporelle douce pour identifier l’origine d’un blocage et libérer la charge émotionnelle qui l’accompagne.',
-    duration: '1 h · 3 semaines entre les séances',
+    duration: '1 h',
     price: '70 €',
+    details: [{ label: 'Séance', duration: '1 h', price: '70 €' }],
     branch: 'top',
   },
   {
@@ -85,6 +90,7 @@ export const prestations: Prestation[] = [
       'Deux séances pour explorer les loyautés familiales et alléger un héritage émotionnel transmis de génération en génération.',
     duration: '2 séances',
     price: '140 €',
+    details: [{ label: 'Accompagnement complet', duration: '2 séances', price: '140 €' }],
     branch: 'upper-left',
   },
   {
@@ -96,6 +102,7 @@ export const prestations: Prestation[] = [
       'Un accompagnement pour les animaux de compagnie et d’élevage : stress, peurs, comportements, arrivée d’un nouveau membre.',
     duration: '1 h 15 · à Bassens',
     price: '70 €',
+    details: [{ label: 'Séance', duration: '1 h 15 · à Bassens', price: '70 €' }],
     branch: 'upper-right',
   },
   {
@@ -104,9 +111,10 @@ export const prestations: Prestation[] = [
     name: 'Soins énergétiques',
     short: 'Visage et corps, un temps pour soi.',
     intro:
-      'Un soin du visage revitalisant et un soin du corps profond, de la conception à la naissance, pour relâcher et se reconnecter.',
-    duration: '1 h ou 2 h',
+      'Deux soins distincts : un soin du visage revitalisant, et un soin du corps profond, de la conception à la naissance.',
+    duration: '45 min ou 1 h',
     price: 'dès 60 €',
+    details: [{ label: 'Visage', duration: '45 min', price: '60 €' }, { label: 'Corps', duration: '1 h', price: '90 €' }],
     branch: 'left',
   },
   {
@@ -118,6 +126,7 @@ export const prestations: Prestation[] = [
       'Des gestes lents et précis pour accompagner la circulation de la lymphe, apaiser les gonflements et retrouver de la légèreté.',
     duration: '1 h ou 75 min',
     price: 'dès 60 €',
+    details: [{ label: 'Ventre', duration: '1 h', price: '60 €' }, { label: 'Jambes', duration: '75 min', price: '70 €' }],
     branch: 'right',
   },
 ];
@@ -138,11 +147,11 @@ export const tarifs = {
   transgenerationnel: [{ label: 'Libération des loyautés familiales', detail: '2 séances (kinésiologie + soin énergétique)', price: '140 €', note: 'au lieu de 160 €' }],
   animale: [{ label: 'Séance de kinésiologie animale', detail: '1 h 15 · uniquement à Bassens', price: '70 €' }],
   visage: [
-    { label: '1 séance', detail: '1 h', price: '60 €' },
-    { label: 'Forfait 5 séances', detail: '5 × 1 h', price: '250 €' },
-    { label: 'Forfait 10 séances', detail: '10 × 1 h', price: '500 €' },
+    { label: '1 séance', detail: '45 min', price: '60 €' },
+    { label: 'Forfait 5 séances', detail: '5 × 45 min', price: '250 €' },
+    { label: 'Forfait 10 séances', detail: '10 × 45 min', price: '500 €' },
   ],
-  corps: [{ label: 'Soin énergétique du corps', detail: '2 h', price: '90 €' }],
+  corps: [{ label: 'Soin énergétique du corps', detail: '1 h', price: '90 €' }],
   ventre: [
     { label: '1 séance', detail: '1 h', price: '60 €' },
     { label: 'Forfait 3 séances', detail: '3 × 1 h', price: '160 €' },
@@ -157,5 +166,20 @@ export const tarifs = {
     { label: '1 séance', detail: 'ventre + jambes', price: '120 €' },
     { label: 'Forfait 3 séances', detail: 'ventre + jambes', price: '320 €' },
     { label: 'Forfait 5 séances', detail: 'ventre + jambes', price: '520 €' },
+  ],
+};
+
+/**
+ * Avis Google (fiche « Alexandra Degans kinésiologue certifiée à Bassens »).
+ * Extraits courts et fidèles d'avis réels ; note et nombre d'avis relevés le 12/11/2026.
+ * Pour afficher un avis en entier, remplacer le texte ci-dessous par le texte complet de la fiche Google.
+ */
+export const avis = {
+  note: '5/5',
+  total: 19,
+  items: [
+    { text: 'Le corps parle toujours et Alexandra sait le comprendre.' },
+    { text: 'Toute la famille vient la voir, même nos chiens.' },
+    { text: 'Elle a été très douce, professionnelle et a su les mettre à l’aise.' },
   ],
 };

@@ -17,6 +17,8 @@ export const film = {
 export const media = {
   /** Ambiance sonore optionnelle (ElevenLabs), lecture uniquement sur action de l'utilisateur. */
   ambience: '/media/ambiance.mp3',
+  /** Ambiances superposées à la musique (public/media/sons/<nom>.mp3), volume lié à l'avancement du film */
+  layers: ['vent', 'feuillage', 'gouttes'],
   /** Portraits & lieux : photos professionnelles à fournir. */
   portrait: '/media/alexandra-degans-900.webp',
   cabinetBassens: '',
