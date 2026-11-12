@@ -12,6 +12,6 @@ Secrets à définir dans Cloudflare (Workers › reservation › Paramètres ›
 Webhook Stripe : `/api/stripe/webhook` (checkout.session.completed, async_payment_succeeded, expired).
 Les événements reçus sont relus directement auprès de Stripe : aucun secret de signature nécessaire.
 
-Purge automatique : cron quotidien `17 2 * * *` (déclencheur à créer dans Cloudflare › Workers › reservation › Déclencheurs). Supprime les réservations terminées depuis plus de 3 ans et les réservations jamais payées de plus de 30 jours.
+Purge automatique : cron quotidien `17 2 * * *` (déclencheur en place depuis le 12/11). Supprime les réservations terminées depuis plus de 3 ans et les réservations jamais payées de plus de 30 jours.
 
 Déploiement : `npx esbuild src/index.js --bundle --format=esm --outfile=dist/index.js` puis envoi via l’API Cloudflare ou `wrangler deploy`.

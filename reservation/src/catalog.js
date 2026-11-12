@@ -56,7 +56,7 @@ export const HOURS = {
 };
 
 export const RULES = {
-  stepMinutes: 15, // un créneau peut démarrer tous les quarts d'heure
+  stepMinutes: 30, // un créneau peut démarrer toutes les demi-heures
   bufferMinutes: 15, // temps libre après chaque rendez-vous
   minNoticeHours: 12, // délai minimal avant un rendez-vous
   maxDaysAhead: 60, // réservation possible jusqu'à 60 jours

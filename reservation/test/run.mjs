@@ -93,13 +93,13 @@ const mon = day('2026-11-16').slots.map(s=>s.label);
 console.log('lundi 16 :', mon.join(' '));
 assert(!mon.includes('09:30'), '9h30+1h+15min tampon chevauche RDV 10h');
 assert(mon.includes('09:00') === false, '9h00 : 9h-10h + tampon 15 min chevauche 10h');
-assert(mon.includes('11:45'), 'RDV finit 11h30 + 15 min');
+assert(!mon.includes('11:45') && mon.includes('12:00'), 'RDV finit 11h30 + 15 min → prochain créneau à la demi-heure : 12h00');
 assert(!mon.includes('11:30'));
-assert(mon.includes('16:45') && !mon.includes('17:00'), 'avant le RDV hebdo de 18h (fin + tampon pile à 18h)');
+assert(mon.includes('16:30') && !mon.includes('17:00'), 'avant le RDV hebdo de 18h (créneaux à la demi-heure)');
 assert(!mon.some(l => l >= '17:00'), 'rien après : 19h15 + 1 h dépasse 20h');
 const tue = day('2026-11-17').slots.map(s=>s.label);
 assert(tue.includes('19:00') && !tue.includes('19:15'), 'fermeture 20h');
-assert(tue.includes('12:45') && !tue.includes('13:00') && !tue.includes('15:00') && tue.includes('15:15'), 'RDV 14h-15h (13h UTC)');
+assert(tue.includes('12:30') && !tue.includes('13:00') && !tue.includes('15:00') && tue.includes('15:30'), 'RDV 14h-15h (13h UTC)');
 const sat = day('2026-11-21').slots.map(s=>s.label);
 assert(sat.at(-1) === '13:30', 'samedi : dernier créneau 13h30 pour finir à 14h30, reçu ' + sat.at(-1));
 // délai minimal 12 h
