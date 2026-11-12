@@ -6,10 +6,12 @@ import { site } from '@data/site';
 import Portrait from '@components/Portrait.astro';
 
 const formations = [
-  { t: 'Kinésiologie', d: 'Kinésiologue certifiée.' },
-  { t: 'Thérapie par les modes oculaires', d: 'Approche proche de l’EMDR.' },
-  { t: 'Visualisation & Brain Gym', d: 'Outils d’accompagnement corporels et mentaux.' },
+  { t: 'Kinésiologie', d: 'Certification de kinésiologie EKTC, 2023.' },
+  { t: 'Thérapie par les modes oculaires', d: 'Une technique qui s’appuie sur les mouvements des yeux pour accompagner la détente émotionnelle.' },
+  { t: 'Visualisation & Brain Gym', d: 'Outils d’accompagnement corporels et mentaux, utilisés pendant les séances.' },
   { t: 'Kinésiologie animale', d: 'Certifiée par l’EKTC, complétée par des séminaires en éthologie et comportementalisme.' },
+  { t: 'Massage du ventre', d: 'Certification Belly Révolution, 2023 : la base du drainage lymphatique du ventre.' },
+  { t: 'Soin énergétique du visage', d: 'Certificat Facelift Access Bars, 2023.' },
 ];
 const valeurs = [
   ['Écoute', 'Prendre le temps d’entendre ce qui est dit, et ce qui ne l’est pas.'],
@@ -20,15 +22,31 @@ const valeurs = [
 ---
 
 <Base
-  title="À propos d’Alexandra Degans"
-  description="Alexandra Degans, kinésiologue certifiée à Bassens et Myans (Chambéry) : parcours, formations, approche et valeurs. Membre de la Fédération de la Kinésiologie Professionnelle."
+  title="Alexandra Degans, kinésiologue : parcours et formations"
+  description="Alexandra Degans, kinésiologue à Bassens et Myans près de Chambéry : son parcours, ses formations et sa façon d’accompagner chaque séance."
   path="/a-propos"
   heroDark
-  schema={{ '@context': 'https://schema.org', '@type': 'Person', name: 'Alexandra Degans', jobTitle: 'Kinésiologue', worksFor: { '@id': `${site.url}/#business` }, url: `${site.url}/a-propos`, image: `${site.url}/media/alexandra-degans-900.webp` }}
+  schema={{
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': `${site.url}/a-propos#alexandra`,
+    name: 'Alexandra Degans',
+    jobTitle: 'Kinésiologue',
+    worksFor: { '@id': `${site.url}/#business` },
+    url: `${site.url}/a-propos`,
+    image: `${site.url}/media/alexandra-degans-900.webp`,
+    sameAs: [site.instagram],
+    knowsAbout: ['Kinésiologie', 'Kinésiologie animale', 'Brain Gym', 'Drainage lymphatique', 'Soins énergétiques', 'Psychogénéalogie'],
+    hasCredential: [
+      { '@type': 'EducationalOccupationalCredential', name: 'Certification de kinésiologie EKTC', dateCreated: '2023' },
+      { '@type': 'EducationalOccupationalCredential', name: 'Certification massage du ventre Belly Révolution', dateCreated: '2023' },
+      { '@type': 'EducationalOccupationalCredential', name: 'Certificat Facelift Access Bars', dateCreated: '2023' },
+    ],
+  }}
 >
   <PageHero
     scene="branches"
-    eyebrow="À propos"
+    eyebrow="Alexandra Degans · kinésiologue à Chambéry"
     title="Alexandra, <em>kinésiologue</em>."
     intro="Accompagner chacun vers son propre équilibre, avec douceur, précision et beaucoup d’écoute."
   >
@@ -44,6 +62,7 @@ const valeurs = [
         <h2 id="philo-title" data-split>Le corps <em>sait</em>. Mon rôle est de l’écouter avec vous.</h2>
         <p class="lead" data-reveal>Chaque personne arrive avec son histoire, son rythme et ses ressources. Mon travail consiste à créer un espace sûr où ces ressources peuvent se réveiller.</p>
         <p data-reveal>Au fil des séances, j’ai vu combien les émotions s’inscrivent dans le corps, parfois depuis la naissance, parfois depuis plusieurs générations. C’est ce qui m’a conduite à élargir ma pratique : la psychogénéalogie, les soins énergétiques du visage et du corps, le drainage lymphatique, et l’accompagnement des animaux et de leurs humains.</p>
+        <p data-reveal>J’exerce à mon compte depuis juillet 2023, au Cobalt à Bassens et dans mon cabinet de Myans, au pied des vignes. Je reçois les bébés, les enfants, les adolescents et les adultes, et j’accompagne les animaux de compagnie à Bassens. Mes séances sont un temps de bien-être : elles ne remplacent jamais un suivi médical, psychologique ou vétérinaire, et je vous oriente vers un professionnel de santé dès que c’est nécessaire.</p>
       </div>
     </div>
   </section>
@@ -64,7 +83,6 @@ const valeurs = [
       </ol>
     </div>
     <div class="container affil" data-reveal>
-      {site.affiliations.map((a) => <p>{a}</p>)}
       <p>Médiation : {site.mediation}</p>
     </div>
   </section>

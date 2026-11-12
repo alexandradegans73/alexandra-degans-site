@@ -6,7 +6,7 @@ import { site, branches, avis } from '@data/site';
 import { media } from '@data/media';
 
 const description =
-  'Alexandra Degans, kinésiologue à Bassens et Myans près de Chambéry : kinésiologie, libération des mémoires transgénérationnelles, kinésiologie animale, soins énergétiques visage et corps, drainage lymphatique. Prise de rendez-vous en ligne.';
+  'Kinésiologue près de Chambéry, à Bassens et Myans : kinésiologie, soins énergétiques, drainage, kinésiologie animale. Réservation en ligne.';
 
 const etapes = [
   { n: 'I', t: 'Écouter', d: 'Un objectif défini ensemble, qui évolue au fil des séances. Nous avançons à votre rythme.' },
@@ -22,8 +22,10 @@ const etapes = [
     {/* ---- 1. Ouverture : les racines ------------------------------- */}
     <section class="scene scene--hero" data-scene aria-label="Introduction">
       <div class="scene__inner container-wide" data-scene-inner>
-        <p class="hero-mark"><img src="/brand/monogramme-creme.svg" alt="" width="72" height="76" /><span class="caps">Kinésiologie · Chambéry</span></p>
-        <h1 class="hero-title">Retrouver l’équilibre, <em>à votre rythme.</em></h1>
+        <h1 class="hero-h1">
+          <span class="hero-mark"><img src="/brand/monogramme-creme.svg" alt="" width="72" height="76" /><span class="caps">Kinésiologue à Chambéry · Bassens &amp; Myans</span></span>
+          <span class="hero-title">Retrouver l’équilibre, <em>à votre rythme.</em></span>
+        </h1>
         <p class="lead hero-sub">Kinésiologie, soins énergétiques et drainage lymphatique à Bassens et Myans. Un accompagnement doux, précis et profondément humain.</p>
         <div class="hero-actions">
           <a class="btn btn--light" href={site.booking} target="_blank" rel="noopener">Prendre rendez-vous</a>
@@ -215,9 +217,10 @@ const etapes = [
   .panel h2 { font-size: var(--fs-h3); }
   .panel p:not(.lead):not(.eyebrow) { color: var(--c-sable); }
 
-  .hero-mark { display: flex; align-items: center; gap: var(--s-4); color: var(--c-sable); }
+  .hero-h1 { display: grid; gap: var(--s-5); font-size: inherit; }
+  .hero-mark { display: flex; font-family: var(--font-text); line-height: 1.4; text-shadow: none; align-items: center; gap: var(--s-4); color: var(--c-sable); }
   .hero-mark img { width: 2.6rem; }
-  .hero-title { font-size: clamp(2.8rem, 1.2rem + 5.2vw + 2vh, 6.6rem); line-height: 0.98; max-width: 14ch; }
+  .hero-title { display: block; font-size: clamp(2.8rem, 1.2rem + 5.2vw + 2vh, 6.6rem); line-height: 0.98; max-width: 14ch; }
   .hero-title em { display: block; }
   .hero-sub { max-width: 34rem; color: var(--c-creme); }
   .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-5) var(--s-6); }

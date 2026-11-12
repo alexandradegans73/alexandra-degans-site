@@ -16,8 +16,10 @@ const tone = scene ? 'dark' : (Astro.props.tone ?? 'creme');
   {scene && <div class="page-hero__scene" aria-hidden="true"><img src={`/media/scenes/${scene}.webp`} alt="" width="1920" height="1080" fetchpriority="high" decoding="async" data-parallax="14" /></div>}
   <div class="container page-hero__inner">
     <div class="page-hero__text">
-      <p class="eyebrow" data-reveal>{eyebrow}</p>
-      <h1 data-split set:html={title} />
+      <h1 class="page-hero__h1">
+        <span class="eyebrow" data-reveal>{eyebrow}</span>
+        <span class="page-hero__title" data-split set:html={title} />
+      </h1>
       {intro && <p class="lead page-hero__intro" data-reveal="0.2">{intro}</p>}
     </div>
     {number && <span class="page-hero__num" aria-hidden="true">{number}</span>}
@@ -48,6 +50,9 @@ const tone = scene ? 'dark' : (Astro.props.tone ?? 'creme');
   .page-hero__inner { display: grid; gap: var(--s-7); position: relative; align-items: end; }
   @media (min-width: 64em) { .page-hero__inner { grid-template-columns: 1.15fr 0.85fr; } }
   .page-hero__text { display: grid; gap: var(--s-5); }
+  .page-hero__h1 { display: grid; gap: var(--s-5); justify-items: start; }
+  .page-hero__h1 .eyebrow { line-height: 1.4; text-shadow: 0 1px 14px rgb(20 26 18 / 0.75); }
+  .page-hero__title { display: block; }
   .page-hero__intro { max-width: 34rem; }
   .page-hero__num { position: absolute; right: 0; top: -2rem; font-family: var(--font-display); font-size: clamp(5rem, 14vw, 12rem); line-height: 1; color: var(--c-sauge-claire); opacity: 0.35; pointer-events: none; }
   .page-hero__visual:empty { display: none; }

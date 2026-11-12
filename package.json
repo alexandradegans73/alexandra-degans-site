@@ -8,7 +8,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "prebuild": "node scripts/conformite.mjs",
+    "conformite": "node scripts/conformite.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",

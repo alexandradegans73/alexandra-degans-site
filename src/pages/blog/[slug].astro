@@ -1,0 +1,121 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '@layouts/Base.astro';
+import PageHero from '@components/PageHero.astro';
+import CtaBooking from '@components/CtaBooking.astro';
+import { site, prestations } from '@data/site';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft && data.date <= new Date());
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const d = post.data;
+const url = `${site.url}/blog/${post.id}`;
+const service = prestations.find((p) => p.path === d.service);
+const fmt = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+const others = (await getCollection('blog', ({ data }) => !data.draft && data.date <= new Date()))
+  .filter((p) => p.id !== post.id)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 2);
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    '@id': `${url}#article`,
+    headline: d.title,
+    description: d.description,
+    url,
+    mainEntityOfPage: url,
+    inLanguage: 'fr-FR',
+    datePublished: d.date.toISOString(),
+    dateModified: (d.updated ?? d.date).toISOString(),
+    image: `${site.url}/media/scenes/${d.scene}.webp`,
+    keywords: d.keyword,
+    author: { '@type': 'Person', '@id': `${site.url}/a-propos#alexandra`, name: 'Alexandra Degans', jobTitle: 'Kinésiologue', url: `${site.url}/a-propos` },
+    publisher: { '@id': `${site.url}/#business` },
+    isPartOf: { '@id': `${site.url}/blog#blog` },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Journal', item: `${site.url}/blog` },
+      { '@type': 'ListItem', position: 3, name: d.title, item: url },
+    ],
+  },
+];
+---
+
+<Base title={d.seoTitle ?? d.title} description={d.description} path={`/blog/${post.id}`} image={`/media/scenes/${d.scene}.webp`} heroDark schema={schema}>
+  <PageHero scene={d.scene} eyebrow={`Journal · ${service?.name ?? 'bien-être'}`} title={d.title} />
+
+  <article class="section" aria-labelledby="article-meta">
+    <div class="container-text">
+      <p id="article-meta" class="small muted meta">
+        <a href="/blog">Journal</a> · <time datetime={d.date.toISOString()}>{fmt.format(d.date)}</time> · par <a href="/a-propos">Alexandra Degans</a>, kinésiologue
+      </p>
+
+      {headings.filter((h) => h.depth === 2).length > 2 && (
+        <nav class="toc" aria-label="Sommaire">
+          <p class="eyebrow">Sommaire</p>
+          <ol>{headings.filter((h) => h.depth === 2).map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+        </nav>
+      )}
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <aside class="note" aria-label="Avertissement">
+        <p>Les accompagnements présentés ici sont des pratiques de bien-être. Ils ne posent pas de diagnostic et ne remplacent ni une consultation, ni un traitement médical, psychologique ou vétérinaire. Ne modifiez jamais un traitement sans l’avis de votre médecin.</p>
+      </aside>
+
+      <aside class="author" aria-label="L’autrice">
+        <img class="author__pic" src="/media/alexandra-degans-480.webp" alt="Alexandra Degans, kinésiologue" width="480" height="600" loading="lazy" decoding="async" />
+        <div>
+          <p class="eyebrow">L’autrice</p>
+          <p><strong>Alexandra Degans</strong> est kinésiologue certifiée (EKTC) et exerce depuis 2023 à Bassens et à Myans, près de Chambéry. Elle accompagne les bébés, les enfants, les adultes et les animaux de compagnie.</p>
+          <a class="link-arrow" href="/a-propos">Son parcours</a>
+        </div>
+      </aside>
+
+      {service && (
+        <p class="service-link">
+          Pour aller plus loin : <a href={service.path}>{service.name} à Bassens et Myans</a>, déroulé et tarif.
+        </p>
+      )}
+
+      {others.length > 0 && (
+        <nav class="more" aria-label="Autres articles">
+          <p class="eyebrow">À lire aussi</p>
+          <ul role="list">{others.map((o) => <li><a href={`/blog/${o.id}`}>{o.data.title}</a></li>)}</ul>
+        </nav>
+      )}
+    </div>
+  </article>
+
+  <CtaBooking />
+</Base>
+
+<style>
+  .meta { margin-bottom: var(--s-7); }
+  .meta a { text-decoration: underline; text-underline-offset: 0.2em; }
+  .toc { margin-bottom: var(--s-8); padding: var(--s-5) var(--s-6); border-left: 1px solid var(--c-sauge); display: grid; gap: var(--s-3); }
+  .toc ol { display: grid; gap: var(--s-2); padding-left: 1.1em; }
+  .toc a { text-decoration: none; }
+  .toc a:hover, .toc a:focus-visible { text-decoration: underline; }
+  .prose :global(h2) { scroll-margin-top: calc(var(--header-h) + 1rem); }
+  .note { margin-top: var(--s-9); padding: var(--s-5) var(--s-6); border-radius: var(--r-lg); background: var(--c-sable, #e8dcc7); font-size: var(--fs-sm); }
+  .author { margin-top: var(--s-8); display: grid; grid-template-columns: 5.5rem 1fr; gap: var(--s-5); align-items: start; padding-top: var(--s-6); border-top: 1px solid var(--line-soft, var(--line)); }
+  .author__pic { width: 5.5rem; aspect-ratio: 1; object-fit: cover; object-position: 50% 15%; border-radius: 50%; background: var(--c-foret-900); }
+  .author > div:last-child { display: grid; gap: var(--s-3); }
+  .service-link { margin-top: var(--s-7); }
+  .service-link a, .more a { text-decoration: underline; text-underline-offset: 0.2em; }
+  .more { margin-top: var(--s-7); display: grid; gap: var(--s-3); }
+  .more ul { display: grid; gap: var(--s-2); }
+</style>

@@ -23,7 +23,7 @@ interface Props {
 const { title, description, path = '/', image = '/og-image.png', heroDark = false, schema, noindex = false, noBookingBar = false } = Astro.props;
 const canonical = new URL(path === '/' ? '/' : path, site.url).href;
 const ogImage = new URL(image, site.url).href;
-const fullTitle = path === '/' ? `${site.name} · Kinésiologue à Chambéry (Bassens & Myans)` : `${title} · ${site.name}`;
+const fullTitle = path === '/' ? 'Kinésiologue Chambéry, Bassens, Myans · Alexandra Degans' : title.length + site.name.length + 3 <= 60 ? `${title} · ${site.name}` : title;
 
 const business = {
   '@context': 'https://schema.org',
@@ -49,11 +49,10 @@ const business = {
     { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '20:00' },
     { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Saturday'], opens: '09:00', closes: '14:30' },
   ],
-  founder: { '@type': 'Person', name: site.name, jobTitle: 'Kinésiologue' },
-  memberOf: [
-    { '@type': 'Organization', name: 'Fédération de la Kinésiologie Professionnelle' },
-    { '@type': 'Organization', name: 'Fédération Française des Pratiques Alternatives Professionnelles' },
-  ],
+  founder: { '@type': 'Person', '@id': `${site.url}/a-propos#alexandra`, name: site.name, jobTitle: 'Kinésiologue' },
+  hasMap: site.googleReviews,
+  sameAs: [site.googleReviews, site.instagram],
+  foundingDate: '2023-07',
 };
 const schemas = [business, ...(Array.isArray(schema) ? schema : schema ? [schema] : [])];
 ---
@@ -65,7 +64,7 @@ const schemas = [business, ...(Array.isArray(schema) ? schema : schema ? [schema
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {path !== '/404' && <link rel="canonical" href={canonical} />}
     {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="theme-color" content="#f3ede2" />
     <meta name="color-scheme" content="light" />

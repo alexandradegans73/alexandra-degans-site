@@ -21,10 +21,6 @@ export const site = {
     { days: 'Samedi', time: '9 h – 14 h 30' },
   ],
   payments: 'Chèques, espèces, Paylib, virement',
-  affiliations: [
-    'Membre de la Fédération de la Kinésiologie Professionnelle',
-    'Membre de la Fédération Française des Pratiques Alternatives Professionnelles',
-  ],
   mediation: 'CNPM Médiation — adhérente n° CNPM32916',
   siret: '953 944 154 00012',
   googleReviews: 'https://www.google.com/maps/place/?q=place_id:ChIJpVBP6peti0cR6ICIh4BDzqU',
@@ -38,8 +34,8 @@ export const site = {
       city: 'Bassens',
       note: 'Stationnement gratuit · à 5 min de Chambéry',
       maps: 'https://www.google.com/maps/search/?api=1&query=17+rue+Arthur+Haulotte+73000+Bassens',
-      lat: 45.5873,
-      lng: 5.9458,
+      lat: 45.571131,
+      lng: 5.942084,
     },
     {
       id: 'myans',
@@ -50,8 +46,8 @@ export const site = {
       city: 'Myans',
       note: 'Stationnement gratuit · au pied des vignes',
       maps: 'https://www.google.com/maps/search/?api=1&query=17+impasse+du+Gardeny+73800+Myans',
-      lat: 45.5147,
-      lng: 5.9869,
+      lat: 45.513038,
+      lng: 5.993821,
     },
   ],
 } as const;
@@ -125,7 +121,7 @@ export const prestations: Prestation[] = [
     name: 'Drainage lymphatique',
     short: 'Légèreté du ventre et des jambes.',
     intro:
-      'Des gestes lents et précis pour accompagner la circulation de la lymphe, apaiser les gonflements et retrouver de la légèreté.',
+      'Des gestes lents et précis pour accompagner la circulation de la lymphe et retrouver une sensation de légèreté.',
     duration: '1 h ou 75 min',
     price: 'dès 60 €',
     details: [{ label: 'Ventre', duration: '1 h', price: '60 €' }, { label: 'Jambes', duration: '75 min', price: '70 €' }],
@@ -155,6 +151,7 @@ export const nav = [
   { label: 'Kinésiologie animale', path: '/kinesiologie-animale' },
   { label: 'Soins énergétiques', path: '/soins-energetiques' },
   { label: 'Drainage lymphatique', path: '/drainage-lymphatique' },
+  { label: 'Journal', path: '/blog' },
   { label: 'À propos', path: '/a-propos' },
   { label: 'Contact', path: '/contact' },
 ];
