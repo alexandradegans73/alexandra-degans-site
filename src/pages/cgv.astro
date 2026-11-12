@@ -1,0 +1,62 @@
+---
+import Base from '@layouts/Base.astro';
+import { site } from '@data/site';
+---
+<Base title="Conditions générales de vente" description="Conditions générales de vente et de réservation des séances d’Alexandra Degans : prix, paiement, annulation, rétractation, médiation." path="/cgv" noindex>
+  <section class="section legal">
+    <div class="container-text prose">
+      <p class="eyebrow">Informations légales</p>
+      <h1>Conditions générales de vente</h1>
+      <p class="muted small">En vigueur au 12 novembre 2026</p>
+
+      <h2>1. Qui propose les séances</h2>
+      <p>Alexandra Degans, entrepreneure individuelle — kinésiologue, SIRET {site.siret}. {site.places.map((p) => `${p.street}, ${p.zip} ${p.city}`).join(' · ')}. Téléphone : {site.phone} · E-mail : <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+      <p>Les présentes conditions s’appliquent à toute séance réservée sur ce site, par téléphone ou par e-mail, par un client agissant à titre personnel.</p>
+
+      <h2>2. Nature des prestations</h2>
+      <p>La kinésiologie, la kinésiologie animale, les soins énergétiques et le drainage lymphatique proposés sont des pratiques de bien-être. Ils ne constituent ni un acte médical, ni un diagnostic, ni un traitement, et ne remplacent pas une consultation médicale, psychologique ou vétérinaire. Aucun résultat n’est garanti.</p>
+
+      <h2>3. Prix</h2>
+      <p>Les prix sont indiqués en euros sur chaque page de soin et au moment de la réservation. Le prix applicable est celui affiché au moment où vous réservez.</p>
+
+      <h2>4. Réservation et paiement</h2>
+      <ul>
+        <li><strong>En ligne :</strong> vous choisissez la séance, le lieu et le créneau, puis vous payez sur la page sécurisée de Stripe. Le créneau est réservé pour vous pendant 30 minutes le temps du paiement. La réservation est ferme dès que le paiement est accepté ; un e-mail de confirmation vous est envoyé avec un lien d’annulation.</li>
+        <li><strong>Par téléphone ou e-mail :</strong> la séance est réglée sur place ({site.payments.toLowerCase()}).</li>
+      </ul>
+
+      <h2>5. Annulation et report par le client</h2>
+      <ul>
+        <li><strong>Jusqu’à 48 h avant la séance :</strong> annulation gratuite et remboursement intégral, directement depuis le lien reçu par e-mail.</li>
+        <li><strong>Moins de 48 h avant :</strong> l’annulation en ligne n’est plus possible ; merci d’appeler Alexandra au {site.phone}. Sous réserve du droit de rétractation (article 6), la séance réglée n’est alors pas remboursée, sauf accord.</li>
+        <li>Un report peut être demandé par téléphone, selon les disponibilités.</li>
+      </ul>
+
+      <h2>6. Droit de rétractation</h2>
+      <p>Pour une séance réservée à distance (en ligne, par téléphone ou par e-mail), vous disposez d’un délai de <strong>14 jours</strong> à compter de la réservation pour vous rétracter, sans avoir à donner de motif, tant que la séance n’a pas eu lieu.</p>
+      <p>Si vous réservez une séance qui a lieu avant la fin de ce délai, vous demandez expressément qu’elle soit réalisée à la date choisie. Vous pouvez toutefois vous rétracter jusqu’au début de la séance : vous êtes alors intégralement remboursé. Une fois la séance réalisée, le droit de rétractation ne peut plus être exercé.</p>
+      <p>Pour vous rétracter, utilisez le lien d’annulation reçu par e-mail ou envoyez une déclaration claire (par exemple le modèle ci-dessous) à <a href={`mailto:${site.email}`}>{site.email}</a>. Le remboursement est effectué sous 14 jours, avec le même moyen de paiement.</p>
+      <blockquote>
+        <p><strong>Modèle de formulaire de rétractation</strong><br />
+        À l’attention d’Alexandra Degans, {site.email} :<br />
+        Je vous notifie par la présente ma rétractation du contrat portant sur la prestation de service ci-dessous :<br />
+        Séance réservée le : … · Date de la séance : …<br />
+        Nom : … · Adresse : …<br />
+        Date et signature (en cas d’envoi papier) : …</p>
+      </blockquote>
+
+      <h2>7. Annulation par la praticienne</h2>
+      <p>Si Alexandra Degans doit annuler une séance, elle vous prévient au plus vite et vous propose un autre créneau ou le remboursement intégral, à votre choix.</p>
+
+      <h2>8. Kinésiologie animale</h2>
+      <p>Le propriétaire de l’animal reste responsable de celui-ci pendant la séance. La séance ne remplace pas un suivi vétérinaire.</p>
+
+      <h2>9. Réclamations et médiation</h2>
+      <p>Pour toute réclamation, contactez d’abord Alexandra Degans par e-mail ou téléphone. À défaut de solution amiable, vous pouvez recourir gratuitement au médiateur de la consommation : {site.mediation}.</p>
+
+      <h2>10. Données personnelles et droit applicable</h2>
+      <p>Vos données sont traitées comme décrit dans la <a href="/confidentialite">politique de confidentialité</a>. Les présentes conditions sont soumises au droit français.</p>
+    </div>
+  </section>
+</Base>
+<style>.legal { padding-top: calc(var(--header-h) + var(--s-8)); } .legal h1 { font-size: var(--fs-h2); margin-block: var(--s-4) var(--s-6); } .legal ul { padding-left: 1.2em; list-style: disc; } .legal blockquote { border-left: 2px solid currentColor; padding-left: 1em; margin-block: 1em; opacity: .9; }</style>

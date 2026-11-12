@@ -244,9 +244,27 @@ async function handle(req, env, ctx) {
   return json({ error: 'Not found' }, 404);
 }
 
+// En-têtes de sécurité ajoutés à toutes les réponses de l'API.
+const SEC = {
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'X-Frame-Options': 'DENY',
+};
+
+// Purge quotidienne (cron) : réservations terminées depuis plus de 3 ans,
+// réservations jamais payées (hold / expired) de plus de 30 jours.
+async function purge(env) {
+  const now = Date.now();
+  await env.DB.prepare('DELETE FROM bookings WHERE end < ?1').bind(now - 3 * 365 * 864e5).run();
+  await env.DB.prepare("DELETE FROM bookings WHERE status IN ('hold','expired') AND created_at < ?1").bind(now - 30 * 864e5).run();
+}
+
 export default {
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(purge(env));
+  },
   async fetch(req, env, ctx) {
-    const h = cors(req, env);
+    const h = { ...cors(req, env), ...SEC };
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: h });
     try {
       const res = await handle(req, env, ctx);

@@ -14,7 +14,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       filter: (page) =>
-        !page.includes('/mentions-legales') && !page.includes('/confidentialite') && !page.includes('/404') && !page.includes('/reserv'),
+        !page.includes('/mentions-legales') && !page.includes('/confidentialite') && !page.includes('/cgv') && !page.includes('/404') && !page.includes('/reserv'),
       changefreq: 'monthly',
       priority: 0.7,
     }),
