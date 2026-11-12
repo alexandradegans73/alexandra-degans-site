@@ -16,7 +16,7 @@
 import { CATALOG, PLACES, RULES, resolveItem } from './catalog.js';
 import { busyFromIcs } from './ics.js';
 import { computeSlots, isFree } from './slots.js';
-import { sendConfirmation, sendCancellation } from './mail.js';
+import { sendConfirmation, sendCancellation, calendarSync } from './mail.js';
 import { frLabel } from './time.js';
 
 const MIN = 60000;
@@ -106,7 +106,7 @@ async function confirmBooking(env, id, session) {
   const fresh = await getBooking(env, id);
   if (claim.meta.changes === 1) {
     const item = resolveItem(fresh.item, fresh.combo);
-    await sendConfirmation(env, { ...fresh, note: item?.note });
+    await Promise.all([sendConfirmation(env, { ...fresh, note: item?.note }), calendarSync(env, 'create', fresh)]);
   }
   return fresh;
 }
@@ -215,7 +215,7 @@ async function handle(req, env, ctx) {
         refunded = true;
       }
       await env.DB.prepare(`UPDATE bookings SET status = 'cancelled', cancelled_at = ?2, refunded = ?3 WHERE id = ?1`).bind(b.id, now, refunded ? 1 : 0).run();
-      ctx.waitUntil(sendCancellation(env, b, refunded));
+      ctx.waitUntil(Promise.all([sendCancellation(env, b, refunded), calendarSync(env, 'delete', b)]));
       return json({ ...publicBooking({ ...b, status: 'cancelled' }), refunded });
     }
   }
@@ -233,7 +233,7 @@ async function handle(req, env, ctx) {
     return json({ received: true });
   }
 
-  if (req.method === 'GET' && path === '/api/health') return json({ ok: true, ical: !!env.ICAL_URL, stripe: !!env.STRIPE_SECRET_KEY, mail: !!env.RESEND_API_KEY });
+  if (req.method === 'GET' && path === '/api/health') return json({ ok: true, ical: !!env.ICAL_URL, stripe: !!env.STRIPE_SECRET_KEY, mail: !!env.RESEND_API_KEY, agenda: !!env.GCAL_HOOK_URL });
 
   return json({ error: 'Not found' }, 404);
 }

@@ -99,11 +99,11 @@ ${recap(b)}${note}
   const pro = layout('Nouvelle réservation', `
 <p><strong>${esc(b.name)}</strong> · ${esc(b.phone)} · <a href="mailto:${esc(b.email)}" style="color:#627056">${esc(b.email)}</a></p>
 ${recap(b)}${b.message ? `<p><strong>Précisions :</strong> ${esc(b.message)}</p>` : ''}
-<p style="font-size:13px;color:#5b6453">Le rendez-vous est joint en invitation d'agenda. Paiement visible dans Stripe.</p>`);
+<p style="font-size:13px;color:#5b6453">${env.GCAL_HOOK_URL ? 'Le rendez-vous a été ajouté à l’agenda « Kinésiologie ».' : 'Le rendez-vous est joint en invitation d’agenda.'} Paiement visible dans Stripe.</p>`);
   const pros = [env.ALEXANDRA_EMAIL, env.ALEXANDRA_EMAIL_2].filter(Boolean);
   await send(env, { to: b.email, subject: `Rendez-vous confirmé — ${frLabel(b.start)}`, html: client, ics: bookingIcs(b, env, { attendee: b.email }), icsMethod: 'REQUEST' });
   for (const to of pros) {
-    await send(env, { to, subject: `Nouvelle réservation : ${b.item_name} — ${frLabel(b.start)}`, html: pro, ics: bookingIcs(b, env, { attendee: to, attendeeName: b.name }), icsMethod: 'REQUEST' });
+    await send(env, { to, subject: `Nouvelle réservation : ${b.item_name} — ${frLabel(b.start)}`, html: pro, ...(env.GCAL_HOOK_URL ? {} : { ics: bookingIcs(b, env, { attendee: to, attendeeName: b.name }), icsMethod: 'REQUEST' }) });
   }
 }
 
@@ -116,6 +116,30 @@ ${recap(b)}
   const pro = layout('Réservation annulée', `<p>${esc(b.name)} a annulé son rendez-vous${refunded ? ' (remboursé)' : ''}.</p>${recap(b)}`);
   await send(env, { to: b.email, subject: `Rendez-vous annulé — ${frLabel(b.start)}`, html: client, ics: bookingIcs(b, env, { method: 'CANCEL', attendee: b.email }), icsMethod: 'CANCEL' });
   for (const to of [env.ALEXANDRA_EMAIL, env.ALEXANDRA_EMAIL_2].filter(Boolean)) {
-    await send(env, { to, subject: `Annulation : ${b.item_name} — ${frLabel(b.start)}`, html: pro, ics: bookingIcs(b, env, { method: 'CANCEL', attendee: to, attendeeName: b.name }), icsMethod: 'CANCEL' });
+    await send(env, { to, subject: `Annulation : ${b.item_name} — ${frLabel(b.start)}`, html: pro, ...(env.GCAL_HOOK_URL ? {} : { ics: bookingIcs(b, env, { method: 'CANCEL', attendee: to, attendeeName: b.name }), icsMethod: 'CANCEL' }) });
+  }
+}
+
+/**
+ * Agenda « Kinésiologie » d'Alexandra : le rendez-vous y est écrit directement
+ * par un petit script Google (Apps Script, voir reservation/google-agenda.gs).
+ */
+export async function calendarSync(env, action, b) {
+  if (!env.GCAL_HOOK_URL) return;
+  const place = PLACES[b.place];
+  const description = [
+    `Client : ${b.name}`, `Tél. : ${b.phone}`, `E-mail : ${b.email}`,
+    b.message ? `Précisions : ${b.message}` : '', `Réglé en ligne : ${euro(b.price)}`,
+  ].filter(Boolean).join('\n');
+  try {
+    const r = await fetch(env.GCAL_HOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ secret: env.GCAL_HOOK_SECRET, action, id: b.id, title: `${b.item_name} — ${b.name}`, start: b.start, end: b.end, location: place?.address || '', description }),
+    });
+    const t = await r.text();
+    if (!r.ok || !t.includes('"ok":true')) console.log('Agenda Google', action, r.status, t.slice(0, 300));
+  } catch (e) {
+    console.log('Agenda Google injoignable', String(e));
   }
 }
