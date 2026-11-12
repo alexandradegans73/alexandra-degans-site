@@ -33,6 +33,7 @@ Un article dont la date est dans le futur n’apparaît pas tant que le site n�
      ou le vétérinaire quand c’est pertinent.
    - La psychogénéalogie est présentée comme une grille de lecture, pas comme une vérité scientifique.
    - Le script `scripts/conformite.mjs` bloque la mise en ligne s’il trouve un mot interdit.
+   - Il bloque aussi les doublons : titre, description ou mot-clé identiques à un autre article, ou plus de 12 % de passages de 5 mots en commun avec un article existant. En cas de blocage, réécrire l’article avec un angle différent (ne jamais modifier le script).
 2. **Rien d’inventé.** Aucun témoignage, chiffre, étude, diplôme, tarif ou affiliation qui ne figure pas
    déjà sur le site. Alexandra n’est plus adhérente d’aucune fédération. Pas d’intervalle imposé entre les séances.
    Les faits utilisables : certification de kinésiologie EKTC (2023), kinésiologie animale EKTC + séminaires

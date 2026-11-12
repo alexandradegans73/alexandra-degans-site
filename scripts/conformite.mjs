@@ -77,10 +77,42 @@ for (const f of files(join(ROOT, 'src/content/blog'))) {
   if (!/draft:\s*true/.test(fm[1]) && words < 600) problems.push(`${relative(ROOT, f)} : article trop court (${words} mots, 600 minimum)`);
 }
 
+/**
+ * Contrôle anti-doublon entre articles : titres, descriptions et mots-clés uniques,
+ * et contenu suffisamment différent (comparaison des suites de 5 mots).
+ */
+const norm = (t) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+const posts = [];
+for (const f of files(join(ROOT, 'src/content/blog'))) {
+  const src = readFileSync(f, 'utf8');
+  const fm = src.match(/^---\n([\s\S]*?)\n---/);
+  if (!fm) continue;
+  const get = (k) => norm(fm[1].match(new RegExp(`^${k}:\\s*["']?(.*?)["']?\\s*$`, 'm'))?.[1] ?? '');
+  const body = norm(src.slice(fm[0].length).replace(/[#*>\[\]()_`-]/g, ' '));
+  const words = body.split(' ').filter((w) => w.length > 2);
+  const shingles = new Set();
+  for (let i = 0; i + 5 <= words.length; i++) shingles.add(words.slice(i, i + 5).join(' '));
+  posts.push({ file: relative(ROOT, f), title: get('title'), seo: get('seoTitle'), desc: get('description'), kw: get('keyword'), shingles });
+}
+const SEUIL = 0.12; // au-delà de 12 % de passages de 5 mots en commun : trop proche
+for (let i = 0; i < posts.length; i++) {
+  for (let j = i + 1; j < posts.length; j++) {
+    const a = posts[i], b = posts[j];
+    for (const k of ['title', 'desc', 'kw']) {
+      if (a[k] && a[k] === b[k]) problems.push(`${a.file} et ${b.file} : même ${k === 'kw' ? 'mot-clé' : k === 'desc' ? 'description' : 'titre'}`);
+    }
+    if (a.seo && a.seo === b.seo) problems.push(`${a.file} et ${b.file} : même seoTitle`);
+    let inter = 0;
+    for (const s of a.shingles) if (b.shingles.has(s)) inter++;
+    const sim = inter / Math.max(1, Math.min(a.shingles.size, b.shingles.size));
+    if (sim > SEUIL) problems.push(`${a.file} et ${b.file} : contenus trop proches (${Math.round(sim * 100)} % de passages identiques, ${Math.round(SEUIL * 100)} % max). Réécrire avec un angle différent.`);
+  }
+}
+
 if (problems.length) {
   console.error(`\n✗ Conformité : ${problems.length} point(s) à corriger avant publication\n`);
   console.error(problems.join('\n\n'));
   console.error('\nVoir docs/blog.md pour les règles de rédaction.\n');
   process.exit(1);
 }
-console.log('✓ Conformité : aucun vocabulaire interdit, articles conformes.');
+console.log(`✓ Conformité : aucun vocabulaire interdit, ${posts.length} articles conformes et tous différents.`);
