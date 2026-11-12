@@ -69,6 +69,6 @@ Je suis **certifiée kinésiologue animal par l’EKTC**, et je poursuis ma form
 - Durée : 1 h 15
 - Lieu : Bassens uniquement (17 rue Arthur Haulotte, stationnement gratuit), à 5 minutes de Chambéry
 - Tarif : 70 €
-- Règlement : chèque, espèces, Paylib ou virement
+- Règlement : carte bancaire en ligne, ou sur place par chèque, espèces, Wero ou virement
 
 Pour réserver, utilisez la [réservation en ligne](/reserver?soin=animale), ou appelez-moi au 06 76 64 79 09 pour en parler avant de venir.

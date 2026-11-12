@@ -21,7 +21,7 @@ export const site = {
     { days: 'Lundi – Vendredi', time: '9 h – 19 h' },
     { days: 'Samedi', time: '9 h – 14 h 30' },
   ],
-  payments: 'Chèques, espèces, Paylib, virement',
+  payments: 'Carte bancaire en ligne ; sur place : chèques, espèces, Wero, virement',
   mediation: 'CNPM Médiation — adhérente n° CNPM32916',
   siret: '953 944 154 00012',
   googleReviews: 'https://www.google.com/maps/place/?q=place_id:ChIJpVBP6peti0cR6ICIh4BDzqU',

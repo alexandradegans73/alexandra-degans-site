@@ -13,7 +13,7 @@
 /* --- Reset doux ------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; }
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; overflow-x: clip; }
 html:focus-within { scroll-behavior: smooth; }
 body {
   min-height: 100dvh;
@@ -187,3 +187,14 @@ hr.rule { border: 0; height: 1px; background: var(--line-soft); margin-block: va
   background: color-mix(in oklab, var(--c-sable) 35%, transparent);
   border-radius: 0 var(--r-md) var(--r-md) 0;
 }
+
+/* --- Lisibilité sur téléphone ------------------------------------------
+   Sur petit écran, le Jost Light devient trop fin : on passe le texte courant
+   en Regular et on resserre légèrement l'interlignage. */
+@media (max-width: 47.99em) {
+  body { font-weight: 400; line-height: 1.6; }
+  .lead { font-weight: 400; }
+  p, li { overflow-wrap: break-word; }
+  .eyebrow { letter-spacing: var(--ls-caps); line-height: 1.5; }
+}
+a[href^="tel:"] { white-space: nowrap; }

@@ -37,9 +37,9 @@
   --font-text: 'Jost', 'Futura', 'Avenir Next', 'Helvetica Neue', Arial, sans-serif;
 
   /* Échelle fluide (mobile → desktop) */
-  --fs-xs: clamp(0.72rem, 0.68rem + 0.2vw, 0.8rem);
-  --fs-sm: clamp(0.85rem, 0.8rem + 0.2vw, 0.95rem);
-  --fs-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --fs-xs: clamp(0.8rem, 0.76rem + 0.15vw, 0.84rem);
+  --fs-sm: clamp(0.94rem, 0.9rem + 0.15vw, 1rem);
+  --fs-base: clamp(1.0625rem, 1rem + 0.25vw, 1.125rem);
   --fs-lg: clamp(1.15rem, 1.05rem + 0.5vw, 1.4rem);
   --fs-h4: clamp(1.35rem, 1.2rem + 0.8vw, 1.9rem);
   --fs-h3: clamp(1.7rem, 1.4rem + 1.4vw, 2.5rem);

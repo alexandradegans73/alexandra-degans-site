@@ -1,7 +1,7 @@
 ---
 interface Row { label: string; detail?: string; price: string; note?: string }
 interface Props { title?: string; rows: Row[]; caption?: string; }
-const { title, rows, caption = 'Tarifs communiqués à titre indicatif, à confirmer lors de la prise de rendez-vous. Règlement par chèque, espèces, Paylib ou virement.' } = Astro.props;
+const { title, rows, caption = 'Tarifs communiqués à titre indicatif, à confirmer lors de la prise de rendez-vous. Règlement par carte bancaire en ligne, ou sur place par chèque, espèces, Wero ou virement.' } = Astro.props;
 ---
 <div class="prices" data-reveal>
   {title && <h3 class="prices__title">{title}</h3>}

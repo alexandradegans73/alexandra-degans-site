@@ -26,6 +26,8 @@ import { site } from '@data/site';
     background: var(--c-sable); color: var(--c-foret);
   }
   .booking-bar__call svg { width: 20px; height: 20px; }
-  .booking-bar__btn { padding-block: 0.8em; }
+  .booking-bar__btn { padding-block: 0.8em; white-space: nowrap; }
+  .booking-bar { max-width: calc(100vw - 1.5rem); }
+  @media (max-width: 22em) { .booking-bar__btn { padding-inline: 1.2em; letter-spacing: 0.08em; } }
   @media (min-width: 64em) { .booking-bar { display: none; } }
 </style>

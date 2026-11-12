@@ -258,7 +258,7 @@ const etapes = [
     box-shadow: 0 30px 80px -40px rgb(10 14 8 / 0.8);
   }
   .branch--from-right .branch__frame { grid-column: 1; border-radius: var(--r-lg) 0 var(--r-lg) var(--r-lg); }
-  .branch__body { display: grid; gap: var(--s-4); padding: clamp(1.3rem, 3vw, 2.4rem); }
+  .branch__body { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-4); padding: clamp(1.3rem, 3vw, 2.4rem); }
   .branch__head { display: grid; gap: var(--s-2); }
   .branch__num { font-size: var(--fs-xs); letter-spacing: var(--ls-caps-wide); text-transform: uppercase; color: var(--c-sable); }
   .branch__name { font-size: clamp(1.8rem, 1.2rem + 2vw, 2.9rem); line-height: 1.05; overflow-wrap: anywhere; hyphens: auto; }
@@ -311,7 +311,9 @@ const etapes = [
     .panel { width: 100%; }
     .branch { --lw: 2.2rem; --lh: 3.2rem; width: 100%; grid-template-columns: var(--lw) minmax(0, 1fr); }
     .branch--from-right { grid-template-columns: minmax(0, 1fr) var(--lw); }
-    .branch__intro { font-size: var(--fs-sm); }
+    .branch__details li { flex-wrap: wrap; column-gap: var(--s-3); row-gap: 0.15rem; }
+    .branch__d-label { flex-basis: 100%; }
+    .branch__d-duration { white-space: normal; flex: 1; }
   }
   @media (prefers-reduced-motion: reduce) { .scene { min-height: 0; padding-block: var(--s-9); } .scene--branch { min-height: 0; } .scene--branch .scene__inner { position: static; min-height: 0; padding-block: var(--s-7); } .scroll-hint i { animation: none; } }
 </style>
