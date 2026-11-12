@@ -42,7 +42,7 @@ Un article dont la date est dans le futur n’apparaît pas tant que le site n�
 3. **Ton.** Chaleureux, rassurant, professionnel, à la première personne (Alexandra), phrases simples.
    Pas de bourrage de mots-clés : le mot-clé dans le titre, la description, le premier paragraphe et un intertitre suffit.
 4. **Forme.** 700 à 1 200 mots, intertitres `##` et `###`, une liste quand elle aide, un dernier paragraphe
-   qui invite à réserver en ligne ou à appeler le 06 76 64 79 09. Au moins un lien vers la page de soin liée.
+   qui invite à [réserver en ligne](/reserver) (ou `/reserver?soin=<id>` : kinesiologie, memoires, animale, visage, ventre) ou à appeler le 06 76 64 79 09. Jamais de lien vers Crénolibre ni Resalib. Au moins un lien vers la page de soin liée.
 5. **Local.** Citer Bassens, Myans et Chambéry naturellement, une ou deux fois.
 
 ## Vérifier avant d’envoyer

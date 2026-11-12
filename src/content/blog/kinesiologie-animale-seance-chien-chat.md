@@ -71,4 +71,4 @@ Je suis **certifiée kinésiologue animal par l’EKTC**, et je poursuis ma form
 - Tarif : 70 €
 - Règlement : chèque, espèces, Paylib ou virement
 
-Pour réserver, utilisez la réservation en ligne, ou appelez-moi au 06 76 64 79 09 pour en parler avant de venir.
+Pour réserver, utilisez la [réservation en ligne](/reserver?soin=animale), ou appelez-moi au 06 76 64 79 09 pour en parler avant de venir.

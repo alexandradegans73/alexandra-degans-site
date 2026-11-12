@@ -72,4 +72,4 @@ Si une situation relève d’un professionnel de santé, je vous le dis et je vo
 
 Je reçois au **Cobalt, 17 rue Arthur Haulotte à Bassens**, et au **17 impasse du Gardeny à Myans**, à quelques minutes de Chambéry, avec stationnement gratuit dans les deux cas. Une séance de kinésiologie d’une heure coûte 70 €.
 
-Vous pouvez réserver en ligne, ou m’appeler au 06 76 64 79 09 si vous préférez en parler avant de venir.
+Vous pouvez [réserver en ligne](/reserver?soin=kinesiologie), ou m’appeler au 06 76 64 79 09 si vous préférez en parler avant de venir.
