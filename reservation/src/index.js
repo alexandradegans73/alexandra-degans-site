@@ -13,7 +13,7 @@
  * Secrets   : STRIPE_SECRET_KEY, RESEND_API_KEY, ICAL_URL
  * Base D1   : DB (schéma dans schema.sql)
  */
-import { CATALOG, PLACES, RULES, findItem } from './catalog.js';
+import { CATALOG, PLACES, RULES, resolveItem } from './catalog.js';
 import { busyFromIcs } from './ics.js';
 import { computeSlots, isFree } from './slots.js';
 import { sendConfirmation, sendCancellation } from './mail.js';
@@ -105,7 +105,7 @@ async function confirmBooking(env, id, session) {
   const claim = await env.DB.prepare('UPDATE bookings SET emailed = 1 WHERE id = ?1 AND emailed = 0').bind(id).run();
   const fresh = await getBooking(env, id);
   if (claim.meta.changes === 1) {
-    const item = findItem(fresh.item);
+    const item = resolveItem(fresh.item, fresh.combo);
     await sendConfirmation(env, { ...fresh, note: item?.note });
   }
   return fresh;
@@ -122,11 +122,11 @@ async function handle(req, env, ctx) {
   const now = Date.now();
 
   if (req.method === 'GET' && path === '/api/catalog') {
-    return json({ items: CATALOG.map(({ id, group, name, duration, price, places, note }) => ({ id, group, name, duration, price, places, note })), places: PLACES, rules: { refundHours: RULES.refundHours } });
+    return json({ items: CATALOG.map(({ id, group, zone, pack, name, duration, price, places, note, combo }) => ({ id, group, zone, pack, name, duration, price, places, note, combo })), places: PLACES, rules: { refundHours: RULES.refundHours } });
   }
 
   if (req.method === 'GET' && path === '/api/slots') {
-    const item = findItem(url.searchParams.get('item'));
+    const item = resolveItem(url.searchParams.get('item'), url.searchParams.get('combo'));
     const place = url.searchParams.get('place');
     if (!item || !item.places.includes(place)) return json({ error: 'Prestation ou lieu inconnu.' }, 400);
     const busy = await allBusy(env, ctx, now);
@@ -135,7 +135,7 @@ async function handle(req, env, ctx) {
 
   if (req.method === 'POST' && path === '/api/checkout') {
     const body = await req.json().catch(() => ({}));
-    const item = findItem(body.item);
+    const item = resolveItem(body.item, body.combo);
     const place = body.place;
     const start = Number(body.start);
     const name = String(body.name || '').trim().slice(0, 120);

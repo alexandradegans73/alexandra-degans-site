@@ -110,3 +110,18 @@ assert(!isFree({ start: P(2026,11,16,10,30), duration: 60, busy, now }));
 assert(!isFree({ start: P(2026,11,15,10), duration: 60, busy, now }), 'dimanche');
 assert(!isFree({ start: P(2026,11,16,14,10), duration: 60, busy, now }), 'pas au quart d’heure');
 console.log('\nTous les tests passent.');
+
+// --- soin à la carte
+import { resolveItem } from '../src/catalog.js';
+{
+  const r = resolveItem('a-la-carte', 'visage,ventre');
+  assert.equal(r.duration, 105);
+  assert.equal(r.price, 11000);
+  assert.match(r.name, /visage \+ Drainage lymphatique du ventre/);
+  assert.equal(resolveItem('a-la-carte', 'visage,visage'), null);
+  assert.equal(resolveItem('a-la-carte', 'visage'), null);
+  assert.equal(resolveItem('a-la-carte', 'visage,kinesiologie'), null);
+  assert.equal(resolveItem('a-la-carte', ['ventre', 'jambes']).duration, 135);
+  assert.equal(resolveItem('kinesiologie').duration, 60);
+  console.log('Soin à la carte : OK');
+}

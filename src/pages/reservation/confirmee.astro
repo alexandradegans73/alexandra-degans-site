@@ -3,7 +3,7 @@ import Base from '@layouts/Base.astro';
 import { site } from '@data/site';
 ---
 
-<Base title="Rendez-vous confirmé" description="Confirmation de votre rendez-vous avec Alexandra Degans." path="/reservation/confirmee" noindex>
+<Base title="Rendez-vous confirmé" description="Confirmation de votre rendez-vous avec Alexandra Degans." path="/reservation/confirmee" noindex noBookingBar>
   <section class="done" data-api={site.bookingApi}>
     <div class="container-text done__card">
       <img src="/brand/monogramme.svg" alt="" width="64" height="64" class="done__mark" />

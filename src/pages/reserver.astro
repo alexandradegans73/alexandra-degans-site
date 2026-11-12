@@ -10,289 +10,370 @@ import { site } from '@data/site';
   path="/reserver"
   heroDark
   noindex
+  noBookingBar
 >
   <PageHero
     scene="branches"
     eyebrow="Réservation en ligne"
     title="Choisir sa <em>branche</em>."
-    intro="Le soin, le lieu, le moment. Le règlement se fait en ligne, de façon sécurisée, et confirme aussitôt votre rendez-vous."
+    intro="Le soin, le lieu, le moment. Le règlement en ligne confirme aussitôt votre rendez-vous."
   />
 
-  <section class="book" aria-label="Réservation" data-api={site.bookingApi}>
-    <div class="container book__wrap">
-      <ol class="book__rail" aria-hidden="true">
-        <li data-rail="1"><span>1</span>Soin</li>
-        <li data-rail="2"><span>2</span>Lieu</li>
-        <li data-rail="3"><span>3</span>Créneau</li>
-        <li data-rail="4"><span>4</span>Coordonnées</li>
-      </ol>
-
-      <div class="book__panel">
-        <p class="book__status small" role="status" aria-live="polite" data-status></p>
-
-        <!-- 1. Soin -->
-        <fieldset class="step" data-step="1">
-          <legend><span class="caps">Étape 1</span><span class="step__title">Quel soin&nbsp;?</span></legend>
-          <div class="items" data-items>
-            <p class="muted small">Chargement des soins…</p>
-          </div>
-        </fieldset>
-
-        <!-- 2. Lieu -->
-        <fieldset class="step" data-step="2" disabled>
-          <legend><span class="caps">Étape 2</span><span class="step__title">Où&nbsp;?</span></legend>
-          <div class="places" data-places></div>
-        </fieldset>
-
-        <!-- 3. Créneau -->
-        <fieldset class="step" data-step="3" disabled>
-          <legend><span class="caps">Étape 3</span><span class="step__title">Quand&nbsp;?</span></legend>
-          <div class="days" data-days role="radiogroup" aria-label="Jour"></div>
-          <div class="slots" data-slots role="radiogroup" aria-label="Heure"></div>
-        </fieldset>
-
-        <!-- 4. Coordonnées -->
-        <form class="step form" data-step="4" data-form novalidate>
-          <fieldset disabled data-form-fields>
-            <legend><span class="caps">Étape 4</span><span class="step__title">Vos coordonnées</span></legend>
-            <div class="form__grid">
-              <label class="field"><span>Nom et prénom</span><input name="name" autocomplete="name" required maxlength="120" /></label>
-              <label class="field"><span>Téléphone</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="40" /></label>
-              <label class="field field--wide"><span>E-mail</span><input name="email" type="email" autocomplete="email" required maxlength="160" /></label>
-              <label class="field field--wide"><span>Précisions <em class="muted">(facultatif)</em></span>
-                <textarea name="message" rows="3" maxlength="500" placeholder="Ex. : les deux soins choisis pour un soin à la carte, le nom de votre animal…"></textarea>
-              </label>
-            </div>
-            <p class="small muted">Merci de ne pas indiquer d’informations de santé dans ce champ&nbsp;: vous en parlerez directement avec Alexandra pendant la séance.</p>
-            <label class="consent small">
-              <input type="checkbox" name="consent" required />
-              <span>J’ai compris que l’annulation est remboursée intégralement jusqu’à 48&nbsp;h avant le rendez-vous, et que mes coordonnées servent uniquement à gérer ce rendez-vous (<a href="/confidentialite">confidentialité</a>).</span>
-            </label>
-
-            <div class="summary" data-summary hidden></div>
-
-            <button class="btn" type="submit" data-pay>Régler et confirmer</button>
-            <p class="small muted pay-note">Paiement sécurisé par Stripe. Vous serez redirigé(e) vers la page de paiement, puis de retour ici.</p>
-          </fieldset>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
+  <section class="bk" aria-label="Réservation" data-api={site.bookingApi}>
     <div class="container-text">
-      <p class="notice">Vous préférez échanger avant de réserver&nbsp;? Appelez Alexandra au <a href={site.phoneHref}>{site.phone}</a>. La kinésiologie et les soins proposés ne se substituent pas à un suivi médical.</p>
+      <div class="bk__panel">
+        <p class="bk__status small" role="status" aria-live="polite" data-status></p>
+
+        <section class="bk__step is-open" data-step="soin">
+          <button type="button" class="bk__head" data-head aria-expanded="true">
+            <span class="bk__num">1</span><span class="bk__label">Soin</span><span class="bk__value" data-value></span>
+          </button>
+          <div class="bk__body" data-body>
+            <ul class="soins" data-soins><li class="muted small">Chargement…</li></ul>
+          </div>
+        </section>
+
+        <section class="bk__step" data-step="lieu">
+          <button type="button" class="bk__head" data-head aria-expanded="false" disabled>
+            <span class="bk__num">2</span><span class="bk__label">Lieu</span><span class="bk__value" data-value></span>
+          </button>
+          <div class="bk__body" data-body hidden><div class="chips chips--2" data-places></div></div>
+        </section>
+
+        <section class="bk__step" data-step="date">
+          <button type="button" class="bk__head" data-head aria-expanded="false" disabled>
+            <span class="bk__num">3</span><span class="bk__label">Date</span><span class="bk__value" data-value></span>
+          </button>
+          <div class="bk__body" data-body hidden>
+            <div class="days" data-days role="radiogroup" aria-label="Jour"></div>
+            <div class="slots" data-slots role="radiogroup" aria-label="Heure"></div>
+          </div>
+        </section>
+
+        <section class="bk__step" data-step="infos">
+          <button type="button" class="bk__head" data-head aria-expanded="false" disabled>
+            <span class="bk__num">4</span><span class="bk__label">Coordonnées</span><span class="bk__value" data-value></span>
+          </button>
+          <div class="bk__body" data-body hidden>
+            <form class="form" data-form novalidate>
+              <div class="form__grid">
+                <label class="field"><span>Nom et prénom</span><input name="name" autocomplete="name" required maxlength="120" /></label>
+                <label class="field"><span>Téléphone</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="40" /></label>
+                <label class="field field--wide"><span>E-mail</span><input name="email" type="email" autocomplete="email" required maxlength="160" /></label>
+                <label class="field field--wide"><span>Un mot pour Alexandra <em class="muted">(facultatif)</em></span>
+                  <textarea name="message" rows="2" maxlength="500" placeholder="Ex. : le nom de votre animal"></textarea>
+                </label>
+              </div>
+              <p class="small muted">Sans information de santé, merci : vous en parlerez ensemble pendant la séance.</p>
+              <label class="consent small">
+                <input type="checkbox" name="consent" required />
+                <span>Annulation remboursée jusqu’à 48&nbsp;h avant. Mes coordonnées servent uniquement à ce rendez-vous (<a href="/confidentialite">confidentialité</a>).</span>
+              </label>
+              <div class="recap" data-recap hidden></div>
+              <button class="btn bk__pay" type="submit" data-pay>Régler et confirmer</button>
+              <p class="small muted bk__secure">Paiement sécurisé par Stripe.</p>
+            </form>
+          </div>
+        </section>
+      </div>
+
+      <p class="small muted bk__help">Une question avant de réserver&nbsp;? <a href={site.phoneHref}>{site.phone}</a>. Les soins proposés ne se substituent pas à un suivi médical.</p>
     </div>
   </section>
 </Base>
 
 <style is:global>
-  .book {
-    margin-top: calc(-1 * var(--s-6)); position: relative; z-index: 1;
-  .book__wrap { display: grid; gap: var(--s-6); }
-  .book__wrap > * { min-width: 0; }
-  @media (min-width: 60em) { .book__wrap { grid-template-columns: 12rem 1fr; align-items: start; } }
-  .book__rail { list-style: none; padding: 0; margin: 0; display: flex; gap: var(--s-4); font-size: var(--fs-xs); letter-spacing: var(--ls-caps); text-transform: uppercase; color: var(--fg-soft); overflow-x: auto; }
-  @media (min-width: 60em) { .book__rail { flex-direction: column; position: sticky; top: 7rem; gap: var(--s-5); padding-top: var(--s-6); border-left: 1px solid var(--line-soft); padding-left: var(--s-5); } }
-  .book__rail li { display: flex; align-items: center; gap: var(--s-2); white-space: nowrap; transition: color var(--t-base); }
-  .book__rail span { display: inline-grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 50%; border: 1px solid var(--line); font-family: var(--font-display); font-size: 1rem; letter-spacing: 0; }
-  .book__rail li.is-on { color: var(--c-foret); }
-  .book__rail li.is-on span { background: var(--c-sauge); border-color: var(--c-sauge); color: var(--c-creme); }
+  .bk { margin-top: calc(-1 * var(--s-6)); position: relative; z-index: 1; padding-bottom: var(--section-y);
+    [hidden] { display: none !important; }
+    .bk__panel { background: var(--c-ivoire); border: 1px solid var(--c-sable-300); border-radius: var(--r-lg); box-shadow: var(--shadow-soft); overflow: hidden; }
+    .bk__status:empty { display: none; }
+    .bk__status { margin: 0; padding: var(--s-4) var(--s-5); background: color-mix(in oklab, var(--c-sable) 45%, transparent); }
 
-  .book__panel { background: var(--c-ivoire); border: 1px solid var(--c-sable-300); border-radius: var(--r-lg); padding: clamp(1.25rem, 4vw, 3rem); box-shadow: var(--shadow-soft); }
-  .book__status:empty { display: none; }
-  .book__status { padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: color-mix(in oklab, var(--c-sable) 45%, transparent); margin-bottom: var(--s-5); }
+    .bk__step + .bk__step { border-top: 1px solid var(--line-soft); }
+    .bk__head { all: unset; box-sizing: border-box; width: 100%; display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: var(--s-4); padding: var(--s-5) clamp(1.25rem, 4vw, 2.25rem); cursor: pointer; }
+    .bk__head:disabled { cursor: default; opacity: 0.45; }
+    .bk__head:focus-visible { outline: 2px solid var(--c-foret); outline-offset: -4px; border-radius: var(--r-md); }
+    .bk__num { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; border: 1px solid var(--line); font-family: var(--font-display); font-size: 1.05rem; }
+    .bk__label { font-family: var(--font-display); font-size: var(--fs-h4); line-height: 1; }
+    .bk__value { justify-self: end; text-align: right; font-size: var(--fs-sm); color: var(--fg-soft); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+    .is-done .bk__num { background: var(--c-sauge); border-color: var(--c-sauge); color: var(--c-creme); }
+    .is-open .bk__num { border-color: var(--c-foret); }
+    .bk__body { padding: 0 clamp(1.25rem, 4vw, 2.25rem) var(--s-6); animation: bk-in 0.35s var(--ease-out); }
+    @keyframes bk-in { from { opacity: 0; transform: translateY(-6px); } }
 
-  .step { border: 0; padding: 0; margin: 0 0 var(--s-7); min-width: 0; transition: opacity var(--t-base); }
-  .step[disabled], .step:has(> fieldset[disabled]) { opacity: 0.42; }
-  .step > fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
-  legend { display: grid; gap: var(--s-1); margin-bottom: var(--s-5); padding: 0; }
-  legend .caps { color: var(--c-sauge); }
-  .step__title { font-family: var(--font-display); font-size: var(--fs-h3); line-height: 1.1; }
+    .soins { list-style: none; margin: 0; padding: 0; }
+    .soin + .soin { border-top: 1px solid var(--line-soft); }
+    .soin__btn { all: unset; box-sizing: border-box; width: 100%; display: grid; grid-template-columns: 1fr auto; gap: 0 var(--s-4); padding: var(--s-4) 0; cursor: pointer; }
+    .soin__btn:focus-visible { outline: 2px solid var(--c-foret); outline-offset: 2px; border-radius: var(--r-sm); }
+    .soin__name { font-size: var(--fs-base); }
+    .soin__price { font-family: var(--font-display); font-size: var(--fs-lg); }
+    .soin__meta { grid-column: 1 / -1; font-size: var(--fs-xs); color: var(--fg-soft); letter-spacing: 0.04em; }
+    .soin[aria-current='true'] .soin__name { color: var(--c-sauge); }
+    .soin__opts { display: grid; gap: var(--s-3); padding: 0 0 var(--s-5); }
+    .soin__opts p { margin: 0; font-size: var(--fs-xs); letter-spacing: var(--ls-caps); text-transform: uppercase; color: var(--c-sauge); }
 
-  .items { display: grid; gap: var(--s-6); }
-  .group h3 { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-h4); margin: 0 0 var(--s-3); }
-  .opts { display: grid; gap: var(--s-2); }
-  @media (min-width: 40em) { .opts { grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); } }
+    .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+    .chips--2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+    .chip { font: inherit; font-size: var(--fs-sm); color: inherit; padding: 0.6em 1.1em; border: 1px solid var(--c-sable-300); border-radius: var(--r-pill); background: var(--c-creme-050); cursor: pointer; transition: background var(--t-base), border-color var(--t-base), color var(--t-base); }
+    .chip:hover { border-color: var(--c-sauge); }
+    .chip[aria-checked='true'], .chip[aria-pressed='true'] { background: var(--c-sauge); border-color: var(--c-sauge); color: var(--c-creme); }
+    .chip:focus-visible { outline: 2px solid var(--c-foret); outline-offset: 2px; }
+    .chip small { opacity: 0.75; margin-left: 0.4em; }
+    .chips--2 .chip { border-radius: var(--r-md); text-align: left; padding: var(--s-4); display: grid; gap: 2px; }
+    .chips--2 .chip b { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-h4); }
+    .chips--2 .chip small { margin: 0; font-size: var(--fs-xs); }
 
-  .opt { position: relative; display: grid; grid-template-columns: 1fr auto; gap: var(--s-1) var(--s-4); padding: var(--s-4) var(--s-5); border: 1px solid var(--c-sable-300); border-radius: var(--r-md); background: var(--c-creme-050); cursor: pointer; transition: border-color var(--t-base), background var(--t-base), transform var(--t-base) var(--ease-out); text-align: left; font: inherit; color: inherit; }
-  .opt:hover { border-color: var(--c-sauge-claire); transform: translateY(-2px); }
-  .opt[aria-checked='true'] { border-color: var(--c-sauge); background: var(--c-sauge); color: var(--c-creme); }
-  .opt[aria-checked='true'] .opt__meta { color: var(--c-sauge-200); }
-  .opt:focus-visible { outline: 2px solid var(--c-foret); outline-offset: 2px; }
-  .opt__name { font-size: var(--fs-sm); line-height: 1.35; }
-  .opt__price { font-family: var(--font-display); font-size: var(--fs-lg); white-space: nowrap; }
-  .opt__meta { font-size: var(--fs-xs); color: var(--fg-soft); letter-spacing: 0.06em; }
+    .days { display: flex; gap: var(--s-2); overflow-x: auto; padding-bottom: var(--s-3); scroll-snap-type: x mandatory; scrollbar-width: thin; }
+    .day { flex: 0 0 auto; scroll-snap-align: start; display: grid; justify-items: center; gap: 2px; min-width: 4.2rem; padding: var(--s-3) var(--s-2); border: 1px solid var(--c-sable-300); border-radius: var(--r-md); background: var(--c-creme-050); cursor: pointer; font: inherit; color: inherit; }
+    .day b { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-h4); line-height: 1; }
+    .day small { font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-soft); }
+    .day[aria-checked='true'] { background: var(--c-foret); border-color: var(--c-foret); color: var(--c-creme); }
+    .day[aria-checked='true'] small { color: var(--c-sable); }
+    .slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.8rem, 1fr)); gap: var(--s-2); margin-top: var(--s-4); }
+    .slots .chip { padding: 0.65em 0; text-align: center; }
 
-  .places { display: grid; gap: var(--s-3); }
-  @media (min-width: 40em) { .places { grid-template-columns: 1fr 1fr; } }
-  .places .opt { grid-template-columns: 1fr; }
-  .places .opt__price { font-size: var(--fs-h4); }
-
-  .days { display: flex; gap: var(--s-2); overflow-x: auto; padding-bottom: var(--s-3); scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
-  .day { flex: 0 0 auto; scroll-snap-align: start; display: grid; justify-items: center; gap: 2px; min-width: 4.5rem; padding: var(--s-3) var(--s-2); border: 1px solid var(--c-sable-300); border-radius: var(--r-md); background: var(--c-creme-050); cursor: pointer; font: inherit; color: inherit; transition: border-color var(--t-base), background var(--t-base); }
-  .day b { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-h4); line-height: 1; }
-  .day small { font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-soft); }
-  .day[aria-checked='true'] { background: var(--c-foret); border-color: var(--c-foret); color: var(--c-creme); }
-  .day[aria-checked='true'] small { color: var(--c-sable); }
-  .slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(5.2rem, 1fr)); gap: var(--s-2); margin-top: var(--s-4); }
-  .slot { padding: var(--s-3) 0; border: 1px solid var(--c-sable-300); border-radius: var(--r-pill); background: transparent; font: inherit; font-size: var(--fs-sm); color: inherit; cursor: pointer; transition: background var(--t-base), border-color var(--t-base); }
-  .slot:hover { border-color: var(--c-sauge); }
-  .slot[aria-checked='true'] { background: var(--c-sauge); border-color: var(--c-sauge); color: var(--c-creme); }
-
-  .form__grid { display: grid; gap: var(--s-4); margin-bottom: var(--s-4); }
-  @media (min-width: 40em) { .form__grid { grid-template-columns: 1fr 1fr; } .field--wide { grid-column: 1 / -1; } }
-  .field { display: grid; gap: var(--s-2); font-size: var(--fs-sm); }
-  .field input, .field textarea { font: inherit; font-size: 16px; color: var(--fg); padding: 0.85em 1em; border: 1px solid var(--c-sable-300); border-radius: var(--r-md); background: var(--c-creme-050); transition: border-color var(--t-base); width: 100%; }
-  .field input:focus, .field textarea:focus { outline: none; border-color: var(--c-sauge); box-shadow: 0 0 0 3px color-mix(in oklab, var(--c-sauge) 22%, transparent); }
-  .field [aria-invalid='true'] { border-color: #9a4a3a; }
-  .consent { display: grid; grid-template-columns: auto 1fr; gap: var(--s-3); align-items: start; margin-block: var(--s-5); }
-  .consent input { width: 1.2rem; height: 1.2rem; margin-top: 0.2rem; accent-color: var(--c-sauge); }
-  .consent a { text-decoration: underline; }
-  .summary { display: grid; gap: var(--s-1); padding: var(--s-5); border-radius: var(--r-md); background: var(--c-foret); color: var(--c-creme); margin-bottom: var(--s-5); }
-  .summary .caps { color: var(--c-sauge-claire); }
-  .summary__main { font-family: var(--font-display); font-size: var(--fs-h4); line-height: 1.2; }
-  .summary__price { font-family: var(--font-display); font-size: var(--fs-h3); }
-  [data-pay][aria-busy='true'] { opacity: 0.6; pointer-events: none; }
-  .pay-note { margin-top: var(--s-3); }
-  @media (max-width: 40em) { [data-pay] { width: 100%; } }
+    .form__grid { display: grid; gap: var(--s-4); margin-bottom: var(--s-3); }
+    @media (min-width: 40em) { .form__grid { grid-template-columns: 1fr 1fr; } .field--wide { grid-column: 1 / -1; } }
+    .field { display: grid; gap: var(--s-2); font-size: var(--fs-sm); }
+    .field input, .field textarea { font: inherit; font-size: 16px; color: var(--fg); padding: 0.8em 1em; border: 1px solid var(--c-sable-300); border-radius: var(--r-md); background: var(--c-creme-050); width: 100%; }
+    .field input:focus, .field textarea:focus { outline: none; border-color: var(--c-sauge); box-shadow: 0 0 0 3px color-mix(in oklab, var(--c-sauge) 22%, transparent); }
+    .field [aria-invalid='true'] { border-color: #9a4a3a; }
+    .consent { display: grid; grid-template-columns: auto 1fr; gap: var(--s-3); align-items: start; margin-block: var(--s-4) var(--s-5); }
+    .consent input { width: 1.2rem; height: 1.2rem; margin-top: 0.15rem; accent-color: var(--c-sauge); }
+    .consent a, .bk__help a { text-decoration: underline; }
+    .recap { display: grid; grid-template-columns: 1fr auto; gap: var(--s-1) var(--s-4); align-items: end; padding: var(--s-5); border-radius: var(--r-md); background: var(--c-foret); color: var(--c-creme); margin-bottom: var(--s-5); }
+    .recap__what { font-family: var(--font-display); font-size: var(--fs-lg); line-height: 1.25; }
+    .recap__when { grid-column: 1; font-size: var(--fs-sm); color: var(--c-sable); }
+    .recap__price { grid-row: 1 / span 2; grid-column: 2; font-family: var(--font-display); font-size: var(--fs-h3); }
+    .bk__pay { width: 100%; }
+    .bk__pay[aria-busy='true'] { opacity: 0.6; pointer-events: none; }
+    .bk__secure { text-align: center; margin: var(--s-3) 0 0; }
+    .bk__help { text-align: center; margin-top: var(--s-6); }
   }
 </style>
 
 <script>
-  type Item = { id: string; group: string; name: string; duration: number; price: number; places: string[]; note?: string };
+  type Item = { id: string; group: string; zone?: string; pack?: number; name: string; duration: number; price: number; places: string[]; note?: string; combo?: string[] };
   type Place = { name: string; address: string };
   type Day = { date: string; slots: { start: number; label: string }[] };
 
-  const root = document.querySelector<HTMLElement>('.book');
+  const root = document.querySelector<HTMLElement>('.bk');
   if (root) {
     const API = root.dataset.api!;
-    const $ = <T extends Element>(s: string) => root.querySelector<T>(s)!;
-    const status = $<HTMLElement>('[data-status]');
+    const q = <T extends Element = HTMLElement>(s: string, el: ParentNode = root) => el.querySelector<T>(s)!;
+    const status = q('[data-status]');
     const euro = (c: number) => `${(c / 100).toLocaleString('fr-FR', { minimumFractionDigits: c % 100 ? 2 : 0 })} €`;
-    const dur = (m: number) => (m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60}` : ''}` : `${m} min`);
-    const state: { item?: Item; place?: string; day?: Day; start?: number; label?: string } = {};
-    let places: Record<string, Place> = {};
-    let items: Item[] = [];
+    const dur = (m: number) => (m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? ` ${String(m % 60).padStart(2, '0')}` : ''}` : `${m} min`);
+    const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+    const say = (msg = '') => { status.textContent = msg; };
 
-    const say = (msg: string) => { status.textContent = msg; };
-    const setStep = (n: number) => {
-      root.querySelectorAll<HTMLElement>('[data-rail]').forEach((li) => li.classList.toggle('is-on', Number(li.dataset.rail) <= n));
-      (root.querySelector('[data-step="2"]') as HTMLFieldSetElement).disabled = n < 2;
-      (root.querySelector('[data-step="3"]') as HTMLFieldSetElement).disabled = n < 3;
-      ($('[data-form-fields]') as HTMLFieldSetElement).disabled = n < 4;
-    };
-    const radio = (container: Element, el: HTMLElement) => {
-      container.querySelectorAll('[role="radio"]').forEach((b) => b.setAttribute('aria-checked', String(b === el)));
-    };
-    const button = (cls: string, html: string) => {
+    let items: Item[] = [];
+    let places: Record<string, Place> = {};
+    const st: { item?: Item; combo: string[]; place?: string; start?: number; when?: string } = { combo: [] };
+    const ORDER = ['soin', 'lieu', 'date', 'infos'];
+
+    // ------------------------------------------------------------ accordéon
+    const step = (name: string) => q(`[data-step="${name}"]`);
+    function open(name: string) {
+      for (const n of ORDER) {
+        const s = step(n);
+        const on = n === name;
+        s.classList.toggle('is-open', on);
+        q('[data-body]', s).hidden = !on;
+        q('[data-head]', s).setAttribute('aria-expanded', String(on));
+      }
+      const s = step(name);
+      if (window.matchMedia('(max-width: 60em)').matches) requestAnimationFrame(() => s.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    }
+    function done(name: string, value: string) {
+      const s = step(name);
+      s.classList.add('is-done');
+      q('[data-value]', s).textContent = value;
+      const i = ORDER.indexOf(name);
+      for (const n of ORDER.slice(i + 1)) { step(n).classList.remove('is-done'); q('[data-value]', step(n)).textContent = ''; }
+      if (ORDER[i + 1]) q<HTMLButtonElement>('[data-head]', step(ORDER[i + 1])).disabled = false;
+      for (const n of ORDER.slice(i + 2)) q<HTMLButtonElement>('[data-head]', step(n)).disabled = true;
+    }
+    for (const n of ORDER) q('[data-head]', step(n)).addEventListener('click', () => open(n));
+
+    const chip = (label: string, extra = '', role = 'radio') => {
       const b = document.createElement('button');
-      b.type = 'button'; b.className = cls; b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', 'false'); b.innerHTML = html;
+      b.type = 'button'; b.className = 'chip';
+      if (role === 'radio') { b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', 'false'); } else b.setAttribute('aria-pressed', 'false');
+      b.innerHTML = `${label}${extra ? `<small>${extra}</small>` : ''}`;
       return b;
     };
-    const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
-    const scrollTo = (sel: string) => {
-      const el = root.querySelector(sel);
-      if (el && window.matchMedia('(max-width: 60em)').matches) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    };
+    const check = (wrap: Element, el: Element) => wrap.querySelectorAll('[role="radio"]').forEach((b) => b.setAttribute('aria-checked', String(b === el)));
 
-    function renderItems() {
-      const wrap = $('[data-items]');
-      wrap.innerHTML = '';
-      const groups = [...new Set(items.map((i) => i.group))];
-      const preset = new URLSearchParams(location.search).get('soin');
-      for (const g of groups) {
-        const sec = document.createElement('div');
-        sec.className = 'group';
-        sec.innerHTML = `<h3>${esc(g)}</h3>`;
-        const opts = document.createElement('div');
-        opts.className = 'opts'; opts.setAttribute('role', 'radiogroup'); opts.setAttribute('aria-label', g);
-        for (const it of items.filter((i) => i.group === g)) {
-          const short = it.name.replace(/^.*? — /, '');
-          const label = it.name.includes(' — ') ? short.charAt(0).toUpperCase() + short.slice(1) : it.name;
-          const b = button('opt', `<span class="opt__name">${esc(label)}</span><span class="opt__price">${euro(it.price)}</span><span class="opt__meta">${dur(it.duration)}${it.places.length === 1 ? ` · ${esc(places[it.places[0]].name)} uniquement` : ''}</span>`);
-          b.addEventListener('click', () => pickItem(it, b));
-          opts.append(b);
-          if (preset && preset === it.id) queueMicrotask(() => pickItem(it, b));
-        }
-        sec.append(opts);
-        wrap.append(sec);
+    // ------------------------------------------------------------ 1. soin
+    function renderSoins() {
+      const list = q('[data-soins]');
+      list.innerHTML = '';
+      for (const g of [...new Set(items.map((i) => i.group))]) {
+        const opts = items.filter((i) => i.group === g);
+        const min = Math.min(...opts.map((o) => o.price));
+        const durs = [...new Set(opts.filter((o) => o.duration).map((o) => dur(o.duration)))];
+        const li = document.createElement('li');
+        li.className = 'soin';
+        const meta = opts[0].combo
+          ? '2 soins au choix : massage, soin énergétique ou drainage'
+          : `${durs.join(' · ')}${opts.every((o) => o.places.length === 1) ? ` · ${places[opts[0].places[0]].name} uniquement` : ''}`;
+        li.innerHTML = `<button type="button" class="soin__btn" aria-expanded="false"><span class="soin__name">${esc(g)}</span><span class="soin__price">${opts.length > 1 ? 'dès ' : ''}${euro(min)}</span><span class="soin__meta">${esc(meta)}</span></button><div class="soin__opts" hidden></div>`;
+        q('.soin__btn', li).addEventListener('click', () => pickGroup(li, opts));
+        list.append(li);
       }
     }
 
-    function pickItem(it: Item, el: HTMLElement) {
-      root.querySelectorAll('[data-items] [role="radio"]').forEach((b) => b.setAttribute('aria-checked', String(b === el)));
-      state.item = it; state.place = undefined; state.start = undefined;
+    function pickGroup(li: HTMLElement, opts: Item[]) {
+      q('[data-soins]').querySelectorAll<HTMLElement>('.soin').forEach((o) => {
+        const on = o === li;
+        o.setAttribute('aria-current', String(on));
+        q('.soin__btn', o).setAttribute('aria-expanded', String(on));
+        q('.soin__opts', o).hidden = !on;
+      });
+      const box = q('.soin__opts', li);
+      box.innerHTML = '';
+      say();
+      if (opts.length === 1 && !opts[0].combo) return chooseItem(opts[0]);
+
+      // Soin à la carte : deux soins à cocher
+      if (opts[0].combo) {
+        const it = opts[0];
+        st.combo = [];
+        box.innerHTML = '<p>Choisissez 2 soins</p>';
+        const wrap = document.createElement('div');
+        wrap.className = 'chips';
+        it.combo!.forEach((id) => {
+          const part = items.find((x) => x.id === id)!;
+          const b = chip(esc(part.name.replace('lymphatique ', '')), dur(part.duration), 'toggle');
+          b.dataset.id = id;
+          b.addEventListener('click', () => {
+            st.combo = st.combo.includes(id) ? st.combo.filter((x) => x !== id) : [...st.combo, id].slice(-2);
+            wrap.querySelectorAll<HTMLElement>('.chip').forEach((c) => c.setAttribute('aria-pressed', String(st.combo.includes(c.dataset.id!))));
+            if (st.combo.length === 2) {
+              const parts = st.combo.map((x) => items.find((y) => y.id === x)!);
+              chooseItem({ ...it, name: `Soin à la carte : ${parts.map((p) => p.name).join(' + ')}`, duration: parts.reduce((t, p) => t + p.duration, 0) });
+            }
+          });
+          wrap.append(b);
+        });
+        box.append(wrap);
+        return;
+      }
+
+      // Zone puis formule
+      const zones = [...new Set(opts.map((o) => o.zone || ''))];
+      const packsFor = (z: string) => opts.filter((o) => (o.zone || '') === z).sort((a, b) => (a.pack || 1) - (b.pack || 1));
+      const packRow = document.createElement('div');
+      packRow.className = 'soin__opts';
+      packRow.style.padding = '0';
+      const showPacks = (z: string) => {
+        const list = packsFor(z);
+        packRow.innerHTML = '';
+        if (list.length === 1) return chooseItem(list[0]);
+        packRow.innerHTML = '<p>Formule</p>';
+        const w = document.createElement('div');
+        w.className = 'chips'; w.setAttribute('role', 'radiogroup'); w.setAttribute('aria-label', 'Formule');
+        for (const o of list) {
+          const b = chip((o.pack || 1) === 1 ? '1 séance' : `${o.pack} séances`, euro(o.price));
+          b.addEventListener('click', () => { check(w, b); chooseItem(o); });
+          w.append(b);
+        }
+        packRow.append(w);
+      };
+      if (zones.length > 1) {
+        box.insertAdjacentHTML('beforeend', '<p>Zone</p>');
+        const w = document.createElement('div');
+        w.className = 'chips'; w.setAttribute('role', 'radiogroup'); w.setAttribute('aria-label', 'Zone');
+        for (const z of zones) {
+          const first = packsFor(z)[0];
+          const b = chip(esc(z), `${dur(first.duration)} · ${euro(first.price)}`);
+          b.addEventListener('click', () => { check(w, b); showPacks(z); });
+          w.append(b);
+        }
+        box.append(w, packRow);
+      } else {
+        box.append(packRow);
+        showPacks(zones[0]);
+      }
+    }
+
+    function chooseItem(it: Item) {
+      st.item = it; st.place = undefined; st.start = undefined;
       say(it.note || '');
-      const wrap = $('[data-places]');
+      done('soin', `${it.name.replace(/^Soin à la carte : /, 'À la carte · ')} · ${euro(it.price)}`);
+      const wrap = q('[data-places]');
       wrap.innerHTML = '';
       for (const key of it.places) {
-        const b = button('opt', `<span class="opt__price">${esc(places[key].name)}</span><span class="opt__meta">${esc(places[key].address)}</span>`);
-        b.addEventListener('click', () => { radio(wrap, b); pickPlace(key); });
+        const b = chip(`<b>${esc(places[key].name)}</b>`, esc(places[key].address));
+        b.addEventListener('click', () => { check(wrap, b); choosePlace(key); });
         wrap.append(b);
       }
-      $('[data-days]').innerHTML = ''; $('[data-slots]').innerHTML = '';
-      setStep(2);
-      summary();
       if (it.places.length === 1) (wrap.firstElementChild as HTMLElement).click();
-      else scrollTo('[data-step="2"]');
+      else open('lieu');
     }
 
-    async function pickPlace(key: string) {
-      state.place = key; state.start = undefined;
-      setStep(3); summary();
-      const daysEl = $('[data-days]');
-      const slotsEl = $('[data-slots]');
+    // ------------------------------------------------------------ 2. lieu
+    async function choosePlace(key: string) {
+      st.place = key; st.start = undefined;
+      done('lieu', places[key].name);
+      open('date');
+      const daysEl = q('[data-days]');
+      const slotsEl = q('[data-slots]');
       daysEl.innerHTML = '<p class="muted small">Recherche des disponibilités…</p>';
       slotsEl.innerHTML = '';
-      scrollTo('[data-step="3"]');
       try {
-        const r = await fetch(`${API}/api/slots?item=${encodeURIComponent(state.item!.id)}&place=${key}`);
+        const combo = st.item!.combo && st.combo.length === 2 ? `&combo=${st.combo.join(',')}` : '';
+        const r = await fetch(`${API}/api/slots?item=${encodeURIComponent(st.item!.id)}&place=${key}${combo}`);
         const data = await r.json();
         if (!r.ok) throw new Error(data.error);
-        if (state.place !== key) return;
+        if (st.place !== key) return;
         daysEl.innerHTML = '';
-        if (!data.days.length) { daysEl.innerHTML = `<p class="muted small">Aucun créneau disponible en ligne pour le moment. Appelez Alexandra au 06 76 64 79 09.</p>`; return; }
-        const fmtDay = new Intl.DateTimeFormat('fr-FR', { weekday: 'short' });
-        const fmtMonth = new Intl.DateTimeFormat('fr-FR', { month: 'short' });
+        if (!data.days.length) { daysEl.innerHTML = '<p class="muted small">Aucun créneau en ligne pour le moment. Appelez Alexandra au 06 76 64 79 09.</p>'; return; }
+        const fd = new Intl.DateTimeFormat('fr-FR', { weekday: 'short' });
+        const fm = new Intl.DateTimeFormat('fr-FR', { month: 'short' });
         (data.days as Day[]).forEach((d, i) => {
           const dt = new Date(`${d.date}T12:00:00`);
-          const b = button('day', `<small>${fmtDay.format(dt).replace('.', '')}</small><b>${dt.getDate()}</b><small>${fmtMonth.format(dt).replace('.', '')}</small>`);
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'day'; b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', 'false');
           b.setAttribute('aria-label', new Intl.DateTimeFormat('fr-FR', { dateStyle: 'full' }).format(dt));
-          b.addEventListener('click', () => { radio(daysEl, b); pickDay(d); });
+          b.innerHTML = `<small>${fd.format(dt).replace('.', '')}</small><b>${dt.getDate()}</b><small>${fm.format(dt).replace('.', '')}</small>`;
+          b.addEventListener('click', () => { check(daysEl, b); chooseDay(d); });
           daysEl.append(b);
-          if (i === 0) b.click();
+          if (i === 0) { check(daysEl, b); chooseDay(d); }
         });
-      } catch (e) {
-        daysEl.innerHTML = `<p class="muted small">Les disponibilités n’ont pas pu être chargées. Réessayez dans un instant ou appelez le 06 76 64 79 09.</p>`;
+      } catch {
+        daysEl.innerHTML = '<p class="muted small">Les disponibilités n’ont pas pu être chargées. Réessayez dans un instant ou appelez le 06 76 64 79 09.</p>';
       }
     }
 
-    function pickDay(d: Day) {
-      state.day = d; state.start = undefined; summary();
-      const slotsEl = $('[data-slots]');
-      slotsEl.innerHTML = '';
+    // ------------------------------------------------------------ 3. date
+    function chooseDay(d: Day) {
+      const el = q('[data-slots]');
+      el.innerHTML = '';
       for (const s of d.slots) {
-        const b = button('slot', s.label);
+        const b = chip(s.label);
         b.addEventListener('click', () => {
-          radio(slotsEl, b);
-          state.start = s.start;
-          state.label = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Europe/Paris' }).format(new Date(s.start));
-          setStep(4); summary();
-          scrollTo('[data-step="4"]');
+          check(el, b);
+          st.start = s.start;
+          st.when = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' }).format(new Date(s.start));
+          done('date', st.when);
+          recap();
+          open('infos');
         });
-        slotsEl.append(b);
+        el.append(b);
       }
     }
 
-    function summary() {
-      const el = $<HTMLElement>('[data-summary]');
-      if (!state.item || !state.place || !state.start) { el.hidden = true; return; }
+    // ------------------------------------------------------------ 4. coordonnées + paiement
+    function recap() {
+      const el = q('[data-recap]');
+      if (!st.item || !st.place || !st.start) { el.hidden = true; return; }
       el.hidden = false;
-      el.innerHTML = `<span class="caps">Votre rendez-vous</span><span class="summary__main">${esc(state.item.name)}</span><span>${esc(state.label!)} · ${esc(places[state.place].name)}</span><span class="summary__price">${euro(state.item.price)}</span>`;
+      el.innerHTML = `<span class="recap__what">${esc(st.item.name)}</span><span class="recap__price">${euro(st.item.price)}</span><span class="recap__when">${esc(st.when!)} · ${esc(places[st.place].name)}</span>`;
     }
 
-    $('[data-form]').addEventListener('submit', async (ev) => {
+    q<HTMLFormElement>('[data-form]').addEventListener('submit', async (ev) => {
       ev.preventDefault();
       const form = ev.currentTarget as HTMLFormElement;
       const fd = new FormData(form);
@@ -303,21 +384,21 @@ import { site } from '@data/site';
         input.setAttribute('aria-invalid', String(!valid));
         ok &&= valid;
       }
-      if (!ok) { say('Merci de compléter votre nom, votre téléphone et un e-mail valide.'); return; }
-      if (!fd.get('consent')) { say('Merci de cocher la case de confirmation.'); return; }
-      if (!state.item || !state.place || !state.start) { say('Merci de choisir un soin, un lieu et un créneau.'); return; }
-      const btn = $<HTMLButtonElement>('[data-pay]');
+      if (!ok) return say('Merci de compléter votre nom, votre téléphone et un e-mail valide.');
+      if (!fd.get('consent')) return say('Merci de cocher la case de confirmation.');
+      if (!st.item || !st.place || !st.start) return say('Merci de choisir un soin, un lieu et un créneau.');
+      const btn = q<HTMLButtonElement>('[data-pay]');
       btn.setAttribute('aria-busy', 'true'); btn.textContent = 'Préparation du paiement…';
       try {
         const r = await fetch(`${API}/api/checkout`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ item: state.item.id, place: state.place, start: state.start, name: fd.get('name'), phone: fd.get('phone'), email: fd.get('email'), message: fd.get('message'), consent: true }),
+          body: JSON.stringify({ item: st.item.id, combo: st.item.combo ? st.combo : undefined, place: st.place, start: st.start, name: fd.get('name'), phone: fd.get('phone'), email: fd.get('email'), message: fd.get('message'), consent: true }),
         });
         const data = await r.json();
         if (!r.ok) {
           say(data.error || 'Une erreur est survenue.');
-          if (data.code === 'taken') pickPlace(state.place);
+          if (data.code === 'taken') choosePlace(st.place);
           throw new Error();
         }
         location.href = data.url;
@@ -330,7 +411,14 @@ import { site } from '@data/site';
 
     fetch(`${API}/api/catalog`)
       .then((r) => r.json())
-      .then((data) => { items = data.items; places = data.places; renderItems(); setStep(1); })
-      .catch(() => { $('[data-items]').innerHTML = `<p class="muted small">La réservation en ligne est momentanément indisponible. Appelez Alexandra au <a href="tel:+33676647909">06 76 64 79 09</a>.</p>`; });
+      .then((data) => {
+        items = data.items; places = data.places;
+        renderSoins();
+        const preset = new URLSearchParams(location.search).get('soin');
+        const groups = [...new Set(items.map((i) => i.group))];
+        const it = preset && items.find((i) => i.id === preset);
+        if (it) q('[data-soins]').querySelectorAll<HTMLButtonElement>('.soin__btn')[groups.indexOf(it.group)]?.click();
+      })
+      .catch(() => { q('[data-soins]').innerHTML = '<li class="muted small">La réservation en ligne est momentanément indisponible. Appelez Alexandra au <a href="tel:+33676647909">06 76 64 79 09</a>.</li>'; });
   }
 </script>
