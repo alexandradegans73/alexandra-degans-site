@@ -16,7 +16,7 @@
 import { CATALOG, PLACES, PLACE_HOURS, RULES, resolveItem } from './catalog.js';
 import { busyFromIcs } from './ics.js';
 import { computeSlots, isFree } from './slots.js';
-import { sendConfirmation, sendCancellation, sendReminder, calendarSync } from './mail.js';
+import { sendConfirmation, sendCancellation, sendReminder, sendReviewRequest, calendarSync } from './mail.js';
 import { frLabel, parisParts, addDays, wallToUtc } from './time.js';
 
 const MIN = 60000;
@@ -343,9 +343,28 @@ async function remind(env, now = Date.now()) {
   return sent;
 }
 
+// Demande d'avis Google : 15 min après la fin d'une séance confirmée (cron toutes les 5 min).
+// Une seule fois par client (même e-mail) ; rien pour une séance terminée depuis plus de 3 h.
+async function askReviews(env, now = Date.now()) {
+  const { results } = await env.DB.prepare(
+    "SELECT * FROM bookings WHERE status = 'confirmed' AND review_asked = 0 AND end <= ?1 AND end >= ?2 AND email LIKE '%@%'"
+  ).bind(now - 15 * 60e3, now - 3 * 3600e3).all();
+  let sent = 0;
+  for (const b of results) {
+    const claim = await env.DB.prepare('UPDATE bookings SET review_asked = 1 WHERE id = ?1 AND review_asked = 0').bind(b.id).run();
+    if (claim.meta.changes !== 1) continue;
+    const before = await env.DB.prepare('SELECT 1 FROM bookings WHERE email = ?1 COLLATE NOCASE AND review_asked = 1 AND id != ?2 LIMIT 1').bind(b.email, b.id).first();
+    if (before) continue;
+    await sendReviewRequest(env, b);
+    sent++;
+  }
+  return sent;
+}
+
 export default {
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(event.cron === '17 2 * * *' ? purge(env) : remind(env));
+    const job = event.cron === '17 2 * * *' ? purge(env) : event.cron === '*/5 * * * *' ? askReviews(env) : remind(env);
+    ctx.waitUntil(job);
   },
   async fetch(req, env, ctx) {
     const h = { ...cors(req, env), ...SEC };

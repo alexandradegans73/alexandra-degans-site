@@ -123,6 +123,23 @@ ${recap(b)}
   await send(env, { to: b.email, subject: `Rappel : votre rendez-vous demain à ${heure}`, html });
 }
 
+/** Lien direct vers le formulaire d'avis de la fiche Google d'Alexandra. */
+export const GOOGLE_REVIEW_URL = 'https://search.google.com/local/writereview?placeid=ChIJpVBP6peti0cR6ICIh4BDzqU';
+
+/** Invitation à laisser un avis Google, envoyée une seule fois par client, 15 min après la séance. */
+export async function sendReviewRequest(env, b) {
+  const prenom = esc(b.name.split(' ')[0]);
+  const html = layout(`Merci, ${prenom}.`, `
+<p>Bonjour ${prenom},</p>
+<p>Merci pour votre confiance aujourd’hui. J’espère que la séance vous a fait du bien.</p>
+<p>Si vous avez un instant, votre avis sur ma fiche Google m’aiderait beaucoup : il permet à d’autres personnes de découvrir la kinésiologie et de franchir le pas.</p>
+<p style="text-align:center;margin:28px 0"><a href="${GOOGLE_REVIEW_URL}" style="display:inline-block;background:#627056;color:#f3ede2;text-decoration:none;font-family:Arial,sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:14px 28px;border-radius:999px">Laisser un avis</a></p>
+<p>Quelques mots suffisent. Et si quelque chose ne vous a pas convenu, n’hésitez pas à me le dire directement en répondant à ce message.</p>
+<p>Belle journée,<br />Alexandra</p>
+<p style="font-size:12px;color:#5b6453">Ce message vous est envoyé une seule fois, à la suite de votre rendez-vous.</p>`);
+  await send(env, { to: b.email, subject: 'Merci pour votre venue — votre avis compte', html });
+}
+
 export async function sendCancellation(env, b, refunded) {
   const client = layout('Votre rendez-vous est annulé.', `
 <p>Bonjour ${esc(b.name)},</p>
