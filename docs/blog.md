@@ -52,3 +52,7 @@ Un article dont la date est dans le futur n’apparaît pas tant que le site n�
 npm run conformite   # vocabulaire et longueurs
 npm run build        # construit le site (relance aussi la conformité)
 ```
+
+## Signalement à Bing (IndexNow)
+
+Après chaque déploiement, le workflow lance `scripts/indexnow.mjs` : les articles et pages ajoutés ou modifiés par le push sont signalés à Bing via IndexNow. Rien à faire de plus. Ne pas supprimer le fichier de clé `public/259ddbb203a2642861c5aca0fe85775d.txt`.
