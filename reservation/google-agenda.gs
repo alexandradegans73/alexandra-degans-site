@@ -1,6 +1,7 @@
 /**
  * Réservations du site → agenda « Kinésiologie » d'Alexandra Degans.
- * Le site envoie chaque réservation payée (create) et chaque annulation (delete).
+ * Le site envoie chaque réservation payée (create) et chaque annulation (delete),
+ * et relit toutes les 5 min les rendez-vous présents (tags) pour suivre suppressions et déplacements.
  * À déployer en « Application Web » : Exécuter en tant que « Moi », Accès « Tout le monde ».
  */
 const SECRET = 'À_REMPLACER'; // même valeur que le secret GCAL_HOOK_SECRET du Worker (jamais dans le dépôt)
@@ -35,6 +36,20 @@ function doPost(e) {
       });
     });
     return out({ ok: true, busy });
+  }
+  if (d.action === 'tags') {
+    // Rendez-vous du site présents dans l'agenda (repérés par leur étiquette) avec leur horaire actuel :
+    // le site annule ceux qui ont été supprimés et reprend l'horaire de ceux qui ont été déplacés.
+    const from = new Date(d.from), to = new Date(d.to);
+    const events = [];
+    [cal, CalendarApp.getDefaultCalendar()].forEach((c) => {
+      if (!c) return;
+      c.getEvents(from, to).forEach((ev) => {
+        const tag = ev.getTag('reservation');
+        if (tag) events.push([tag, ev.getStartTime().getTime(), ev.getEndTime().getTime()]);
+      });
+    });
+    return out({ ok: true, events });
   }
   if (d.action === 'delete') {
     const evs = mine();

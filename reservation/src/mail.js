@@ -123,6 +123,20 @@ ${recap(b)}
   await send(env, { to: b.email, subject: `Rappel : votre rendez-vous demain à ${heure}`, html });
 }
 
+/** Rendez-vous supprimé de l'agenda Google par Alexandra : annulé côté site, elle en reçoit la trace. */
+export async function sendCalendarRemoval(env, b) {
+  const paid = !onSite(b) && b.payment_intent;
+  const html = layout('Rendez-vous retiré de l’agenda', `
+<p>Vous avez supprimé ce rendez-vous de votre agenda Google : il est maintenant annulé sur le site. Le créneau est de nouveau proposé à la réservation, et ${esc(b.name)} ne recevra ni rappel ni demande d’avis.</p>
+${recap(b)}
+<p>Client : ${esc(b.name)} · ${esc(b.phone)} · ${esc(b.email)}</p>
+${paid ? `<p style="background:#f3ede2;border-radius:8px;padding:12px 16px"><strong>Séance réglée en ligne (${euro(b.price)}).</strong> Aucun remboursement n’est fait automatiquement : s’il en faut un, faites-le depuis votre tableau de bord Stripe (Paiements → ce paiement → Rembourser).</p>` : ''}
+<p style="font-size:13px;color:#5b6453">Le client n’a reçu aucun message de la part du site.</p>`);
+  for (const to of [env.ALEXANDRA_EMAIL, env.ALEXANDRA_EMAIL_2].filter(Boolean)) {
+    await send(env, { to, subject: `Annulé depuis l’agenda : ${b.item_name} — ${b.name}, ${frLabel(b.start)}`, html });
+  }
+}
+
 /** Lien direct vers le formulaire d'avis de la fiche Google d'Alexandra. */
 export const GOOGLE_REVIEW_URL = 'https://search.google.com/local/writereview?placeid=ChIJpVBP6peti0cR6ICIh4BDzqU';
 

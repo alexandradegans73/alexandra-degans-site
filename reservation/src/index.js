@@ -16,7 +16,7 @@
 import { CATALOG, PLACES, PLACE_HOURS, RULES, resolveItem } from './catalog.js';
 import { busyFromIcs } from './ics.js';
 import { computeSlots, isFree } from './slots.js';
-import { sendConfirmation, sendCancellation, sendReminder, sendReviewRequest, calendarSync } from './mail.js';
+import { sendConfirmation, sendCancellation, sendReminder, sendReviewRequest, sendCalendarRemoval, calendarSync } from './mail.js';
 import { frLabel, parisParts, addDays, wallToUtc } from './time.js';
 
 const MIN = 60000;
@@ -343,6 +343,47 @@ async function remind(env, now = Date.now()) {
   return sent;
 }
 
+// Synchronisation depuis l'agenda Google (cron toutes les 5 min) :
+// - rendez-vous du site supprimé de l'agenda par Alexandra → marqué annulé (plus de rappel ni de demande d'avis),
+//   et Alexandra reçoit un e-mail récapitulatif (le remboursement éventuel reste à sa main) ;
+// - rendez-vous déplacé dans l'agenda → nouvel horaire repris (rappel et demande d'avis suivent).
+// Sécurités : on n'annule que ce qui a déjà été vu dans l'agenda (cal_seen = 1), rien si l'agenda ne répond pas,
+// et jamais plus de 3 annulations d'un coup (signe d'un problème plutôt que d'annulations réelles).
+async function syncFromCalendar(env, now = Date.now()) {
+  if (!env.GCAL_HOOK_URL) return;
+  const from = now - 4 * 3600e3, to = now + 120 * 864e5;
+  const { results } = await env.DB.prepare(
+    "SELECT * FROM bookings WHERE status = 'confirmed' AND id NOT LIKE 'crenolibre-%' AND end >= ?1 AND start <= ?2 AND created_at <= ?3"
+  ).bind(now - 3 * 3600e3, to, now - 10 * 60e3).all();
+  if (!results.length) return;
+  let data;
+  try {
+    const r = await fetch(env.GCAL_HOOK_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ secret: env.GCAL_HOOK_SECRET, action: 'tags', from, to }) });
+    data = await r.json();
+  } catch (e) { console.log('Synchro agenda injoignable', String(e)); return; }
+  if (!data?.ok || !Array.isArray(data.events)) { console.log('Synchro agenda indisponible', JSON.stringify(data).slice(0, 200)); return; }
+  const seen = new Map(data.events.map(([id, start, end]) => [id, { start, end }]));
+  const gone = [];
+  for (const b of results) {
+    const ev = seen.get(b.id);
+    if (ev) {
+      if (ev.start !== b.start || ev.end !== b.end) {
+        await env.DB.prepare('UPDATE bookings SET start = ?2, end = ?3, cal_seen = 1, reminded = CASE WHEN ?2 > ?4 THEN 0 ELSE reminded END WHERE id = ?1').bind(b.id, ev.start, ev.end, now + 6 * 3600e3).run();
+        console.log('Rendez-vous déplacé dans l’agenda', b.id, new Date(ev.start).toISOString());
+      } else if (!b.cal_seen) {
+        await env.DB.prepare('UPDATE bookings SET cal_seen = 1 WHERE id = ?1').bind(b.id).run();
+      }
+    } else if (b.cal_seen) gone.push(b);
+  }
+  if (gone.length > 3) { console.log('Synchro agenda : trop d’absences d’un coup, rien n’est annulé', gone.length); return; }
+  for (const b of gone) {
+    const claim = await env.DB.prepare("UPDATE bookings SET status = 'cancelled', cancelled_at = ?2 WHERE id = ?1 AND status = 'confirmed'").bind(b.id, now).run();
+    if (claim.meta.changes !== 1) continue;
+    console.log('Rendez-vous retiré de l’agenda → annulé', b.id);
+    await sendCalendarRemoval(env, b);
+  }
+}
+
 // Demande d'avis Google : 15 min après la fin d'une séance confirmée (cron toutes les 5 min).
 // Une seule fois par client (même e-mail) ; rien pour une séance terminée depuis plus de 3 h.
 async function askReviews(env, now = Date.now()) {
@@ -363,7 +404,7 @@ async function askReviews(env, now = Date.now()) {
 
 export default {
   async scheduled(event, env, ctx) {
-    const job = event.cron === '17 2 * * *' ? purge(env) : event.cron === '*/5 * * * *' ? askReviews(env) : remind(env);
+    const job = event.cron === '17 2 * * *' ? purge(env) : event.cron === '*/5 * * * *' ? syncFromCalendar(env).catch((e) => console.log('Synchro agenda', String(e))).then(() => askReviews(env)) : remind(env);
     ctx.waitUntil(job);
   },
   async fetch(req, env, ctx) {
