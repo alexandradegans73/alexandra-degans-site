@@ -107,6 +107,19 @@ ${recap(b)}${b.message ? `<p><strong>Précisions :</strong> ${esc(b.message)}</p
   }
 }
 
+/** Rappel envoyé au client la veille au soir. */
+export async function sendReminder(env, b) {
+  const place = PLACES[b.place];
+  const heure = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit' }).format(new Date(b.start));
+  const html = layout(`À demain, ${esc(b.name.split(' ')[0])}.`, `
+<p>Bonjour ${esc(b.name)},</p>
+<p>Petit rappel : Alexandra vous attend <strong>demain à ${heure}</strong>${place ? ` à ${esc(place.name)}` : ''}.</p>
+${recap(b)}
+<p>Venez dans une tenue confortable. Stationnement gratuit sur place.</p>
+<p style="font-size:13px;color:#5b6453">Un empêchement ? Merci de prévenir Alexandra au plus vite au 06 76 64 79 09.</p>`);
+  await send(env, { to: b.email, subject: `Rappel : votre rendez-vous demain à ${heure}`, html });
+}
+
 export async function sendCancellation(env, b, refunded) {
   const client = layout('Votre rendez-vous est annulé.', `
 <p>Bonjour ${esc(b.name)},</p>

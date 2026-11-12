@@ -14,4 +14,6 @@ Les événements reçus sont relus directement auprès de Stripe : aucun secret 
 
 Purge automatique : cron quotidien `17 2 * * *` (déclencheur en place depuis le 12/11). Supprime les réservations terminées depuis plus de 3 ans et les réservations jamais payées de plus de 30 jours.
 
+Rappel la veille : cron `7 16,17 * * *` (UTC) ; seul le passage qui tombe à 18 h à Paris envoie l’e-mail de rappel aux clients dont le rendez-vous payé est le lendemain (colonne `reminded`).
+
 Déploiement : `npx esbuild src/index.js --bundle --format=esm --outfile=dist/index.js` puis envoi via l’API Cloudflare ou `wrangler deploy`.

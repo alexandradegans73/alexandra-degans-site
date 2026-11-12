@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS bookings (
   payment_intent TEXT,
   cancel_token TEXT NOT NULL UNIQUE,
   emailed INTEGER NOT NULL DEFAULT 0,
+  reminded INTEGER NOT NULL DEFAULT 0,  -- rappel de la veille envoyé
   refunded INTEGER NOT NULL DEFAULT 0,
   created_at INTEGER NOT NULL,
   paid_at INTEGER,

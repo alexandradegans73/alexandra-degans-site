@@ -16,8 +16,8 @@
 import { CATALOG, PLACES, RULES, resolveItem } from './catalog.js';
 import { busyFromIcs } from './ics.js';
 import { computeSlots, isFree } from './slots.js';
-import { sendConfirmation, sendCancellation, calendarSync } from './mail.js';
-import { frLabel } from './time.js';
+import { sendConfirmation, sendCancellation, sendReminder, calendarSync } from './mail.js';
+import { frLabel, parisParts, addDays, wallToUtc } from './time.js';
 
 const MIN = 60000;
 
@@ -259,9 +259,30 @@ async function purge(env) {
   await env.DB.prepare("DELETE FROM bookings WHERE status IN ('hold','expired') AND created_at < ?1").bind(now - 30 * 864e5).run();
 }
 
+// Rappel la veille vers 18 h (heure de Paris) pour les rendez-vous payés du lendemain.
+// Le cron tourne à 16 h 07 et 17 h 07 UTC : seul le passage qui tombe à 18 h à Paris envoie (heure d'été / d'hiver).
+async function remind(env, now = Date.now()) {
+  const p = parisParts(now);
+  if (p.h !== 18) return 0;
+  const t = addDays(p, 1);
+  const from = wallToUtc(t.y, t.m, t.d, 0, 0);
+  const to = wallToUtc(t.y, t.m, t.d, 23, 59, 59);
+  const { results } = await env.DB.prepare(
+    "SELECT * FROM bookings WHERE status = 'confirmed' AND reminded = 0 AND start >= ?1 AND start <= ?2"
+  ).bind(from, to).all();
+  let sent = 0;
+  for (const b of results) {
+    const claim = await env.DB.prepare('UPDATE bookings SET reminded = 1 WHERE id = ?1 AND reminded = 0').bind(b.id).run();
+    if (claim.meta.changes !== 1) continue;
+    await sendReminder(env, b);
+    sent++;
+  }
+  return sent;
+}
+
 export default {
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(purge(env));
+    ctx.waitUntil(event.cron === '17 2 * * *' ? purge(env) : remind(env));
   },
   async fetch(req, env, ctx) {
     const h = { ...cors(req, env), ...SEC };
