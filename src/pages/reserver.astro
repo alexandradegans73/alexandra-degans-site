@@ -69,9 +69,14 @@ import { site } from '@data/site';
                 <input type="checkbox" name="consent" required />
                 <span>J’accepte les <a href="/cgv">conditions générales de vente</a> (annulation remboursée jusqu’à 48&nbsp;h avant). Mes coordonnées servent uniquement à ce rendez-vous (<a href="/confidentialite">confidentialité</a>).</span>
               </label>
+              <fieldset class="paymode">
+                <legend class="visually-hidden">Mode de règlement</legend>
+                <label class="paymode__opt"><input type="radio" name="pay" value="carte" checked /><span><b>Payer en ligne</b><small>Carte bancaire, paiement sécurisé par Stripe</small></span></label>
+                <label class="paymode__opt"><input type="radio" name="pay" value="sur-place" /><span><b>Régler sur place</b><small>Espèces, chèque ou Wero, le jour de la séance</small></span></label>
+              </fieldset>
               <div class="recap" data-recap hidden></div>
               <button class="btn bk__pay" type="submit" data-pay>Régler et confirmer</button>
-              <p class="small muted bk__secure">Paiement sécurisé par Stripe.</p>
+              <p class="small muted bk__secure" data-secure>Paiement sécurisé par Stripe.</p>
             </form>
           </div>
         </section>
@@ -145,6 +150,14 @@ import { site } from '@data/site';
     .recap__what { font-family: var(--font-display); font-size: var(--fs-lg); line-height: 1.25; }
     .recap__when { grid-column: 1; font-size: var(--fs-sm); color: var(--c-sable); }
     .recap__price { grid-row: 1 / span 2; grid-column: 2; font-family: var(--font-display); font-size: var(--fs-h3); }
+    .paymode { border: 0; padding: 0; margin: 0 0 var(--s-5); display: grid; gap: var(--s-2); }
+    @media (min-width: 40em) { .paymode { grid-template-columns: 1fr 1fr; } }
+    .paymode__opt { display: grid; grid-template-columns: auto 1fr; gap: var(--s-3); align-items: start; padding: var(--s-4); border: 1px solid var(--c-sable-300); border-radius: var(--r-md); background: var(--c-creme-050); cursor: pointer; transition: border-color var(--t-base), background var(--t-base); }
+    .paymode__opt:has(input:checked) { border-color: var(--c-sauge); background: color-mix(in oklab, var(--c-sauge) 10%, var(--c-creme-050)); }
+    .paymode__opt input { width: 1.1rem; height: 1.1rem; margin-top: 0.2rem; accent-color: var(--c-sauge); }
+    .paymode__opt span { display: grid; gap: 2px; }
+    .paymode__opt b { font-weight: 500; }
+    .paymode__opt small { font-size: var(--fs-xs); color: var(--fg-soft); }
     .bk__pay { width: 100%; }
     .bk__pay[aria-busy='true'] { opacity: 0.6; pointer-events: none; }
     .bk__secure { text-align: center; margin: var(--s-3) 0 0; }
@@ -388,12 +401,13 @@ import { site } from '@data/site';
       if (!fd.get('consent')) return say('Merci de cocher la case de confirmation.');
       if (!st.item || !st.place || !st.start) return say('Merci de choisir un soin, un lieu et un créneau.');
       const btn = q<HTMLButtonElement>('[data-pay]');
-      btn.setAttribute('aria-busy', 'true'); btn.textContent = 'Préparation du paiement…';
+      const onSite = fd.get('pay') === 'sur-place';
+      btn.setAttribute('aria-busy', 'true'); btn.textContent = onSite ? 'Confirmation…' : 'Préparation du paiement…';
       try {
         const r = await fetch(`${API}/api/checkout`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ item: st.item.id, combo: st.item.combo ? st.combo : undefined, place: st.place, start: st.start, name: fd.get('name'), phone: fd.get('phone'), email: fd.get('email'), message: fd.get('message'), consent: true }),
+          body: JSON.stringify({ item: st.item.id, combo: st.item.combo ? st.combo : undefined, place: st.place, start: st.start, name: fd.get('name'), phone: fd.get('phone'), email: fd.get('email'), message: fd.get('message'), pay: onSite ? 'sur-place' : 'carte', consent: true }),
         });
         const data = await r.json();
         if (!r.ok) {
@@ -403,9 +417,17 @@ import { site } from '@data/site';
         }
         location.href = data.url;
       } catch {
-        btn.removeAttribute('aria-busy'); btn.textContent = 'Régler et confirmer';
+        btn.removeAttribute('aria-busy'); payLabel();
       }
     });
+
+    // Libellé du bouton selon le mode de règlement choisi
+    const payLabel = () => {
+      const onSite = (q<HTMLFormElement>('[data-form]').elements.namedItem('pay') as RadioNodeList).value === 'sur-place';
+      q('[data-pay]').textContent = onSite ? 'Confirmer le rendez-vous' : 'Régler et confirmer';
+      q('[data-secure]').textContent = onSite ? 'Rien à payer maintenant : vous réglerez sur place.' : 'Paiement sécurisé par Stripe.';
+    };
+    q('[data-form]').addEventListener('change', (e) => { if ((e.target as HTMLInputElement).name === 'pay') payLabel(); });
 
     if (new URLSearchParams(location.search).get('retour')) say('Le paiement n’a pas été finalisé : votre créneau n’est pas réservé. Vous pouvez reprendre ci-dessous.');
 

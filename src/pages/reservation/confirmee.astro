@@ -51,14 +51,14 @@ import { site } from '@data/site';
         if (!r.ok) throw new Error(b.error);
         if (b.status === 'confirmed') {
           show('Merci', `À très bientôt, ${b.name.split(' ')[0]}.`, `
-            <p>Votre rendez-vous est réglé et confirmé. Un e-mail récapitulatif, avec l’invitation à ajouter à votre agenda, vient de vous être envoyé.</p>
+            <p>Votre rendez-vous est ${b.onSite ? 'confirmé' : 'réglé et confirmé'}. Un e-mail récapitulatif, avec l’invitation à ajouter à votre agenda, vient de vous être envoyé.</p>
             <dl>
               <div><dt>Soin</dt><dd>${esc(b.item)}</dd></div>
               <div><dt>Date</dt><dd>${esc(b.label)}</dd></div>
               <div><dt>Lieu</dt><dd>${esc(b.place)}</dd></div>
-              <div><dt>Réglé</dt><dd>${euro(b.price)}</dd></div>
+              <div><dt>${b.onSite ? 'À régler sur place' : 'Réglé'}</dt><dd>${euro(b.price)}${b.onSite ? ' · espèces, chèque ou Wero' : ''}</dd></div>
             </dl>
-            <p class="small muted">Annulation remboursée jusqu’à 48 h avant, depuis le lien présent dans l’e-mail.</p>`);
+            <p class="small muted">${b.onSite ? 'Un empêchement ? Annulez jusqu’à 48 h avant, depuis le lien présent dans l’e-mail.' : 'Annulation remboursée jusqu’à 48 h avant, depuis le lien présent dans l’e-mail.'}</p>`);
           return;
         }
         if (b.status === 'hold' && tries++ < 8) { setTimeout(check, 2500); return; }

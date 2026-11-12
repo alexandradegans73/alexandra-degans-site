@@ -48,7 +48,7 @@ import { site } from '@data/site';
         show('Annulation', 'Moins de 48 h avant le rendez-vous', `${recap}<p class="muted">L’annulation en ligne n’est plus possible. Merci d’appeler Alexandra directement.</p>`);
         return;
       }
-      show('Annulation', 'Annuler ce rendez-vous ?', `${recap}<p class="muted">Le montant de ${euro(b.price)} vous sera intégralement remboursé.</p>`);
+      show('Annulation', 'Annuler ce rendez-vous ?', `${recap}<p class="muted">${b.onSite ? 'Le créneau sera libéré pour quelqu’un d’autre.' : `Le montant de ${euro(b.price)} vous sera intégralement remboursé.`}</p>`);
       const btn = document.createElement('button');
       btn.className = 'btn'; btn.type = 'button'; btn.textContent = 'Confirmer l’annulation';
       btn.addEventListener('click', async () => {

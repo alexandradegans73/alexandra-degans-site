@@ -76,13 +76,16 @@ const layout = (title, inner) => `<!doctype html><html lang="fr"><body style="ma
 <p style="font-family:Arial,sans-serif;font-size:12px;color:#5b6453;margin-top:16px">Alexandra Degans · 06 76 64 79 09 · alexandradegans@outlook.fr</p>
 </td></tr></table></body></html>`;
 
+/** Réservation sans paiement en ligne : réglée sur place le jour de la séance. */
+export const onSite = (b) => b.pay_mode === 'sur_place';
+
 const recap = (b) => {
   const place = PLACES[b.place];
   return `<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin:16px 0;border-top:1px solid #e6dcc8">
 <tr><td style="padding:10px 0;border-bottom:1px solid #e6dcc8;color:#627056;width:38%">Soin</td><td style="padding:10px 0;border-bottom:1px solid #e6dcc8">${esc(b.item_name)}</td></tr>
 <tr><td style="padding:10px 0;border-bottom:1px solid #e6dcc8;color:#627056">Date</td><td style="padding:10px 0;border-bottom:1px solid #e6dcc8">${esc(frLabel(b.start))}</td></tr>
 <tr><td style="padding:10px 0;border-bottom:1px solid #e6dcc8;color:#627056">Lieu</td><td style="padding:10px 0;border-bottom:1px solid #e6dcc8">${esc(place?.address)}</td></tr>
-<tr><td style="padding:10px 0;border-bottom:1px solid #e6dcc8;color:#627056">Réglé</td><td style="padding:10px 0;border-bottom:1px solid #e6dcc8">${euro(b.price)}</td></tr>
+<tr><td style="padding:10px 0;border-bottom:1px solid #e6dcc8;color:#627056">${onSite(b) ? 'À régler sur place' : 'Réglé'}</td><td style="padding:10px 0;border-bottom:1px solid #e6dcc8">${euro(b.price)}${onSite(b) ? ' · espèces, chèque ou Wero' : ''}</td></tr>
 </table>`;
 };
 
@@ -91,19 +94,19 @@ export async function sendConfirmation(env, b) {
   const note = b.note ? `<p style="background:#f3ede2;border-radius:8px;padding:12px 16px">${esc(b.note)}</p>` : '';
   const client = layout('Votre rendez-vous est confirmé.', `
 <p>Bonjour ${esc(b.name)},</p>
-<p>Merci pour votre réservation. Votre séance est réglée et confirmée :</p>
+<p>Merci pour votre réservation. ${onSite(b) ? 'Votre séance est confirmée ; vous la réglerez sur place, le jour du rendez-vous :' : 'Votre séance est réglée et confirmée :'}</p>
 ${recap(b)}${note}
 <p>Venez dans une tenue confortable. Stationnement gratuit sur place.</p>
-<p style="font-size:13px;color:#5b6453">Annulation remboursée intégralement jusqu'à ${RULES.refundHours} h avant le rendez-vous : <a href="${cancelUrl}" style="color:#627056">annuler ma réservation</a>. Au-delà, contactez Alexandra au 06 76 64 79 09.</p>
+<p style="font-size:13px;color:#5b6453">${onSite(b) ? `Un empêchement ? Annulez en ligne jusqu'à ${RULES.refundHours} h avant le rendez-vous` : `Annulation remboursée intégralement jusqu'à ${RULES.refundHours} h avant le rendez-vous`} : <a href="${cancelUrl}" style="color:#627056">annuler ma réservation</a>. Au-delà, contactez Alexandra au 06 76 64 79 09.</p>
 <p style="font-size:13px;color:#5b6453">La kinésiologie et les soins proposés ne se substituent pas à un suivi médical.</p>`);
   const pro = layout('Nouvelle réservation', `
 <p><strong>${esc(b.name)}</strong> · ${esc(b.phone)} · <a href="mailto:${esc(b.email)}" style="color:#627056">${esc(b.email)}</a></p>
 ${recap(b)}${b.message ? `<p><strong>Précisions :</strong> ${esc(b.message)}</p>` : ''}
-<p style="font-size:13px;color:#5b6453">${env.GCAL_HOOK_URL ? 'Le rendez-vous a été ajouté à l’agenda « Kinésiologie ».' : 'Le rendez-vous est joint en invitation d’agenda.'} Paiement visible dans Stripe.</p>`);
+<p style="font-size:13px;color:#5b6453">${env.GCAL_HOOK_URL ? 'Le rendez-vous a été ajouté à l’agenda « Kinésiologie ».' : 'Le rendez-vous est joint en invitation d’agenda.'} ${onSite(b) ? '<strong>Paiement sur place</strong> (rien n’a été encaissé en ligne).' : 'Paiement visible dans Stripe.'}</p>`);
   const pros = [env.ALEXANDRA_EMAIL, env.ALEXANDRA_EMAIL_2].filter(Boolean);
   await send(env, { to: b.email, subject: `Rendez-vous confirmé — ${frLabel(b.start)}`, html: client, ics: bookingIcs(b, env, { attendee: b.email }), icsMethod: 'REQUEST' });
   for (const to of pros) {
-    await send(env, { to, subject: `Nouvelle réservation : ${b.item_name} — ${frLabel(b.start)}`, html: pro, ...(env.GCAL_HOOK_URL ? {} : { ics: bookingIcs(b, env, { attendee: to, attendeeName: b.name }), icsMethod: 'REQUEST' }) });
+    await send(env, { to, subject: `Nouvelle réservation${onSite(b) ? ' (paiement sur place)' : ''} : ${b.item_name} — ${frLabel(b.start)}`, html: pro, ...(env.GCAL_HOOK_URL ? {} : { ics: bookingIcs(b, env, { attendee: to, attendeeName: b.name }), icsMethod: 'REQUEST' }) });
   }
 }
 
@@ -142,7 +145,7 @@ export async function calendarSync(env, action, b) {
   const place = PLACES[b.place];
   const description = [
     `Client : ${b.name}`, `Tél. : ${b.phone}`, `E-mail : ${b.email}`,
-    b.message ? `Précisions : ${b.message}` : '', `Réglé en ligne : ${euro(b.price)}`,
+    b.message ? `Précisions : ${b.message}` : '', onSite(b) ? `À régler sur place : ${euro(b.price)}` : `Réglé en ligne : ${euro(b.price)}`,
   ].filter(Boolean).join('\n');
   try {
     const r = await fetch(env.GCAL_HOOK_URL, {

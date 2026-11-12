@@ -113,6 +113,7 @@ async function confirmBooking(env, id, session) {
 
 const publicBooking = (b) => b && ({
   id: b.id, status: b.status, item: b.item_name, place: PLACES[b.place]?.address, start: b.start, label: frLabel(b.start), price: b.price, name: b.name,
+  onSite: b.pay_mode === 'sur_place',
 });
 
 // ---------------------------------------------------------------- routes
@@ -145,6 +146,14 @@ async function handle(req, env, ctx) {
     if (!item || !item.places.includes(place)) return json({ error: 'Prestation ou lieu inconnu.' }, 400);
     if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || phone.replace(/\D/g, '').length < 9) return json({ error: 'Merci de compléter votre nom, un e-mail valide et votre téléphone.' }, 400);
     if (!body.consent) return json({ error: 'Merci d’accepter les conditions de réservation.' }, 400);
+    const payOnSite = body.pay === 'sur-place';
+    if (payOnSite) {
+      // Garde-fou : pas plus de 2 rendez-vous à venir non payés pour une même personne.
+      const open = await env.DB.prepare(
+        `SELECT COUNT(*) AS n FROM bookings WHERE status = 'confirmed' AND pay_mode = 'sur_place' AND start > ?1 AND (lower(email) = lower(?2) OR replace(phone, ' ', '') = replace(?3, ' ', ''))`,
+      ).bind(now, email, phone).first();
+      if ((open?.n || 0) >= 2) return json({ error: 'Vous avez déjà deux rendez-vous à régler sur place. Pour en réserver un autre, merci de payer en ligne ou d’appeler Alexandra au 06 76 64 79 09.' }, 409);
+    }
 
     const busy = await allBusy(env, ctx, now);
     if (!isFree({ start, duration: item.duration, busy, now })) return json({ error: 'Ce créneau vient d’être pris. Merci d’en choisir un autre.', code: 'taken' }, 409);
@@ -164,6 +173,17 @@ async function handle(req, env, ctx) {
     if (rival) {
       await env.DB.prepare(`UPDATE bookings SET status = 'expired' WHERE id = ?1`).bind(id).run();
       return json({ error: 'Ce créneau vient d’être pris. Merci d’en choisir un autre.', code: 'taken' }, 409);
+    }
+
+    // Paiement sur place : le rendez-vous est confirmé tout de suite, sans passer par Stripe.
+    if (payOnSite) {
+      await env.DB.prepare(`UPDATE bookings SET status = 'confirmed', pay_mode = 'sur_place' WHERE id = ?1`).bind(id).run();
+      const claim = await env.DB.prepare('UPDATE bookings SET emailed = 1 WHERE id = ?1 AND emailed = 0').bind(id).run();
+      const fresh = await getBooking(env, id);
+      if (claim.meta.changes === 1) {
+        ctx.waitUntil(Promise.all([sendConfirmation(env, { ...fresh, note: item.note }), calendarSync(env, 'create', fresh)]));
+      }
+      return json({ url: `${env.SITE_URL}/reservation/confirmee?b=${id}`, id });
     }
 
     try {
