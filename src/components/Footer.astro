@@ -84,4 +84,13 @@ const year = new Date().getFullYear();
   .footer__credit { margin-left: auto; }
   .footer__credit a { text-decoration: underline; text-underline-offset: 0.2em; }
   @media (max-width: 47.99em) { .footer__credit { margin-left: 0; flex-basis: 100%; } }
+  /* Téléphone : tout le pied de page est centré, logo compris */
+  @media (max-width: 39.99em) {
+    .footer__inner, .footer__legal { text-align: center; justify-items: center; }
+    .footer__brand { justify-self: center; }
+    .footer__col { width: 100%; }
+    .footer__legal p { margin-inline: auto; }
+    .footer__links { justify-content: center; }
+    .footer__book { justify-content: center; }
+  }
 </style>
