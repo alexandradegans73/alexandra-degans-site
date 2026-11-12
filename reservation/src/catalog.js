@@ -24,7 +24,7 @@ export const CATALOG = [
     duration: 60, price: 14000, places: BOTH,
     note: 'Vous réservez ici la première séance ; la seconde se fixe ensemble à la fin de celle-ci.',
   },
-  { id: 'animale', group: 'Kinésiologie animale', name: 'Séance de kinésiologie animale', duration: 75, price: 7000, places: ['bassens'] },
+  { id: 'animale', group: 'Kinésiologie animale', name: 'Séance de kinésiologie animale', duration: 75, price: 7000, places: BOTH },
 
   { id: 'visage', group: 'Soins énergétiques', zone: 'Visage', pack: 1, name: 'Massage énergétique du visage', duration: 45, price: 6000, places: BOTH },
   { id: 'visage-5', group: 'Soins énergétiques', zone: 'Visage', pack: 5, name: 'Massage énergétique du visage — forfait 5 séances', duration: 45, price: 25000, places: BOTH, note: NEXT },
@@ -47,11 +47,11 @@ export const CATALOG = [
 
 /** Horaires d'ouverture (heure de Paris). 0 = dimanche. */
 export const HOURS = {
-  1: [['09:00', '20:00']],
-  2: [['09:00', '20:00']],
-  3: [['09:00', '20:00']],
-  4: [['09:00', '20:00']],
-  5: [['09:00', '20:00']],
+  1: [['09:00', '19:00']],
+  2: [['09:00', '19:00']],
+  3: [['09:00', '19:00']],
+  4: [['09:00', '19:00']],
+  5: [['09:00', '19:00']],
   6: [['09:00', '14:30']],
 };
 

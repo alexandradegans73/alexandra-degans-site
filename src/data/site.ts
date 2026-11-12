@@ -18,7 +18,7 @@ export const site = {
   instagram: 'https://www.instagram.com/alexandra.degans',
   instagramHandle: 'alexandra.degans',
   hours: [
-    { days: 'Lundi – Vendredi', time: '9 h – 20 h' },
+    { days: 'Lundi – Vendredi', time: '9 h – 19 h' },
     { days: 'Samedi', time: '9 h – 14 h 30' },
   ],
   payments: 'Chèques, espèces, Paylib, virement',
@@ -99,9 +99,9 @@ export const prestations: Prestation[] = [
     short: 'Comprendre votre animal, renforcer le lien.',
     intro:
       'Un accompagnement pour les animaux de compagnie : stress, peurs, comportements, arrivée d’un nouveau membre.',
-    duration: '1 h 15 · à Bassens',
+    duration: '1 h 15 · Bassens ou Myans',
     price: '70 €',
-    details: [{ label: 'Séance', duration: '1 h 15 · à Bassens', price: '70 €' }],
+    details: [{ label: 'Séance', duration: '1 h 15 · Bassens ou Myans', price: '70 €' }],
     branch: 'upper-right',
   },
   {
@@ -160,7 +160,7 @@ export const nav = [
 export const tarifs = {
   kinesiologie: [{ label: 'Séance de kinésiologie', detail: '1 h', price: '70 €' }],
   transgenerationnel: [{ label: 'Libération des loyautés familiales', detail: '2 séances (kinésiologie + soin énergétique)', price: '140 €', note: 'au lieu de 160 €' }],
-  animale: [{ label: 'Séance de kinésiologie animale', detail: '1 h 15 · uniquement à Bassens', price: '70 €' }],
+  animale: [{ label: 'Séance de kinésiologie animale', detail: '1 h 15 · à Bassens ou à Myans', price: '70 €' }],
   visage: [
     { label: '1 séance', detail: '45 min', price: '60 €' },
     { label: 'Forfait 5 séances', detail: '5 × 45 min', price: '250 €' },

@@ -96,9 +96,9 @@ assert(mon.includes('09:00') === false, '9h00 : 9h-10h + tampon 15 min chevauche
 assert(!mon.includes('11:45') && mon.includes('12:00'), 'RDV finit 11h30 + 15 min → prochain créneau à la demi-heure : 12h00');
 assert(!mon.includes('11:30'));
 assert(mon.includes('16:30') && !mon.includes('17:00'), 'avant le RDV hebdo de 18h (créneaux à la demi-heure)');
-assert(!mon.some(l => l >= '17:00'), 'rien après : 19h15 + 1 h dépasse 20h');
+assert(!mon.some(l => l >= '17:00'), 'rien après le RDV de 18h');
 const tue = day('2026-11-17').slots.map(s=>s.label);
-assert(tue.includes('19:00') && !tue.includes('19:15'), 'fermeture 20h');
+assert(tue.includes('18:00') && !tue.includes('18:30'), 'fermeture 19h : dernier créneau d’1 h à 18h');
 assert(tue.includes('12:30') && !tue.includes('13:00') && !tue.includes('15:00') && tue.includes('15:30'), 'RDV 14h-15h (13h UTC)');
 const sat = day('2026-11-21').slots.map(s=>s.label);
 assert(sat.at(-1) === '13:30', 'samedi : dernier créneau 13h30 pour finir à 14h30, reçu ' + sat.at(-1));
