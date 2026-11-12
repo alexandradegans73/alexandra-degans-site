@@ -2,7 +2,7 @@
 import Base from '@layouts/Base.astro';
 import ScrollFilm from '@components/ScrollFilm.astro';
 import Portrait from '@components/Portrait.astro';
-import { site, prestations, avis } from '@data/site';
+import { site, branches, avis } from '@data/site';
 import { media } from '@data/media';
 
 const description =
@@ -63,12 +63,12 @@ const etapes = [
     <div id="prestations" data-film-mark="0.1667">
       <section class="scene scene--center scene--short" data-scene aria-label="Les soins">
         <div class="scene__inner container-text" data-scene-inner>
-          <p class="eyebrow">Cinq branches</p>
+          <p class="eyebrow">Six branches</p>
           <h2>Chaque branche est <em>un chemin</em> vers vous.</h2>
         </div>
       </section>
 
-      {prestations.map((p, i) => (
+      {branches.map((p, i) => (
         <section class:list={['scene', 'scene--branch', i % 2 === 0 ? 'scene--right' : 'scene--left']} data-scene="branch" data-branch aria-labelledby={`b-${p.slug}`}>
           <div class="scene__inner container-wide">
             <article class:list={['branch', i % 2 === 0 ? 'branch--from-left' : 'branch--from-right']}>
@@ -87,10 +87,10 @@ const etapes = [
                   <p class="branch__intro" data-branch-item>{p.intro}</p>
                   <ul class="branch__details" role="list" data-branch-item>
                     {p.details.map((d) => (
-                      <li><span class="branch__d-label">{d.label}</span><span class="branch__d-duration">{d.duration}</span><span class="branch__d-price">{d.price}</span></li>
+                      <li><span class="branch__d-label">{d.label}</span>{d.duration && <span class="branch__d-duration">{d.duration}</span>}<span class="branch__d-price">{d.price}</span></li>
                     ))}
                   </ul>
-                  <a class="link-arrow" href={p.path} data-branch-item>Découvrir<span class="visually-hidden"> : {p.name}</span>
+                  <a class="link-arrow" href={p.path} target={p.external ? '_blank' : undefined} rel={p.external ? 'noopener' : undefined} data-branch-item>{p.cta ?? 'Découvrir'}<span class="visually-hidden"> : {p.name}</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
                 </div>
               </div>
@@ -262,11 +262,12 @@ const etapes = [
   .branch__intro { color: var(--c-sable); }
   .branch__short { font-family: var(--font-display); font-style: italic; font-size: var(--fs-lg); }
   .branch__details { display: grid; }
-  .branch__details li { display: grid; grid-template-columns: 1fr auto auto; gap: var(--s-4); align-items: baseline; padding-block: var(--s-3); border-top: 1px solid rgb(243 237 226 / 0.16); max-width: none; }
+  .branch__details li { display: flex; justify-content: space-between; gap: var(--s-4); align-items: baseline; padding-block: var(--s-3); border-top: 1px solid rgb(243 237 226 / 0.16); max-width: none; }
   .branch__details li:last-child { border-bottom: 1px solid rgb(243 237 226 / 0.16); }
   .branch__d-label { font-family: var(--font-display); font-size: var(--fs-lg); }
-  .branch__d-duration { font-size: var(--fs-xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-sable); }
-  .branch__d-price { font-family: var(--font-display); font-size: var(--fs-h4); min-width: 3.2em; text-align: right; }
+  .branch__d-label { flex: 1; }
+  .branch__d-duration { font-size: var(--fs-xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-sable); white-space: nowrap; }
+  .branch__d-price { font-family: var(--font-display); font-size: var(--fs-h4); min-width: 3em; text-align: right; white-space: nowrap; }
 
   .etapes { display: grid; gap: var(--s-4); margin-top: var(--s-5); width: 100%; text-align: left; }
   @media (min-width: 48em) { .etapes { grid-template-columns: repeat(3, 1fr); } }

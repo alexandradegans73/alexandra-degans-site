@@ -24,7 +24,7 @@ export const site = {
     'Membre de la Fédération Française des Pratiques Alternatives Professionnelles',
   ],
   mediation: 'CNPM Médiation — adhérente n° CNPM32916',
-  siren: '953 944 154',
+  siret: '953 944 154 00012',
   googleReviews: 'https://www.google.com/maps/place/?q=place_id:ChIJpVBP6peti0cR6ICIh4BDzqU',
   places: [
     {
@@ -88,9 +88,9 @@ export const prestations: Prestation[] = [
     short: 'Déposer ce qui ne vous appartient pas.',
     intro:
       'Deux séances pour explorer les loyautés familiales et alléger un héritage émotionnel transmis de génération en génération.',
-    duration: '2 séances',
+    duration: '1 séance de kinésiologie + 1 soin énergétique',
     price: '140 €',
-    details: [{ label: 'Accompagnement complet', duration: '2 séances', price: '140 €' }],
+    details: [{ label: '1 séance de kinésiologie + 1 soin énergétique', duration: '', price: '140 €' }],
     branch: 'upper-left',
   },
   {
@@ -99,7 +99,7 @@ export const prestations: Prestation[] = [
     name: 'Kinésiologie animale',
     short: 'Comprendre votre animal, renforcer le lien.',
     intro:
-      'Un accompagnement pour les animaux de compagnie et d’élevage : stress, peurs, comportements, arrivée d’un nouveau membre.',
+      'Un accompagnement pour les animaux de compagnie : stress, peurs, comportements, arrivée d’un nouveau membre.',
     duration: '1 h 15 · à Bassens',
     price: '70 €',
     details: [{ label: 'Séance', duration: '1 h 15 · à Bassens', price: '70 €' }],
@@ -128,6 +128,22 @@ export const prestations: Prestation[] = [
     price: 'dès 60 €',
     details: [{ label: 'Ventre', duration: '1 h', price: '60 €' }, { label: 'Jambes', duration: '75 min', price: '70 €' }],
     branch: 'right',
+  },
+];
+
+/** Branches affichées sur l'accueil : les cinq soins + le soin à la carte (sans page dédiée). */
+export type Branche = Pick<Prestation, 'slug' | 'path' | 'name' | 'short' | 'intro' | 'details'> & { cta?: string; external?: boolean };
+export const branches: Branche[] = [
+  ...prestations,
+  {
+    slug: 'soin-a-la-carte',
+    path: site.booking,
+    external: true,
+    cta: 'Prendre rendez-vous',
+    name: 'Soin à la carte',
+    short: 'Composez votre séance.',
+    intro: 'Deux soins de votre choix, réunis en un seul rendez-vous.',
+    details: [{ label: '2 soins au choix', duration: '', price: '110 €' }],
   },
 ];
 
