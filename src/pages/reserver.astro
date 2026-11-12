@@ -128,6 +128,10 @@ import { site } from '@data/site';
     .chips--2 .chip { border-radius: var(--r-md); text-align: left; padding: var(--s-4); display: grid; gap: 2px; }
     .chips--2 .chip b { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-h4); }
     .chips--2 .chip small { margin: 0; font-size: var(--fs-xs); }
+    .chip.is-off { cursor: not-allowed; background: transparent; border-style: dashed; color: color-mix(in oklab, var(--fg) 40%, transparent); }
+    .chip.is-off:hover { border-color: var(--c-sable-300); }
+    .chip__why { display: block; margin-top: var(--s-2); font-style: normal; font-size: var(--fs-xs); letter-spacing: 0.04em; color: var(--c-sauge); }
+    .bk__next { margin-top: var(--s-4); width: 100%; }
 
     .days { display: flex; gap: var(--s-2); overflow-x: auto; padding-bottom: var(--s-3); scroll-snap-type: x mandatory; scrollbar-width: thin; }
     .day { flex: 0 0 auto; scroll-snap-align: start; display: grid; justify-items: center; gap: 2px; min-width: 4.2rem; padding: var(--s-3) var(--s-2); border: 1px solid var(--c-sable-300); border-radius: var(--r-md); background: var(--c-creme-050); cursor: pointer; font: inherit; color: inherit; }
@@ -369,19 +373,44 @@ import { site } from '@data/site';
     }
 
     // ------------------------------------------------------------ 3. lieu (cabinets ouverts à ce créneau)
+    // Jours d'ouverture par cabinet (0 = dimanche) — à garder identiques à PLACE_HOURS dans reservation/src/catalog.js
+    const OPEN_DAYS: Record<string, number[]> = { bassens: [3, 4, 5, 6], myans: [1, 2, 3, 4, 5] };
+    const DAY_NAMES = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+    const closedLabel = (key: string) => {
+      const closed = [1, 2, 3, 4, 5, 6].filter((d) => !(OPEN_DAYS[key] || []).includes(d)).map((d) => DAY_NAMES[d]);
+      return closed.length ? `Fermé le ${closed.join(' et le ')}` : '';
+    };
+
     function showPlaces(keys: string[]) {
       const wrap = q('[data-places]');
       wrap.innerHTML = '';
+      wrap.parentElement!.querySelectorAll('.bk__next').forEach((n) => n.remove());
+      const wd = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Paris', weekday: 'short' }).format(new Date(st.start!)).replace(/Sun|Mon|Tue|Wed|Thu|Fri|Sat/, (m) => String(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(m))));
+      const dayName = DAY_NAMES[wd];
       q('[data-where]').textContent = keys.length === 1
-        ? `Ce jour-là, Alexandra consulte à ${places[keys[0]].name}.`
+        ? `Le ${dayName} à cette heure, Alexandra consulte à ${places[keys[0]].name}.`
         : 'Les deux cabinets sont disponibles à cette heure : choisissez le plus pratique pour vous.';
-      for (const key of keys) {
-        const b = chip(`<b>${esc(places[key].name)}</b>`, esc(places[key].address));
-        b.addEventListener('click', () => { check(wrap, b); choosePlace(key); });
+      for (const key of st.item!.places) {
+        const ok = keys.includes(key);
+        const why = ok ? '' : (OPEN_DAYS[key] || []).includes(wd) ? 'Déjà réservé à cette heure' : `${closedLabel(key)}`;
+        const b = chip(`<b>${esc(places[key].name)}</b>`, `${esc(places[key].address)}${why ? `<em class="chip__why">${esc(why)}</em>` : ''}`);
+        if (!ok) { b.disabled = true; b.classList.add('is-off'); b.setAttribute('aria-disabled', 'true'); }
+        else b.addEventListener('click', () => { check(wrap, b); choosePlace(key); });
         wrap.append(b);
       }
-      if (keys.length === 1) { check(wrap, wrap.firstElementChild!); choosePlace(keys[0]); }
-      else open('lieu');
+      open('lieu');
+      if (keys.length === 1) {
+        const only = [...wrap.children].find((c) => !(c as HTMLButtonElement).disabled)!;
+        check(wrap, only);
+        st.place = keys[0];
+        done('lieu', places[keys[0]].name);
+        recap();
+        const go = document.createElement('button');
+        go.type = 'button'; go.className = 'btn btn--ghost bk__next';
+        go.textContent = `Continuer à ${places[keys[0]].name}`;
+        go.addEventListener('click', () => open('infos'));
+        wrap.after(go);
+      }
     }
 
     function choosePlace(key: string) {
