@@ -55,6 +55,12 @@ export const HOURS = {
   6: [['09:00', '14:30']],
 };
 
+/** Jours d'ouverture par cabinet : Bassens fermé le lundi et le mardi, Myans fermé le samedi. */
+export const PLACE_HOURS = {
+  bassens: { 3: HOURS[3], 4: HOURS[4], 5: HOURS[5], 6: HOURS[6] },
+  myans: { 1: HOURS[1], 2: HOURS[2], 3: HOURS[3], 4: HOURS[4], 5: HOURS[5] },
+};
+
 export const RULES = {
   stepMinutes: 30, // un créneau peut démarrer toutes les demi-heures
   bufferMinutes: 15, // temps libre après chaque rendez-vous

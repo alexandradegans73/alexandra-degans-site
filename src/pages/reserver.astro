@@ -33,21 +33,21 @@ import { site } from '@data/site';
           </div>
         </section>
 
-        <section class="bk__step" data-step="lieu">
-          <button type="button" class="bk__head" data-head aria-expanded="false" disabled>
-            <span class="bk__num">2</span><span class="bk__label">Lieu</span><span class="bk__value" data-value></span>
-          </button>
-          <div class="bk__body" data-body hidden><div class="chips chips--2" data-places></div></div>
-        </section>
-
         <section class="bk__step" data-step="date">
           <button type="button" class="bk__head" data-head aria-expanded="false" disabled>
-            <span class="bk__num">3</span><span class="bk__label">Date</span><span class="bk__value" data-value></span>
+            <span class="bk__num">2</span><span class="bk__label">Date</span><span class="bk__value" data-value></span>
           </button>
           <div class="bk__body" data-body hidden>
             <div class="days" data-days role="radiogroup" aria-label="Jour"></div>
             <div class="slots" data-slots role="radiogroup" aria-label="Heure"></div>
           </div>
+        </section>
+
+        <section class="bk__step" data-step="lieu">
+          <button type="button" class="bk__head" data-head aria-expanded="false" disabled>
+            <span class="bk__num">3</span><span class="bk__label">Lieu</span><span class="bk__value" data-value></span>
+          </button>
+          <div class="bk__body" data-body hidden><p class="small muted bk__where" data-where></p><div class="chips chips--2" data-places></div></div>
         </section>
 
         <section class="bk__step" data-step="infos">
@@ -117,6 +117,7 @@ import { site } from '@data/site';
     .soin__opts { display: grid; gap: var(--s-3); padding: 0 0 var(--s-5); }
     .soin__opts p { margin: 0; font-size: var(--fs-xs); letter-spacing: var(--ls-caps); text-transform: uppercase; color: var(--c-sauge); }
 
+    .bk__where { margin: 0 0 var(--s-4); }
     .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
     .chips--2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
     .chip { font: inherit; font-size: var(--fs-sm); color: inherit; padding: 0.6em 1.1em; border: 1px solid var(--c-sable-300); border-radius: var(--r-pill); background: var(--c-creme-050); cursor: pointer; transition: background var(--t-base), border-color var(--t-base), color var(--t-base); }
@@ -168,7 +169,7 @@ import { site } from '@data/site';
 <script>
   type Item = { id: string; group: string; zone?: string; pack?: number; name: string; duration: number; price: number; places: string[]; note?: string; combo?: string[] };
   type Place = { name: string; address: string };
-  type Day = { date: string; slots: { start: number; label: string }[] };
+  type Day = { date: string; slots: { start: number; label: string; places: string[] }[] };
 
   const root = document.querySelector<HTMLElement>('.bk');
   if (root) {
@@ -183,7 +184,7 @@ import { site } from '@data/site';
     let items: Item[] = [];
     let places: Record<string, Place> = {};
     const st: { item?: Item; combo: string[]; place?: string; start?: number; when?: string } = { combo: [] };
-    const ORDER = ['soin', 'lieu', 'date', 'infos'];
+    const ORDER = ['soin', 'date', 'lieu', 'infos'];
 
     // ------------------------------------------------------------ accordéon
     const step = (name: string) => q(`[data-step="${name}"]`);
@@ -315,32 +316,23 @@ import { site } from '@data/site';
       st.item = it; st.place = undefined; st.start = undefined;
       say(it.note || '');
       done('soin', `${it.name.replace(/^Soin à la carte : /, 'À la carte · ')} · ${euro(it.price)}`);
-      const wrap = q('[data-places]');
-      wrap.innerHTML = '';
-      for (const key of it.places) {
-        const b = chip(`<b>${esc(places[key].name)}</b>`, esc(places[key].address));
-        b.addEventListener('click', () => { check(wrap, b); choosePlace(key); });
-        wrap.append(b);
-      }
-      if (it.places.length === 1) (wrap.firstElementChild as HTMLElement).click();
-      else open('lieu');
+      loadSlots();
     }
 
-    // ------------------------------------------------------------ 2. lieu
-    async function choosePlace(key: string) {
-      st.place = key; st.start = undefined;
-      done('lieu', places[key].name);
+    // ------------------------------------------------------------ 2. date (tous cabinets confondus)
+    async function loadSlots() {
+      const it = st.item!;
       open('date');
       const daysEl = q('[data-days]');
       const slotsEl = q('[data-slots]');
       daysEl.innerHTML = '<p class="muted small">Recherche des disponibilités…</p>';
       slotsEl.innerHTML = '';
       try {
-        const combo = st.item!.combo && st.combo.length === 2 ? `&combo=${st.combo.join(',')}` : '';
-        const r = await fetch(`${API}/api/slots?item=${encodeURIComponent(st.item!.id)}&place=${key}${combo}`);
+        const combo = it.combo && st.combo.length === 2 ? `&combo=${st.combo.join(',')}` : '';
+        const r = await fetch(`${API}/api/slots?item=${encodeURIComponent(it.id)}${combo}`);
         const data = await r.json();
         if (!r.ok) throw new Error(data.error);
-        if (st.place !== key) return;
+        if (st.item !== it) return;
         daysEl.innerHTML = '';
         if (!data.days.length) { daysEl.innerHTML = '<p class="muted small">Aucun créneau en ligne pour le moment. Appelez Alexandra au 06 76 64 79 09.</p>'; return; }
         const fd = new Intl.DateTimeFormat('fr-FR', { weekday: 'short' });
@@ -360,7 +352,6 @@ import { site } from '@data/site';
       }
     }
 
-    // ------------------------------------------------------------ 3. date
     function chooseDay(d: Day) {
       const el = q('[data-slots]');
       el.innerHTML = '';
@@ -368,14 +359,36 @@ import { site } from '@data/site';
         const b = chip(s.label);
         b.addEventListener('click', () => {
           check(el, b);
-          st.start = s.start;
+          st.start = s.start; st.place = undefined;
           st.when = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' }).format(new Date(s.start));
           done('date', st.when);
-          recap();
-          open('infos');
+          showPlaces(s.places);
         });
         el.append(b);
       }
+    }
+
+    // ------------------------------------------------------------ 3. lieu (cabinets ouverts à ce créneau)
+    function showPlaces(keys: string[]) {
+      const wrap = q('[data-places]');
+      wrap.innerHTML = '';
+      q('[data-where]').textContent = keys.length === 1
+        ? `Ce jour-là, Alexandra consulte à ${places[keys[0]].name}.`
+        : 'Les deux cabinets sont disponibles à cette heure : choisissez le plus pratique pour vous.';
+      for (const key of keys) {
+        const b = chip(`<b>${esc(places[key].name)}</b>`, esc(places[key].address));
+        b.addEventListener('click', () => { check(wrap, b); choosePlace(key); });
+        wrap.append(b);
+      }
+      if (keys.length === 1) { check(wrap, wrap.firstElementChild!); choosePlace(keys[0]); }
+      else open('lieu');
+    }
+
+    function choosePlace(key: string) {
+      st.place = key;
+      done('lieu', places[key].name);
+      recap();
+      open('infos');
     }
 
     // ------------------------------------------------------------ 4. coordonnées + paiement
@@ -412,7 +425,7 @@ import { site } from '@data/site';
         const data = await r.json();
         if (!r.ok) {
           say(data.error || 'Une erreur est survenue.');
-          if (data.code === 'taken') choosePlace(st.place);
+          if (data.code === 'taken') loadSlots();
           throw new Error();
         }
         location.href = data.url;

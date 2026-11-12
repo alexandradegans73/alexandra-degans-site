@@ -10,16 +10,17 @@ const MIN = 60000;
  * @param {{start:number,end:number}[]} o.busy  plages occupées (agenda + réservations), en ms
  * @param {number} o.now  instant présent (ms)
  * @param {number} o.days  nombre de jours à couvrir à partir d'aujourd'hui
+ * @param {object} [o.hours]  horaires d'ouverture (par défaut : horaires généraux)
  * @returns {{date:string, slots:{start:number,label:string}[]}[]}
  */
-export function computeSlots({ duration, busy, now, days = RULES.maxDaysAhead }) {
+export function computeSlots({ duration, busy, now, days = RULES.maxDaysAhead, hours = HOURS }) {
   const earliest = now + RULES.minNoticeHours * 3600000;
   const need = (duration + RULES.bufferMinutes) * MIN;
   const today = parisParts(now);
   const out = [];
   for (let i = 0; i <= Math.min(days, RULES.maxDaysAhead); i++) {
     const c = addDays(today, i);
-    const ranges = HOURS[c.wd] || [];
+    const ranges = hours[c.wd] || [];
     const slots = [];
     for (const [open, close] of ranges) {
       const [oh, om] = hm(open);
@@ -42,12 +43,12 @@ export function computeSlots({ duration, busy, now, days = RULES.maxDaysAhead })
 }
 
 /** Vérifie qu'un créneau précis est encore libre (au moment du paiement). */
-export function isFree({ start, duration, busy, now }) {
+export function isFree({ start, duration, busy, now, hours = HOURS }) {
   if (start < now + RULES.minNoticeHours * 3600000) return false;
   if (start > now + (RULES.maxDaysAhead + 1) * 86400000) return false;
   const p = parisParts(start);
   if (p.min % RULES.stepMinutes !== 0) return false;
-  const ranges = HOURS[p.wd] || [];
+  const ranges = hours[p.wd] || [];
   const inHours = ranges.some(([o, c]) => {
     const [oh, om] = hm(o); const [ch, cm] = hm(c);
     return start >= wallToUtc(p.y, p.m, p.d, oh, om) && start + duration * MIN <= wallToUtc(p.y, p.m, p.d, ch, cm);

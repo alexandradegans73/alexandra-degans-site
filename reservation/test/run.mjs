@@ -125,3 +125,16 @@ import { resolveItem } from '../src/catalog.js';
   assert.equal(resolveItem('kinesiologie').duration, 60);
   console.log('Soin à la carte : OK');
 }
+
+// --- jours d'ouverture par cabinet
+import { PLACE_HOURS } from '../src/catalog.js';
+{
+  const n = P(2026, 11, 14, 8);
+  const b = computeSlots({ duration: 60, busy: [], now: n, days: 7, hours: PLACE_HOURS.bassens }).map((d) => d.date);
+  const m = computeSlots({ duration: 60, busy: [], now: n, days: 7, hours: PLACE_HOURS.myans }).map((d) => d.date);
+  assert(!b.includes('2026-11-16') && !b.includes('2026-11-17') && b.includes('2026-11-18') && b.includes('2026-11-21'), 'Bassens : fermé lundi et mardi, ouvert samedi');
+  assert(m.includes('2026-11-16') && m.includes('2026-11-17') && !m.includes('2026-11-21'), 'Myans : ouvert lundi et mardi, fermé samedi');
+  assert(!isFree({ start: P(2026, 11, 16, 14), duration: 60, busy: [], now: n, hours: PLACE_HOURS.bassens }), 'Bassens lundi refusé');
+  assert(isFree({ start: P(2026, 11, 16, 14), duration: 60, busy: [], now: n, hours: PLACE_HOURS.myans }), 'Myans lundi accepté');
+  console.log('Jours par cabinet : OK');
+}

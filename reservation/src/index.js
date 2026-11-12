@@ -13,7 +13,7 @@
  * Secrets   : STRIPE_SECRET_KEY, RESEND_API_KEY, ICAL_URL
  * Base D1   : DB (schéma dans schema.sql)
  */
-import { CATALOG, PLACES, RULES, resolveItem } from './catalog.js';
+import { CATALOG, PLACES, PLACE_HOURS, RULES, resolveItem } from './catalog.js';
 import { busyFromIcs } from './ics.js';
 import { computeSlots, isFree } from './slots.js';
 import { sendConfirmation, sendCancellation, sendReminder, calendarSync } from './mail.js';
@@ -153,9 +153,24 @@ async function handle(req, env, ctx) {
   if (req.method === 'GET' && path === '/api/slots') {
     const item = resolveItem(url.searchParams.get('item'), url.searchParams.get('combo'));
     const place = url.searchParams.get('place');
-    if (!item || !item.places.includes(place)) return json({ error: 'Prestation ou lieu inconnu.' }, 400);
+    if (!item || (place && !item.places.includes(place))) return json({ error: 'Prestation ou lieu inconnu.' }, 400);
     const busy = await allBusy(env, ctx, now);
-    return json({ days: computeSlots({ duration: item.duration, busy, now }) }, 200, { 'Cache-Control': 'no-store' });
+    // Sans lieu : on fusionne les cabinets, chaque créneau indique où il est possible.
+    const byDate = new Map();
+    for (const p of place ? [place] : item.places) {
+      for (const d of computeSlots({ duration: item.duration, busy, now, hours: PLACE_HOURS[p] })) {
+        const day = byDate.get(d.date) || new Map();
+        for (const s of d.slots) {
+          const slot = day.get(s.start) || { ...s, places: [] };
+          slot.places.push(p);
+          day.set(s.start, slot);
+        }
+        byDate.set(d.date, day);
+      }
+    }
+    const days = [...byDate.entries()].sort(([a], [b]) => (a < b ? -1 : 1))
+      .map(([date, m]) => ({ date, slots: [...m.values()].sort((a, b) => a.start - b.start) }));
+    return json({ days }, 200, { 'Cache-Control': 'no-store' });
   }
 
   if (req.method === 'POST' && path === '/api/checkout') {
@@ -184,7 +199,7 @@ async function handle(req, env, ctx) {
       }
     }
     const busy = await allBusy(env, ctx, now);
-    if (!isFree({ start, duration: item.duration, busy, now })) return json({ error: 'Ce créneau vient d’être pris. Merci d’en choisir un autre.', code: 'taken' }, 409);
+    if (!isFree({ start, duration: item.duration, busy, now, hours: PLACE_HOURS[place] })) return json({ error: 'Ce créneau vient d’être pris. Merci d’en choisir un autre.', code: 'taken' }, 409);
 
     const id = randomId(12);
     const end = start + item.duration * MIN;
