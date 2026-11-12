@@ -65,6 +65,7 @@ const schemas = [business, ...(Array.isArray(schema) ? schema : schema ? [schema
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     {path !== '/404' && <link rel="canonical" href={canonical} />}
+    {path === '/' && <meta name="msvalidate.01" content="8ABCDF7767BDD5EB83219BF9E3BE05F6" />}
     {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="theme-color" content="#f3ede2" />
     <meta name="color-scheme" content="light" />
