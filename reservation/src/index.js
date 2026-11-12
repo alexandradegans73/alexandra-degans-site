@@ -63,6 +63,30 @@ function encodeForm(obj, prefix = '', out = []) {
 
 // ---------------------------------------------------------------- disponibilités
 async function calendarBusy(env, ctx, from, to) {
+  // 1) Lecture directe de l'agenda par le script Google (instantané, agenda « Kinésiologie » + agenda principal).
+  if (env.GCAL_HOOK_URL) {
+    const cache = caches.default;
+    const key = new Request('https://cache.local/agenda-direct');
+    let res = await cache.match(key);
+    if (!res) {
+      try {
+        const r = await fetch(env.GCAL_HOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ secret: env.GCAL_HOOK_SECRET, action: 'busy', from, to }),
+        });
+        const data = await r.json();
+        if (data.ok && Array.isArray(data.busy)) {
+          res = new Response(JSON.stringify(data.busy), { headers: { 'Cache-Control': 'max-age=20' } });
+          ctx.waitUntil(cache.put(key, res.clone()));
+        } else console.log('Agenda direct indisponible', JSON.stringify(data).slice(0, 200));
+      } catch (e) {
+        console.log('Agenda direct injoignable', String(e));
+      }
+    }
+    if (res) return (await res.json()).map(([start, end]) => ({ start, end }));
+  }
+  // 2) Secours : adresse iCal secrète (mise à jour par Google avec plusieurs heures de retard).
   if (!env.ICAL_URL) return [];
   const cache = caches.default;
   const key = new Request('https://cache.local/ical');

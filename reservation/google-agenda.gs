@@ -21,6 +21,21 @@ function doPost(e) {
     ev.setTag('reservation', d.id);
     return out({ ok: true });
   }
+  if (d.action === 'busy') {
+    // Plages occupées entre d.from et d.to : agenda « Kinésiologie » + agenda principal du compte.
+    // Ignorés : événements marqués « disponible » (ex. journées entières de notes) et invitations refusées.
+    const from = new Date(d.from), to = new Date(d.to);
+    const busy = [];
+    [cal, CalendarApp.getDefaultCalendar()].forEach((c) => {
+      if (!c) return;
+      c.getEvents(from, to).forEach((ev) => {
+        try { if (String(ev.getTransparency()) === 'TRANSPARENT') return; } catch (err) { if (ev.isAllDayEvent()) return; }
+        try { if (String(ev.getMyStatus()) === 'NO') return; } catch (err) { /* sans objet */ }
+        busy.push([ev.getStartTime().getTime(), ev.getEndTime().getTime()]);
+      });
+    });
+    return out({ ok: true, busy });
+  }
   if (d.action === 'delete') {
     const evs = mine();
     evs.forEach((ev) => ev.deleteEvent());
