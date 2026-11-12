@@ -475,28 +475,65 @@ function setupSound() {
     if (!on) return;
     layers.forEach((l) => gsap.to(l.el, { volume: curveAt(l.curve, filmProgress) * l.max, duration: dur, overwrite: true }));
   };
-  btn.addEventListener('click', async () => {
+  const all = () => [music, ...layers.map((l) => l.el)].filter(Boolean) as HTMLAudioElement[];
+  const start = async () => {
+    if (on) return true;
     if (!music) {
       music = make(src);
       const names = (btn.dataset.layers || '').split(',').filter(Boolean);
       layers = names.map((n) => ({ el: make(`/media/sons/${n}.mp3`), ...SOUND_CURVES[n] }));
     }
-    if (!on) {
-      try {
-        await music.play();
-        layers.forEach((l) => l.el.play().catch(() => {}));
-        setState(true);
-        gsap.to(music, { volume: 0.4, duration: 2.5, overwrite: true });
-        mix(2.5);
-      } catch { /* lecture refusée par le navigateur */ }
+    try {
+      await music.play();
+    } catch {
+      return false; // lecture refusée par le navigateur : on réessaiera au prochain geste
+    }
+    layers.forEach((l) => l.el.play().catch(() => {}));
+    setState(true);
+    gsap.to(music, { volume: 0.4, duration: 2.5, overwrite: true });
+    mix(2.5);
+    return true;
+  };
+  const stop = () => {
+    setState(false);
+    all().forEach((a) => gsap.to(a, { volume: 0, duration: 1.2, overwrite: true, onComplete: () => a.pause() }));
+  };
+
+  // Bouton : allumer / couper. Si la personne coupe, on ne relance plus tout seul.
+  btn.addEventListener('click', async () => {
+    if (on) {
+      stop();
+      try { sessionStorage.setItem('son-coupe', '1'); } catch { /* stockage indisponible */ }
     } else {
-      setState(false);
-      [music, ...layers.map((l) => l.el)].forEach((a) => gsap.to(a, { volume: 0, duration: 1.2, overwrite: true, onComplete: () => a.pause() }));
+      try { sessionStorage.removeItem('son-coupe'); } catch { /* stockage indisponible */ }
+      await start();
     }
   });
+
+  // Démarrage au premier défilement. Les navigateurs n'autorisent le son qu'après un « vrai » geste
+  // (toucher, clic, touche) : la molette seule ne suffit pas toujours, on réessaie donc à chaque geste.
+  let off = false;
+  try { off = sessionStorage.getItem('son-coupe') === '1'; } catch { /* stockage indisponible */ }
+  if (!off) {
+    const events = ['scroll', 'wheel', 'touchend', 'pointerdown', 'keydown'] as const;
+    const tryStart = async () => {
+      if (on) return done();
+      if (await start()) done();
+    };
+    const done = () => events.forEach((e) => window.removeEventListener(e, tryStart, true));
+    events.forEach((e) => window.addEventListener(e, tryStart, { capture: true, passive: true }));
+  }
+
   document.addEventListener('film:progress', () => mix());
+  let wasOn = false;
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden && on) { setState(false); [music, ...layers.map((l) => l.el)].forEach((a) => a?.pause()); }
+    if (document.hidden) {
+      wasOn = on;
+      if (on) { setState(false); all().forEach((a) => a.pause()); }
+    } else if (wasOn) {
+      wasOn = false;
+      start();
+    }
   });
 }
 
