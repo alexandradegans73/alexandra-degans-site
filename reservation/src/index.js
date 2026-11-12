@@ -211,7 +211,13 @@ async function handle(req, env, ctx) {
       if (!refundable) return json({ error: `L’annulation en ligne n’est possible que jusqu’à ${RULES.refundHours} h avant le rendez-vous. Merci d’appeler Alexandra au 06 76 64 79 09.` }, 409);
       let refunded = false;
       if (b.payment_intent) {
-        await stripe(env, 'POST', '/refunds', { payment_intent: b.payment_intent, reason: 'requested_by_customer', metadata: { booking_id: b.id } });
+        try {
+          await stripe(env, 'POST', '/refunds', { payment_intent: b.payment_intent, reason: 'requested_by_customer', metadata: { booking_id: b.id } });
+        } catch (e) {
+          // Clé Stripe soumise à approbation : le remboursement attend la validation d'Alexandra dans Stripe.
+          if (!/approval/i.test(String(e))) throw e;
+          console.log('Remboursement en attente d’approbation Stripe', b.id);
+        }
         refunded = true;
       }
       await env.DB.prepare(`UPDATE bookings SET status = 'cancelled', cancelled_at = ?2, refunded = ?3 WHERE id = ?1`).bind(b.id, now, refunded ? 1 : 0).run();

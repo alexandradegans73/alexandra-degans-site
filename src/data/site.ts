@@ -11,7 +11,8 @@ export const site = {
   phone: '06 76 64 79 09',
   phoneHref: 'tel:+33676647909',
   email: 'alexandradegans@outlook.fr',
-  booking: 'https://www.crenolibre.fr/prendre-rdv/114511',
+  /** Réservation et paiement en ligne (page du site). */
+  booking: '/reserver',
   /** API de réservation et paiement en ligne (Cloudflare Worker + Stripe). */
   bookingApi: 'https://reservation.alexandra-degans.workers.dev',
   instagram: 'https://www.instagram.com/alexandra.degans',
@@ -135,8 +136,7 @@ export const branches: Branche[] = [
   ...prestations,
   {
     slug: 'soin-a-la-carte',
-    path: site.booking,
-    external: true,
+    path: `${site.booking}?soin=a-la-carte`,
     cta: 'Prendre rendez-vous',
     name: 'Soin à la carte',
     short: 'Composez votre séance.',

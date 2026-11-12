@@ -1,7 +1,7 @@
 ---
 import { site } from '@data/site';
-interface Props { title?: string; text?: string; }
-const { title = 'Prendre un temps <em>pour soi</em>.', text = 'Réservez votre séance en ligne, ou appelez-moi pour échanger sur votre besoin avant de venir.' } = Astro.props;
+interface Props { title?: string; text?: string; /** identifiant du soin à présélectionner sur /reserver */ soin?: string; }
+const { soin, title = 'Prendre un temps <em>pour soi</em>.', text = 'Réservez votre séance en ligne, ou appelez-moi pour échanger sur votre besoin avant de venir.' } = Astro.props;
 ---
 <section class="cta theme-dark" aria-labelledby="cta-title">
   <div class="cta__rings" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -10,7 +10,7 @@ const { title = 'Prendre un temps <em>pour soi</em>.', text = 'Réservez votre s
     <h2 id="cta-title" data-split set:html={title} />
     <p class="lead cta__text" data-reveal="0.15">{text}</p>
     <div class="cta__actions" data-reveal="0.3">
-      <a class="btn btn--light" href={site.booking} target="_blank" rel="noopener">Réserver en ligne</a>
+      <a class="btn btn--light" href={soin ? `${site.booking}?soin=${soin}` : site.booking}>Réserver en ligne</a>
       <a class="cta__phone" href={site.phoneHref}>{site.phone}</a>
     </div>
     <p class="small cta__places" data-reveal="0.4">{site.places.map((p) => `${p.street}, ${p.city}`).join('  ·  ')}</p>
