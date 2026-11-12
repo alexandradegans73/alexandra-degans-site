@@ -173,12 +173,16 @@ async function handle(req, env, ctx) {
     const payOnSite = body.pay === 'sur-place';
     if (payOnSite) {
       // Garde-fou : pas plus de 2 rendez-vous à venir non payés pour une même personne.
-      const open = await env.DB.prepare(
-        `SELECT COUNT(*) AS n FROM bookings WHERE status = 'confirmed' AND pay_mode = 'sur_place' AND start > ?1 AND (lower(email) = lower(?2) OR replace(phone, ' ', '') = replace(?3, ' ', ''))`,
-      ).bind(now, email, phone).first();
-      if ((open?.n || 0) >= 2) return json({ error: 'Vous avez déjà deux rendez-vous à régler sur place. Pour en réserver un autre, merci de payer en ligne ou d’appeler Alexandra au 06 76 64 79 09.' }, 409);
+      // (Si la vérification échoue, on ne bloque pas la réservation.)
+      try {
+        const open = await env.DB.prepare(
+          `SELECT COUNT(*) AS n FROM bookings WHERE status = 'confirmed' AND pay_mode = 'sur_place' AND start > ? AND (email = ? COLLATE NOCASE OR phone = ?)`,
+        ).bind(now, email, phone).first();
+        if ((open?.n || 0) >= 2) return json({ error: 'Vous avez déjà deux rendez-vous à régler sur place. Pour en réserver un autre, merci de payer en ligne ou d’appeler Alexandra au 06 76 64 79 09.' }, 409);
+      } catch (e) {
+        console.log('Garde-fou paiement sur place', String(e));
+      }
     }
-
     const busy = await allBusy(env, ctx, now);
     if (!isFree({ start, duration: item.duration, busy, now })) return json({ error: 'Ce créneau vient d’être pris. Merci d’en choisir un autre.', code: 'taken' }, 409);
 
