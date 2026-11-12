@@ -12,6 +12,8 @@ export const site = {
   phoneHref: 'tel:+33676647909',
   email: 'alexandradegans@outlook.fr',
   booking: 'https://www.crenolibre.fr/prendre-rdv/114511',
+  /** API de réservation et paiement en ligne (Cloudflare Worker + Stripe). */
+  bookingApi: 'https://reservation.alexandra-degans.workers.dev',
   instagram: 'https://www.instagram.com/alexandra.degans',
   instagramHandle: 'alexandra.degans',
   hours: [

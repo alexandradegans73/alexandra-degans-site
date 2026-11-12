@@ -1,0 +1,25 @@
+CREATE TABLE IF NOT EXISTS bookings (
+  id TEXT PRIMARY KEY,
+  item TEXT NOT NULL,
+  item_name TEXT NOT NULL,
+  place TEXT NOT NULL,
+  start INTEGER NOT NULL,
+  end INTEGER NOT NULL,
+  price INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  message TEXT,
+  status TEXT NOT NULL,            -- hold | confirmed | cancelled | expired
+  hold_until INTEGER,
+  stripe_session TEXT,
+  payment_intent TEXT,
+  cancel_token TEXT NOT NULL UNIQUE,
+  emailed INTEGER NOT NULL DEFAULT 0,
+  refunded INTEGER NOT NULL DEFAULT 0,
+  created_at INTEGER NOT NULL,
+  paid_at INTEGER,
+  cancelled_at INTEGER
+);
+CREATE INDEX IF NOT EXISTS bookings_time ON bookings (start, end);
+CREATE INDEX IF NOT EXISTS bookings_status ON bookings (status);

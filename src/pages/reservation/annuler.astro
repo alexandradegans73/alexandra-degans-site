@@ -1,0 +1,65 @@
+---
+import Base from '@layouts/Base.astro';
+import { site } from '@data/site';
+---
+
+<Base title="Annuler un rendez-vous" description="Annulation d’un rendez-vous avec Alexandra Degans." path="/reservation/annuler" noindex>
+  <section class="done" data-api={site.bookingApi}>
+    <div class="container-text done__card">
+      <img src="/brand/monogramme.svg" alt="" width="64" height="64" class="done__mark" />
+      <p class="caps done__eyebrow" data-eyebrow>Annulation</p>
+      <h1 class="done__title" data-title>Votre rendez-vous</h1>
+      <div class="done__body" data-body><p class="muted">Chargement…</p></div>
+      <div class="done__actions" data-actions>
+        <a class="btn btn--ghost" href={site.phoneHref}>{site.phone}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style is:global>
+  .done { min-height: 80svh; display: grid; place-items: center; padding: calc(var(--s-10) + 2rem) 0 var(--s-9); }
+  .done__card { text-align: center; display: grid; justify-items: center; gap: var(--s-4); }
+  .done__mark { width: 4rem; height: auto; opacity: 0.9; }
+  .done__eyebrow { color: var(--c-sauge); }
+  .done__title { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-h2); line-height: 1.05; margin: 0; }
+  .done__body { max-width: 34rem; }
+  .done__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); justify-content: center; margin-top: var(--s-4); }
+  [aria-busy='true'] { opacity: 0.6; pointer-events: none; }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('.done');
+  if (root) {
+    const API = root.dataset.api!;
+    const token = new URLSearchParams(location.search).get('t') || '';
+    const $ = (sel: string) => root.querySelector<HTMLElement>(sel)!;
+    const esc = (v: string) => String(v ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+    const euro = (c: number) => `${(c / 100).toLocaleString('fr-FR', { minimumFractionDigits: c % 100 ? 2 : 0 })} €`;
+    const show = (eyebrow: string, title: string, body: string) => { $('[data-eyebrow]').textContent = eyebrow; $('[data-title]').textContent = title; $('[data-body]').innerHTML = body; };
+    const url = `${API}/api/cancel/${encodeURIComponent(token)}`;
+
+    fetch(url).then(async (r) => {
+      const b = await r.json();
+      if (!r.ok) throw new Error(b.error);
+      if (b.status === 'cancelled') { show('Annulation', 'Ce rendez-vous est déjà annulé.', ''); return; }
+      const recap = `<p><strong>${esc(b.item)}</strong><br>${esc(b.label)}<br>${esc(b.place)}</p>`;
+      if (!b.refundable) {
+        show('Annulation', 'Moins de 48 h avant le rendez-vous', `${recap}<p class="muted">L’annulation en ligne n’est plus possible. Merci d’appeler Alexandra directement.</p>`);
+        return;
+      }
+      show('Annulation', 'Annuler ce rendez-vous ?', `${recap}<p class="muted">Le montant de ${euro(b.price)} vous sera intégralement remboursé.</p>`);
+      const btn = document.createElement('button');
+      btn.className = 'btn'; btn.type = 'button'; btn.textContent = 'Confirmer l’annulation';
+      btn.addEventListener('click', async () => {
+        btn.setAttribute('aria-busy', 'true');
+        const res = await fetch(url, { method: 'POST' });
+        const d = await res.json();
+        if (!res.ok) { show('Annulation', 'Annulation impossible', `<p class="muted">${esc(d.error || '')}</p>`); btn.remove(); return; }
+        show('C’est noté', 'Votre rendez-vous est annulé.', `<p class="muted">${d.refunded ? `Le remboursement de ${euro(d.price)} est en cours (quelques jours selon votre banque). ` : ''}Un e-mail de confirmation vous a été envoyé.</p>`);
+        btn.remove();
+      });
+      $('[data-actions]').prepend(btn);
+    }).catch(() => show('Annulation', 'Lien invalide', '<p class="muted">Ce lien d’annulation n’est pas valide. Contactez Alexandra par téléphone.</p>'));
+  }
+</script>

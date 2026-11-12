@@ -1,0 +1,336 @@
+---
+import Base from '@layouts/Base.astro';
+import PageHero from '@components/PageHero.astro';
+import { site } from '@data/site';
+---
+
+<Base
+  title="Réserver et régler en ligne"
+  description="Réservez votre séance avec Alexandra Degans à Bassens ou Myans : choisissez le soin, le lieu et le créneau, puis réglez en ligne en toute sécurité."
+  path="/reserver"
+  heroDark
+  noindex
+>
+  <PageHero
+    scene="branches"
+    eyebrow="Réservation en ligne"
+    title="Choisir sa <em>branche</em>."
+    intro="Le soin, le lieu, le moment. Le règlement se fait en ligne, de façon sécurisée, et confirme aussitôt votre rendez-vous."
+  />
+
+  <section class="book" aria-label="Réservation" data-api={site.bookingApi}>
+    <div class="container book__wrap">
+      <ol class="book__rail" aria-hidden="true">
+        <li data-rail="1"><span>1</span>Soin</li>
+        <li data-rail="2"><span>2</span>Lieu</li>
+        <li data-rail="3"><span>3</span>Créneau</li>
+        <li data-rail="4"><span>4</span>Coordonnées</li>
+      </ol>
+
+      <div class="book__panel">
+        <p class="book__status small" role="status" aria-live="polite" data-status></p>
+
+        <!-- 1. Soin -->
+        <fieldset class="step" data-step="1">
+          <legend><span class="caps">Étape 1</span><span class="step__title">Quel soin&nbsp;?</span></legend>
+          <div class="items" data-items>
+            <p class="muted small">Chargement des soins…</p>
+          </div>
+        </fieldset>
+
+        <!-- 2. Lieu -->
+        <fieldset class="step" data-step="2" disabled>
+          <legend><span class="caps">Étape 2</span><span class="step__title">Où&nbsp;?</span></legend>
+          <div class="places" data-places></div>
+        </fieldset>
+
+        <!-- 3. Créneau -->
+        <fieldset class="step" data-step="3" disabled>
+          <legend><span class="caps">Étape 3</span><span class="step__title">Quand&nbsp;?</span></legend>
+          <div class="days" data-days role="radiogroup" aria-label="Jour"></div>
+          <div class="slots" data-slots role="radiogroup" aria-label="Heure"></div>
+        </fieldset>
+
+        <!-- 4. Coordonnées -->
+        <form class="step form" data-step="4" data-form novalidate>
+          <fieldset disabled data-form-fields>
+            <legend><span class="caps">Étape 4</span><span class="step__title">Vos coordonnées</span></legend>
+            <div class="form__grid">
+              <label class="field"><span>Nom et prénom</span><input name="name" autocomplete="name" required maxlength="120" /></label>
+              <label class="field"><span>Téléphone</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="40" /></label>
+              <label class="field field--wide"><span>E-mail</span><input name="email" type="email" autocomplete="email" required maxlength="160" /></label>
+              <label class="field field--wide"><span>Précisions <em class="muted">(facultatif)</em></span>
+                <textarea name="message" rows="3" maxlength="500" placeholder="Ex. : les deux soins choisis pour un soin à la carte, le nom de votre animal…"></textarea>
+              </label>
+            </div>
+            <p class="small muted">Merci de ne pas indiquer d’informations de santé dans ce champ&nbsp;: vous en parlerez directement avec Alexandra pendant la séance.</p>
+            <label class="consent small">
+              <input type="checkbox" name="consent" required />
+              <span>J’ai compris que l’annulation est remboursée intégralement jusqu’à 48&nbsp;h avant le rendez-vous, et que mes coordonnées servent uniquement à gérer ce rendez-vous (<a href="/confidentialite">confidentialité</a>).</span>
+            </label>
+
+            <div class="summary" data-summary hidden></div>
+
+            <button class="btn" type="submit" data-pay>Régler et confirmer</button>
+            <p class="small muted pay-note">Paiement sécurisé par Stripe. Vous serez redirigé(e) vers la page de paiement, puis de retour ici.</p>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-text">
+      <p class="notice">Vous préférez échanger avant de réserver&nbsp;? Appelez Alexandra au <a href={site.phoneHref}>{site.phone}</a>. La kinésiologie et les soins proposés ne se substituent pas à un suivi médical.</p>
+    </div>
+  </section>
+</Base>
+
+<style is:global>
+  .book {
+    margin-top: calc(-1 * var(--s-6)); position: relative; z-index: 1;
+  .book__wrap { display: grid; gap: var(--s-6); }
+  .book__wrap > * { min-width: 0; }
+  @media (min-width: 60em) { .book__wrap { grid-template-columns: 12rem 1fr; align-items: start; } }
+  .book__rail { list-style: none; padding: 0; margin: 0; display: flex; gap: var(--s-4); font-size: var(--fs-xs); letter-spacing: var(--ls-caps); text-transform: uppercase; color: var(--fg-soft); overflow-x: auto; }
+  @media (min-width: 60em) { .book__rail { flex-direction: column; position: sticky; top: 7rem; gap: var(--s-5); padding-top: var(--s-6); border-left: 1px solid var(--line-soft); padding-left: var(--s-5); } }
+  .book__rail li { display: flex; align-items: center; gap: var(--s-2); white-space: nowrap; transition: color var(--t-base); }
+  .book__rail span { display: inline-grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 50%; border: 1px solid var(--line); font-family: var(--font-display); font-size: 1rem; letter-spacing: 0; }
+  .book__rail li.is-on { color: var(--c-foret); }
+  .book__rail li.is-on span { background: var(--c-sauge); border-color: var(--c-sauge); color: var(--c-creme); }
+
+  .book__panel { background: var(--c-ivoire); border: 1px solid var(--c-sable-300); border-radius: var(--r-lg); padding: clamp(1.25rem, 4vw, 3rem); box-shadow: var(--shadow-soft); }
+  .book__status:empty { display: none; }
+  .book__status { padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: color-mix(in oklab, var(--c-sable) 45%, transparent); margin-bottom: var(--s-5); }
+
+  .step { border: 0; padding: 0; margin: 0 0 var(--s-7); min-width: 0; transition: opacity var(--t-base); }
+  .step[disabled], .step:has(> fieldset[disabled]) { opacity: 0.42; }
+  .step > fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  legend { display: grid; gap: var(--s-1); margin-bottom: var(--s-5); padding: 0; }
+  legend .caps { color: var(--c-sauge); }
+  .step__title { font-family: var(--font-display); font-size: var(--fs-h3); line-height: 1.1; }
+
+  .items { display: grid; gap: var(--s-6); }
+  .group h3 { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-h4); margin: 0 0 var(--s-3); }
+  .opts { display: grid; gap: var(--s-2); }
+  @media (min-width: 40em) { .opts { grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); } }
+
+  .opt { position: relative; display: grid; grid-template-columns: 1fr auto; gap: var(--s-1) var(--s-4); padding: var(--s-4) var(--s-5); border: 1px solid var(--c-sable-300); border-radius: var(--r-md); background: var(--c-creme-050); cursor: pointer; transition: border-color var(--t-base), background var(--t-base), transform var(--t-base) var(--ease-out); text-align: left; font: inherit; color: inherit; }
+  .opt:hover { border-color: var(--c-sauge-claire); transform: translateY(-2px); }
+  .opt[aria-checked='true'] { border-color: var(--c-sauge); background: var(--c-sauge); color: var(--c-creme); }
+  .opt[aria-checked='true'] .opt__meta { color: var(--c-sauge-200); }
+  .opt:focus-visible { outline: 2px solid var(--c-foret); outline-offset: 2px; }
+  .opt__name { font-size: var(--fs-sm); line-height: 1.35; }
+  .opt__price { font-family: var(--font-display); font-size: var(--fs-lg); white-space: nowrap; }
+  .opt__meta { font-size: var(--fs-xs); color: var(--fg-soft); letter-spacing: 0.06em; }
+
+  .places { display: grid; gap: var(--s-3); }
+  @media (min-width: 40em) { .places { grid-template-columns: 1fr 1fr; } }
+  .places .opt { grid-template-columns: 1fr; }
+  .places .opt__price { font-size: var(--fs-h4); }
+
+  .days { display: flex; gap: var(--s-2); overflow-x: auto; padding-bottom: var(--s-3); scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+  .day { flex: 0 0 auto; scroll-snap-align: start; display: grid; justify-items: center; gap: 2px; min-width: 4.5rem; padding: var(--s-3) var(--s-2); border: 1px solid var(--c-sable-300); border-radius: var(--r-md); background: var(--c-creme-050); cursor: pointer; font: inherit; color: inherit; transition: border-color var(--t-base), background var(--t-base); }
+  .day b { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-h4); line-height: 1; }
+  .day small { font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-soft); }
+  .day[aria-checked='true'] { background: var(--c-foret); border-color: var(--c-foret); color: var(--c-creme); }
+  .day[aria-checked='true'] small { color: var(--c-sable); }
+  .slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(5.2rem, 1fr)); gap: var(--s-2); margin-top: var(--s-4); }
+  .slot { padding: var(--s-3) 0; border: 1px solid var(--c-sable-300); border-radius: var(--r-pill); background: transparent; font: inherit; font-size: var(--fs-sm); color: inherit; cursor: pointer; transition: background var(--t-base), border-color var(--t-base); }
+  .slot:hover { border-color: var(--c-sauge); }
+  .slot[aria-checked='true'] { background: var(--c-sauge); border-color: var(--c-sauge); color: var(--c-creme); }
+
+  .form__grid { display: grid; gap: var(--s-4); margin-bottom: var(--s-4); }
+  @media (min-width: 40em) { .form__grid { grid-template-columns: 1fr 1fr; } .field--wide { grid-column: 1 / -1; } }
+  .field { display: grid; gap: var(--s-2); font-size: var(--fs-sm); }
+  .field input, .field textarea { font: inherit; font-size: 16px; color: var(--fg); padding: 0.85em 1em; border: 1px solid var(--c-sable-300); border-radius: var(--r-md); background: var(--c-creme-050); transition: border-color var(--t-base); width: 100%; }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--c-sauge); box-shadow: 0 0 0 3px color-mix(in oklab, var(--c-sauge) 22%, transparent); }
+  .field [aria-invalid='true'] { border-color: #9a4a3a; }
+  .consent { display: grid; grid-template-columns: auto 1fr; gap: var(--s-3); align-items: start; margin-block: var(--s-5); }
+  .consent input { width: 1.2rem; height: 1.2rem; margin-top: 0.2rem; accent-color: var(--c-sauge); }
+  .consent a { text-decoration: underline; }
+  .summary { display: grid; gap: var(--s-1); padding: var(--s-5); border-radius: var(--r-md); background: var(--c-foret); color: var(--c-creme); margin-bottom: var(--s-5); }
+  .summary .caps { color: var(--c-sauge-claire); }
+  .summary__main { font-family: var(--font-display); font-size: var(--fs-h4); line-height: 1.2; }
+  .summary__price { font-family: var(--font-display); font-size: var(--fs-h3); }
+  [data-pay][aria-busy='true'] { opacity: 0.6; pointer-events: none; }
+  .pay-note { margin-top: var(--s-3); }
+  @media (max-width: 40em) { [data-pay] { width: 100%; } }
+  }
+</style>
+
+<script>
+  type Item = { id: string; group: string; name: string; duration: number; price: number; places: string[]; note?: string };
+  type Place = { name: string; address: string };
+  type Day = { date: string; slots: { start: number; label: string }[] };
+
+  const root = document.querySelector<HTMLElement>('.book');
+  if (root) {
+    const API = root.dataset.api!;
+    const $ = <T extends Element>(s: string) => root.querySelector<T>(s)!;
+    const status = $<HTMLElement>('[data-status]');
+    const euro = (c: number) => `${(c / 100).toLocaleString('fr-FR', { minimumFractionDigits: c % 100 ? 2 : 0 })} €`;
+    const dur = (m: number) => (m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60}` : ''}` : `${m} min`);
+    const state: { item?: Item; place?: string; day?: Day; start?: number; label?: string } = {};
+    let places: Record<string, Place> = {};
+    let items: Item[] = [];
+
+    const say = (msg: string) => { status.textContent = msg; };
+    const setStep = (n: number) => {
+      root.querySelectorAll<HTMLElement>('[data-rail]').forEach((li) => li.classList.toggle('is-on', Number(li.dataset.rail) <= n));
+      (root.querySelector('[data-step="2"]') as HTMLFieldSetElement).disabled = n < 2;
+      (root.querySelector('[data-step="3"]') as HTMLFieldSetElement).disabled = n < 3;
+      ($('[data-form-fields]') as HTMLFieldSetElement).disabled = n < 4;
+    };
+    const radio = (container: Element, el: HTMLElement) => {
+      container.querySelectorAll('[role="radio"]').forEach((b) => b.setAttribute('aria-checked', String(b === el)));
+    };
+    const button = (cls: string, html: string) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = cls; b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', 'false'); b.innerHTML = html;
+      return b;
+    };
+    const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+    const scrollTo = (sel: string) => {
+      const el = root.querySelector(sel);
+      if (el && window.matchMedia('(max-width: 60em)').matches) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    function renderItems() {
+      const wrap = $('[data-items]');
+      wrap.innerHTML = '';
+      const groups = [...new Set(items.map((i) => i.group))];
+      const preset = new URLSearchParams(location.search).get('soin');
+      for (const g of groups) {
+        const sec = document.createElement('div');
+        sec.className = 'group';
+        sec.innerHTML = `<h3>${esc(g)}</h3>`;
+        const opts = document.createElement('div');
+        opts.className = 'opts'; opts.setAttribute('role', 'radiogroup'); opts.setAttribute('aria-label', g);
+        for (const it of items.filter((i) => i.group === g)) {
+          const short = it.name.replace(/^.*? — /, '');
+          const label = it.name.includes(' — ') ? short.charAt(0).toUpperCase() + short.slice(1) : it.name;
+          const b = button('opt', `<span class="opt__name">${esc(label)}</span><span class="opt__price">${euro(it.price)}</span><span class="opt__meta">${dur(it.duration)}${it.places.length === 1 ? ` · ${esc(places[it.places[0]].name)} uniquement` : ''}</span>`);
+          b.addEventListener('click', () => pickItem(it, b));
+          opts.append(b);
+          if (preset && preset === it.id) queueMicrotask(() => pickItem(it, b));
+        }
+        sec.append(opts);
+        wrap.append(sec);
+      }
+    }
+
+    function pickItem(it: Item, el: HTMLElement) {
+      root.querySelectorAll('[data-items] [role="radio"]').forEach((b) => b.setAttribute('aria-checked', String(b === el)));
+      state.item = it; state.place = undefined; state.start = undefined;
+      say(it.note || '');
+      const wrap = $('[data-places]');
+      wrap.innerHTML = '';
+      for (const key of it.places) {
+        const b = button('opt', `<span class="opt__price">${esc(places[key].name)}</span><span class="opt__meta">${esc(places[key].address)}</span>`);
+        b.addEventListener('click', () => { radio(wrap, b); pickPlace(key); });
+        wrap.append(b);
+      }
+      $('[data-days]').innerHTML = ''; $('[data-slots]').innerHTML = '';
+      setStep(2);
+      summary();
+      if (it.places.length === 1) (wrap.firstElementChild as HTMLElement).click();
+      else scrollTo('[data-step="2"]');
+    }
+
+    async function pickPlace(key: string) {
+      state.place = key; state.start = undefined;
+      setStep(3); summary();
+      const daysEl = $('[data-days]');
+      const slotsEl = $('[data-slots]');
+      daysEl.innerHTML = '<p class="muted small">Recherche des disponibilités…</p>';
+      slotsEl.innerHTML = '';
+      scrollTo('[data-step="3"]');
+      try {
+        const r = await fetch(`${API}/api/slots?item=${encodeURIComponent(state.item!.id)}&place=${key}`);
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error);
+        if (state.place !== key) return;
+        daysEl.innerHTML = '';
+        if (!data.days.length) { daysEl.innerHTML = `<p class="muted small">Aucun créneau disponible en ligne pour le moment. Appelez Alexandra au 06 76 64 79 09.</p>`; return; }
+        const fmtDay = new Intl.DateTimeFormat('fr-FR', { weekday: 'short' });
+        const fmtMonth = new Intl.DateTimeFormat('fr-FR', { month: 'short' });
+        (data.days as Day[]).forEach((d, i) => {
+          const dt = new Date(`${d.date}T12:00:00`);
+          const b = button('day', `<small>${fmtDay.format(dt).replace('.', '')}</small><b>${dt.getDate()}</b><small>${fmtMonth.format(dt).replace('.', '')}</small>`);
+          b.setAttribute('aria-label', new Intl.DateTimeFormat('fr-FR', { dateStyle: 'full' }).format(dt));
+          b.addEventListener('click', () => { radio(daysEl, b); pickDay(d); });
+          daysEl.append(b);
+          if (i === 0) b.click();
+        });
+      } catch (e) {
+        daysEl.innerHTML = `<p class="muted small">Les disponibilités n’ont pas pu être chargées. Réessayez dans un instant ou appelez le 06 76 64 79 09.</p>`;
+      }
+    }
+
+    function pickDay(d: Day) {
+      state.day = d; state.start = undefined; summary();
+      const slotsEl = $('[data-slots]');
+      slotsEl.innerHTML = '';
+      for (const s of d.slots) {
+        const b = button('slot', s.label);
+        b.addEventListener('click', () => {
+          radio(slotsEl, b);
+          state.start = s.start;
+          state.label = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Europe/Paris' }).format(new Date(s.start));
+          setStep(4); summary();
+          scrollTo('[data-step="4"]');
+        });
+        slotsEl.append(b);
+      }
+    }
+
+    function summary() {
+      const el = $<HTMLElement>('[data-summary]');
+      if (!state.item || !state.place || !state.start) { el.hidden = true; return; }
+      el.hidden = false;
+      el.innerHTML = `<span class="caps">Votre rendez-vous</span><span class="summary__main">${esc(state.item.name)}</span><span>${esc(state.label!)} · ${esc(places[state.place].name)}</span><span class="summary__price">${euro(state.item.price)}</span>`;
+    }
+
+    $('[data-form]').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const form = ev.currentTarget as HTMLFormElement;
+      const fd = new FormData(form);
+      let ok = true;
+      for (const name of ['name', 'phone', 'email']) {
+        const input = form.elements.namedItem(name) as HTMLInputElement;
+        const valid = input.checkValidity() && input.value.trim() !== '';
+        input.setAttribute('aria-invalid', String(!valid));
+        ok &&= valid;
+      }
+      if (!ok) { say('Merci de compléter votre nom, votre téléphone et un e-mail valide.'); return; }
+      if (!fd.get('consent')) { say('Merci de cocher la case de confirmation.'); return; }
+      if (!state.item || !state.place || !state.start) { say('Merci de choisir un soin, un lieu et un créneau.'); return; }
+      const btn = $<HTMLButtonElement>('[data-pay]');
+      btn.setAttribute('aria-busy', 'true'); btn.textContent = 'Préparation du paiement…';
+      try {
+        const r = await fetch(`${API}/api/checkout`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ item: state.item.id, place: state.place, start: state.start, name: fd.get('name'), phone: fd.get('phone'), email: fd.get('email'), message: fd.get('message'), consent: true }),
+        });
+        const data = await r.json();
+        if (!r.ok) {
+          say(data.error || 'Une erreur est survenue.');
+          if (data.code === 'taken') pickPlace(state.place);
+          throw new Error();
+        }
+        location.href = data.url;
+      } catch {
+        btn.removeAttribute('aria-busy'); btn.textContent = 'Régler et confirmer';
+      }
+    });
+
+    if (new URLSearchParams(location.search).get('retour')) say('Le paiement n’a pas été finalisé : votre créneau n’est pas réservé. Vous pouvez reprendre ci-dessous.');
+
+    fetch(`${API}/api/catalog`)
+      .then((r) => r.json())
+      .then((data) => { items = data.items; places = data.places; renderItems(); setStep(1); })
+      .catch(() => { $('[data-items]').innerHTML = `<p class="muted small">La réservation en ligne est momentanément indisponible. Appelez Alexandra au <a href="tel:+33676647909">06 76 64 79 09</a>.</p>`; });
+  }
+</script>
