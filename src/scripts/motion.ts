@@ -193,10 +193,12 @@ function setupFilm() {
   const state = { frame: 0 };
   let last = -1;
 
+  // Le dessin du canvas suit toujours sa taille affichée (sinon l'image est étirée).
   const resize = () => {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.round(canvas.clientWidth * dpr);
-    canvas.height = Math.round(canvas.clientHeight * dpr);
+    const w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
+    if (!w || !h || (w === canvas.width && h === canvas.height)) return;
+    canvas.width = w; canvas.height = h;
     last = -1; draw();
   };
   const nearest = (i: number) => {
@@ -227,6 +229,7 @@ function setupFilm() {
   });
 
   window.addEventListener('resize', resize);
+  if ('ResizeObserver' in window) new ResizeObserver(resize).observe(canvas);
   resize();
 
   if (reduceMotion) { load(count - 1).then(() => { state.frame = count - 1; draw(); }); return; }
