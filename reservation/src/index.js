@@ -170,6 +170,7 @@ async function handle(req, env, ctx) {
       const session = await stripe(env, 'POST', '/checkout/sessions', {
         mode: 'payment',
         locale: 'fr',
+        adaptive_pricing: { enabled: false }, // euros uniquement
         customer_email: email,
         client_reference_id: id,
         expires_at: Math.floor((now + RULES.holdMinutes * MIN) / 1000),
