@@ -235,6 +235,7 @@ async function handle(req, env, ctx) {
         locale: 'fr',
         adaptive_pricing: { enabled: false }, // euros uniquement
         customer_email: email,
+        billing_address_collection: 'required', // adresse du client : mention obligatoire sur la facture
         client_reference_id: id,
         expires_at: Math.floor((now + RULES.holdMinutes * MIN) / 1000),
         success_url: `${env.SITE_URL}/reservation/confirmee?b=${id}&s={CHECKOUT_SESSION_ID}`,
