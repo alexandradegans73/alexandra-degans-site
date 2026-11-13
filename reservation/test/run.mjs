@@ -99,7 +99,7 @@ assert(mon.includes('16:30') && !mon.includes('17:00'), 'avant le RDV hebdo de 1
 assert(!mon.some(l => l >= '17:00'), 'rien après le RDV de 18h');
 const tue = day('2026-11-17').slots.map(s=>s.label);
 assert(tue.includes('18:00') && !tue.includes('18:30'), 'fermeture 19h : dernier créneau d’1 h à 18h');
-assert(tue.includes('12:30') && !tue.includes('13:00') && !tue.includes('15:00') && tue.includes('15:30'), 'RDV 14h-15h (13h UTC)');
+assert(tue.includes('12:00') && !tue.includes('12:30') && !tue.includes('13:00') && !tue.includes('15:00') && tue.includes('15:30'), 'RDV 14h-15h (13h UTC), pause de midi');
 const sat = day('2026-11-21').slots.map(s=>s.label);
 assert(sat.at(-1) === '13:30', 'samedi : dernier créneau 13h30 pour finir à 14h30, reçu ' + sat.at(-1));
 // délai minimal 12 h
@@ -152,4 +152,20 @@ import { PLACE_HOURS } from '../src/catalog.js';
   const sl = computeSlots({ duration: 60, busy: busyB, now: n, days: 3, hours: PLACE_HOURS.myans, place: 'myans' }).find((d) => d.date === '2026-11-18');
   assert(sl.slots.every((s) => s.label >= '13:00'), 'Myans mercredi : seulement l’après-midi');
   console.log('Demi-journée par cabinet : OK');
+}
+
+// Pause de midi : dernier départ 12 h, premier départ 14 h (en semaine)
+{
+  const n = P(2026, 11, 16, 8);
+  const wed = computeSlots({ duration: 60, busy: [], now: n, days: 3, hours: PLACE_HOURS.myans, place: 'myans' }).find((d) => d.date === '2026-11-18');
+  const labels = wed.slots.map((s) => s.label);
+  assert(labels.includes('12:00') && labels.includes('14:00'), '12 h et 14 h proposés');
+  assert(!labels.some((l) => l > '12:00' && l < '14:00'), 'rien entre 12 h et 14 h');
+  assert(!isFree({ start: P(2026, 11, 18, 13), duration: 60, busy: [], now: n, hours: PLACE_HOURS.myans, place: 'myans' }), '13 h refusé');
+  const sat = computeSlots({ duration: 60, busy: [], now: n, days: 6, hours: PLACE_HOURS.bassens, place: 'bassens' }).find((d) => d.date === '2026-11-21');
+  assert(sat.slots.some((s) => s.label === '13:00'), 'samedi inchangé');
+  // un rendez-vous à 12 h à Bassens n'empêche pas Myans l'après-midi
+  const busy = [{ start: P(2026, 11, 18, 12), end: P(2026, 11, 18, 13, 15), place: 'bassens' }];
+  assert(isFree({ start: P(2026, 11, 18, 14), duration: 60, busy, now: n, hours: PLACE_HOURS.myans, place: 'myans' }), 'Myans 14 h libre');
+  console.log('Pause de midi : OK');
 }

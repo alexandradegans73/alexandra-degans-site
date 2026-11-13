@@ -61,6 +61,12 @@ export const PLACE_HOURS = {
   myans: { 1: HOURS[1], 2: HOURS[2], 3: HOURS[3], 4: HOURS[4], 5: HOURS[5] },
 };
 
+/**
+ * Pause de midi en semaine : dernier rendez-vous du matin à 12 h, premier de l'après-midi à 14 h
+ * (aucun rendez-vous ne commence entre les deux). Le samedi n'est pas concerné.
+ */
+export const LUNCH = { lastMorningStart: '12:00', firstAfternoonStart: '14:00', days: [1, 2, 3, 4, 5] };
+
 export const RULES = {
   stepMinutes: 30, // un créneau peut démarrer toutes les demi-heures
   bufferMinutes: 15, // temps libre après chaque rendez-vous
