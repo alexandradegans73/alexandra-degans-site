@@ -16,7 +16,7 @@
 import { CATALOG, PLACES, PLACE_HOURS, RULES, resolveItem } from './catalog.js';
 import { busyFromIcs } from './ics.js';
 import { computeSlots, isFree } from './slots.js';
-import { sendConfirmation, sendCancellation, sendReminder, sendReviewRequest, sendCalendarRemoval, calendarSync } from './mail.js';
+import { sendConfirmation, sendCancellation, sendReminder, sendReviewRequest, sendInvoice, calendarSync } from './mail.js';
 import { frLabel, parisParts, addDays, wallToUtc } from './time.js';
 
 const MIN = 60000;
@@ -241,6 +241,8 @@ async function handle(req, env, ctx) {
         cancel_url: `${env.SITE_URL}/reserver?retour=1`,
         metadata: { booking_id: id },
         payment_intent_data: { metadata: { booking_id: id }, description: `${item.name} — ${frLabel(start)}` },
+        // Facture Stripe rattachée au paiement ; elle est envoyée au client le lendemain de la séance (cron).
+        invoice_creation: { enabled: true, invoice_data: { description: `${item.name} — ${frLabel(start)} · ${PLACES[place].name}`, metadata: { booking_id: id } } },
         line_items: { 0: { quantity: 1, price_data: { currency: 'eur', unit_amount: item.price, product_data: { name: item.name, description: `${frLabel(start)} · ${PLACES[place].name}` } } } },
       });
       await env.DB.prepare('UPDATE bookings SET stripe_session = ?2 WHERE id = ?1').bind(id, session.id).run();
@@ -344,8 +346,8 @@ async function remind(env, now = Date.now()) {
 }
 
 // Synchronisation depuis l'agenda Google (cron toutes les 5 min) :
-// - rendez-vous du site supprimé de l'agenda par Alexandra → marqué annulé (plus de rappel ni de demande d'avis),
-//   et Alexandra reçoit un e-mail récapitulatif (le remboursement éventuel reste à sa main) ;
+// - rendez-vous du site supprimé de l'agenda par Alexandra → annulé, remboursé s'il a été payé en ligne,
+//   le client reçoit l'e-mail d'annulation et Alexandra un récapitulatif ;
 // - rendez-vous déplacé dans l'agenda → nouvel horaire repris (rappel et demande d'avis suivent).
 // Sécurités : on n'annule que ce qui a déjà été vu dans l'agenda (cal_seen = 1), rien si l'agenda ne répond pas,
 // et jamais plus de 3 annulations d'un coup (signe d'un problème plutôt que d'annulations réelles).
@@ -380,7 +382,39 @@ async function syncFromCalendar(env, now = Date.now()) {
     const claim = await env.DB.prepare("UPDATE bookings SET status = 'cancelled', cancelled_at = ?2 WHERE id = ?1 AND status = 'confirmed'").bind(b.id, now).run();
     if (claim.meta.changes !== 1) continue;
     console.log('Rendez-vous retiré de l’agenda → annulé', b.id);
-    await sendCalendarRemoval(env, b);
+    // Annulation par Alexandra : remboursement intégral, quel que soit le délai.
+    let refunded = false, refundError = '';
+    if (b.payment_intent) {
+      try {
+        await stripe(env, 'POST', '/refunds', { payment_intent: b.payment_intent, metadata: { booking_id: b.id, origine: 'agenda' } });
+        refunded = true;
+      } catch (e) {
+        refundError = String(e.message || e).replace(/^Stripe \S+ : /, '');
+        if (/already been refunded/i.test(refundError)) { refunded = true; refundError = ''; }
+        console.log('Remboursement agenda', b.id, refundError);
+      }
+      if (refunded) await env.DB.prepare('UPDATE bookings SET refunded = 1 WHERE id = ?1').bind(b.id).run();
+    }
+    await sendCancellation(env, b, refunded, { byAgenda: true, refundError });
+  }
+}
+
+// Facture : le lendemain de la séance (24 h après la fin), pour les séances réglées en ligne.
+async function sendInvoices(env, now = Date.now()) {
+  const { results } = await env.DB.prepare(
+    "SELECT * FROM bookings WHERE status = 'confirmed' AND invoice_sent = 0 AND stripe_session IS NOT NULL AND payment_intent IS NOT NULL AND end <= ?1 AND end >= ?2 AND email LIKE '%@%'"
+  ).bind(now - 24 * 3600e3, now - 72 * 3600e3).all();
+  for (const b of results) {
+    let inv;
+    try {
+      const s = await stripe(env, 'GET', `/checkout/sessions/${b.stripe_session}`);
+      if (!s.invoice) { await env.DB.prepare('UPDATE bookings SET invoice_sent = 2 WHERE id = ?1').bind(b.id).run(); continue; } // payé avant la mise en place des factures
+      inv = await stripe(env, 'GET', `/invoices/${typeof s.invoice === 'string' ? s.invoice : s.invoice.id}`);
+    } catch (e) { console.log('Facture indisponible', b.id, String(e)); continue; }
+    if (!inv?.hosted_invoice_url) continue;
+    const claim = await env.DB.prepare('UPDATE bookings SET invoice_sent = 1 WHERE id = ?1 AND invoice_sent = 0').bind(b.id).run();
+    if (claim.meta.changes !== 1) continue;
+    await sendInvoice(env, b, inv);
   }
 }
 
@@ -404,7 +438,7 @@ async function askReviews(env, now = Date.now()) {
 
 export default {
   async scheduled(event, env, ctx) {
-    const job = event.cron === '17 2 * * *' ? purge(env) : event.cron === '*/5 * * * *' ? syncFromCalendar(env).catch((e) => console.log('Synchro agenda', String(e))).then(() => askReviews(env)) : remind(env);
+    const job = event.cron === '17 2 * * *' ? purge(env) : event.cron === '*/5 * * * *' ? syncFromCalendar(env).catch((e) => console.log('Synchro agenda', String(e))).then(() => askReviews(env)).then(() => sendInvoices(env)) : remind(env);
     ctx.waitUntil(job);
   },
   async fetch(req, env, ctx) {

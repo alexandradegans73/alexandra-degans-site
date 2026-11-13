@@ -123,18 +123,17 @@ ${recap(b)}
   await send(env, { to: b.email, subject: `Rappel : votre rendez-vous demain à ${heure}`, html });
 }
 
-/** Rendez-vous supprimé de l'agenda Google par Alexandra : annulé côté site, elle en reçoit la trace. */
-export async function sendCalendarRemoval(env, b) {
-  const paid = !onSite(b) && b.payment_intent;
-  const html = layout('Rendez-vous retiré de l’agenda', `
-<p>Vous avez supprimé ce rendez-vous de votre agenda Google : il est maintenant annulé sur le site. Le créneau est de nouveau proposé à la réservation, et ${esc(b.name)} ne recevra ni rappel ni demande d’avis.</p>
+/** Facture Stripe envoyée au client le lendemain de la séance réglée en ligne. */
+export async function sendInvoice(env, b, inv) {
+  const prenom = esc(b.name.split(' ')[0]);
+  const html = layout('Votre facture', `
+<p>Bonjour ${prenom},</p>
+<p>Vous trouverez ci-dessous la facture de votre séance, réglée en ligne par carte bancaire.</p>
 ${recap(b)}
-<p>Client : ${esc(b.name)} · ${esc(b.phone)} · ${esc(b.email)}</p>
-${paid ? `<p style="background:#f3ede2;border-radius:8px;padding:12px 16px"><strong>Séance réglée en ligne (${euro(b.price)}).</strong> Aucun remboursement n’est fait automatiquement : s’il en faut un, faites-le depuis votre tableau de bord Stripe (Paiements → ce paiement → Rembourser).</p>` : ''}
-<p style="font-size:13px;color:#5b6453">Le client n’a reçu aucun message de la part du site.</p>`);
-  for (const to of [env.ALEXANDRA_EMAIL, env.ALEXANDRA_EMAIL_2].filter(Boolean)) {
-    await send(env, { to, subject: `Annulé depuis l’agenda : ${b.item_name} — ${b.name}, ${frLabel(b.start)}`, html });
-  }
+<p style="text-align:center;margin:28px 0"><a href="${inv.hosted_invoice_url}" style="display:inline-block;background:#627056;color:#f3ede2;text-decoration:none;font-family:Arial,sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:14px 28px;border-radius:999px">Voir ma facture</a></p>
+${inv.invoice_pdf ? `<p style="text-align:center;font-size:13px"><a href="${inv.invoice_pdf}" style="color:#627056">Télécharger la facture en PDF</a>${inv.number ? ` · n° ${esc(inv.number)}` : ''}</p>` : ''}
+<p>Merci encore pour votre confiance.<br />Alexandra</p>`);
+  await send(env, { to: b.email, subject: `Votre facture — ${b.item_name}`, html });
 }
 
 /** Lien direct vers le formulaire d'avis de la fiche Google d'Alexandra. */
@@ -154,16 +153,23 @@ export async function sendReviewRequest(env, b) {
   await send(env, { to: b.email, subject: 'Merci pour votre venue — votre avis compte', html });
 }
 
-export async function sendCancellation(env, b, refunded) {
+export async function sendCancellation(env, b, refunded, opts = {}) {
   const client = layout('Votre rendez-vous est annulé.', `
 <p>Bonjour ${esc(b.name)},</p>
 <p>Votre rendez-vous a bien été annulé.${refunded ? ` Le remboursement de ${euro(b.price)} est en cours (comptez quelques jours selon votre banque).` : ''}</p>
 ${recap(b)}
 <p>À bientôt, peut-être, pour une prochaine séance.</p>`);
-  const pro = layout('Réservation annulée', `<p>${esc(b.name)} a annulé son rendez-vous${refunded ? ' (remboursé)' : ''}.</p>${recap(b)}`);
+  const pro = opts.byAgenda
+    ? layout('Rendez-vous retiré de l’agenda', `<p>Vous avez supprimé ce rendez-vous de votre agenda Google : il est annulé sur le site, le créneau est de nouveau réservable et ${esc(b.name)} a été prévenu·e par e-mail.</p>
+${recap(b)}
+<p>Client : ${esc(b.name)} · ${esc(b.phone)} · ${esc(b.email)}</p>
+${b.payment_intent ? (opts.refundError
+    ? `<p style="background:#f6e3df;border-radius:8px;padding:12px 16px"><strong>Le remboursement automatique de ${euro(b.price)} n’a pas abouti</strong> (${esc(opts.refundError)}). Merci de le faire depuis Stripe : Paiements → ce paiement → Rembourser.</p>`
+    : `<p style="background:#f3ede2;border-radius:8px;padding:12px 16px">La séance avait été réglée en ligne : <strong>${euro(b.price)} ont été remboursés automatiquement</strong> sur la carte du client.</p>`) : ''}`)
+    : layout('Réservation annulée', `<p>${esc(b.name)} a annulé son rendez-vous${refunded ? ' (remboursé)' : ''}.</p>${recap(b)}`);
   await send(env, { to: b.email, subject: `Rendez-vous annulé — ${frLabel(b.start)}`, html: client, ics: bookingIcs(b, env, { method: 'CANCEL', attendee: b.email }), icsMethod: 'CANCEL' });
   for (const to of [env.ALEXANDRA_EMAIL, env.ALEXANDRA_EMAIL_2].filter(Boolean)) {
-    await send(env, { to, subject: `Annulation : ${b.item_name} — ${frLabel(b.start)}`, html: pro, ...(env.GCAL_HOOK_URL ? {} : { ics: bookingIcs(b, env, { method: 'CANCEL', attendee: to, attendeeName: b.name }), icsMethod: 'CANCEL' }) });
+    await send(env, { to, subject: `${opts.byAgenda ? 'Annulé depuis l’agenda' : 'Annulation'} : ${b.item_name} — ${b.name}, ${frLabel(b.start)}`, html: pro, ...(env.GCAL_HOOK_URL ? {} : { ics: bookingIcs(b, env, { method: 'CANCEL', attendee: to, attendeeName: b.name }), icsMethod: 'CANCEL' }) });
   }
 }
 
