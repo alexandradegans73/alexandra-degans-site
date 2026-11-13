@@ -242,7 +242,7 @@ async function handle(req, env, ctx) {
         metadata: { booking_id: id },
         payment_intent_data: { metadata: { booking_id: id }, description: `${item.name} — ${frLabel(start)}` },
         // Facture Stripe rattachée au paiement ; elle est envoyée au client le lendemain de la séance (cron).
-        invoice_creation: { enabled: true, invoice_data: { description: `${item.name} — ${frLabel(start)} · ${PLACES[place].name}`, metadata: { booking_id: id } } },
+        invoice_creation: { enabled: true, invoice_data: { description: `${item.name} — ${frLabel(start)} · ${PLACES[place].name}`, footer: 'Alexandra Degans — Kinésiologue · SIRET 953 944 154 00012 · TVA non applicable, art. 293 B du CGI', metadata: { booking_id: id } } },
         line_items: { 0: { quantity: 1, price_data: { currency: 'eur', unit_amount: item.price, product_data: { name: item.name, description: `${frLabel(start)} · ${PLACES[place].name}` } } } },
       });
       await env.DB.prepare('UPDATE bookings SET stripe_session = ?2 WHERE id = ?1').bind(id, session.id).run();
