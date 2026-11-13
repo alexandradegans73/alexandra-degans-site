@@ -205,9 +205,9 @@ async function handle(req, env, ctx) {
     const end = start + item.duration * MIN;
     const holdUntil = now + RULES.holdMinutes * MIN + 2 * MIN;
     await env.DB.prepare(
-      `INSERT INTO bookings (id, item, item_name, place, start, end, price, name, email, phone, message, status, hold_until, cancel_token, created_at, emailed)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, 'hold', ?12, ?13, ?14, 0)`,
-    ).bind(id, item.id, item.name, place, start, end, item.price, name, email, phone, message, holdUntil, randomId(20), now).run();
+      `INSERT INTO bookings (id, item, item_name, place, start, end, price, name, email, phone, message, status, hold_until, cancel_token, created_at, emailed, newsletter, newsletter_at)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, 'hold', ?12, ?13, ?14, 0, ?15, ?16)`,
+    ).bind(id, item.id, item.name, place, start, end, item.price, name, email, phone, message, holdUntil, randomId(20), now, body.newsletter ? 1 : 0, body.newsletter ? now : null).run();
 
     // Deux personnes au même instant : la première réservation enregistrée garde le créneau.
     const rival = await env.DB.prepare(

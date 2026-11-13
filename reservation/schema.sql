@@ -20,6 +20,9 @@ CREATE TABLE IF NOT EXISTS bookings (
   review_asked INTEGER NOT NULL DEFAULT 0, -- demande d'avis Google envoyée
   invoice_sent INTEGER NOT NULL DEFAULT 0, -- facture Stripe envoyée (1) ou sans objet (2)
   cal_seen INTEGER NOT NULL DEFAULT 0,     -- déjà vu dans l'agenda Google (condition pour annuler s'il disparaît)
+  newsletter INTEGER NOT NULL DEFAULT 0,   -- case « lettre d'Alexandra » cochée à la réservation
+  newsletter_at INTEGER,                   -- date de l'accord (ms)
+  newsletter_synced INTEGER NOT NULL DEFAULT 0, -- ajouté à la liste Resend par l'agent newsletter
   pay_mode TEXT NOT NULL DEFAULT 'carte', -- 'carte' (Stripe) ou 'sur_place'
   refunded INTEGER NOT NULL DEFAULT 0,
   created_at INTEGER NOT NULL,

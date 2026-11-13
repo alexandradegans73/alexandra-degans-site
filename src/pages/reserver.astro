@@ -69,6 +69,10 @@ import { site } from '@data/site';
                 <input type="checkbox" name="consent" required />
                 <span>J’accepte les <a href="/cgv">conditions générales de vente</a> (annulation remboursée jusqu’à 48&nbsp;h avant). Mes coordonnées servent uniquement à ce rendez-vous (<a href="/confidentialite">confidentialité</a>).</span>
               </label>
+              <label class="consent consent--opt small">
+                <input type="checkbox" name="newsletter" />
+                <span>Je souhaite recevoir la lettre d’Alexandra autour de la kinésiologie (6 par an au maximum). Désinscription en un clic depuis chaque envoi.</span>
+              </label>
               <fieldset class="paymode">
                 <legend class="visually-hidden">Mode de règlement</legend>
                 <label class="paymode__opt"><input type="radio" name="pay" value="carte" checked /><span><b>Payer en ligne</b><small>Carte bancaire, paiement sécurisé par Stripe</small></span></label>
@@ -149,6 +153,7 @@ import { site } from '@data/site';
     .field input:focus, .field textarea:focus { outline: none; border-color: var(--c-sauge); box-shadow: 0 0 0 3px color-mix(in oklab, var(--c-sauge) 22%, transparent); }
     .field [aria-invalid='true'] { border-color: #9a4a3a; }
     .consent { display: grid; grid-template-columns: auto 1fr; gap: var(--s-3); align-items: start; margin-block: var(--s-4) var(--s-5); }
+    .consent:has(+ .consent--opt) { margin-bottom: var(--s-3); }
     .consent input { width: 1.2rem; height: 1.2rem; margin-top: 0.15rem; accent-color: var(--c-sauge); }
     .consent a, .bk__help a { text-decoration: underline; }
     .recap { display: grid; grid-template-columns: 1fr auto; gap: var(--s-1) var(--s-4); align-items: end; padding: var(--s-5); border-radius: var(--r-md); background: var(--c-foret); color: var(--c-creme); margin-bottom: var(--s-5); }
@@ -454,7 +459,7 @@ import { site } from '@data/site';
         const r = await fetch(`${API}/api/checkout`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ item: st.item.id, combo: st.item.combo ? st.combo : undefined, place: st.place, start: st.start, name: fd.get('name'), phone: fd.get('phone'), email: fd.get('email'), message: fd.get('message'), pay: onSite ? 'sur-place' : 'carte', consent: true }),
+          body: JSON.stringify({ item: st.item.id, combo: st.item.combo ? st.combo : undefined, place: st.place, start: st.start, name: fd.get('name'), phone: fd.get('phone'), email: fd.get('email'), message: fd.get('message'), pay: onSite ? 'sur-place' : 'carte', consent: true, newsletter: !!fd.get('newsletter') }),
         });
         const data = await r.json();
         if (!r.ok) {
