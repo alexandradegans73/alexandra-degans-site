@@ -138,3 +138,18 @@ import { PLACE_HOURS } from '../src/catalog.js';
   assert(isFree({ start: P(2026, 11, 16, 14), duration: 60, busy: [], now: n, hours: PLACE_HOURS.myans }), 'Myans lundi accepté');
   console.log('Jours par cabinet : OK');
 }
+
+// Une demi-journée = un seul cabinet
+{
+  const n = P(2026, 11, 16, 8); // lundi
+  const busyB = [{ start: P(2026, 11, 18, 10), end: P(2026, 11, 18, 11), place: 'bassens' }]; // mercredi matin à Bassens
+  assert(!isFree({ start: P(2026, 11, 18, 12), duration: 60, busy: busyB, now: n, hours: PLACE_HOURS.myans, place: 'myans' }), 'Myans refusé le matin où Alexandra est à Bassens');
+  assert(isFree({ start: P(2026, 11, 18, 12), duration: 60, busy: busyB, now: n, hours: PLACE_HOURS.bassens, place: 'bassens' }), 'Bassens accepté le même matin');
+  assert(isFree({ start: P(2026, 11, 18, 15), duration: 60, busy: busyB, now: n, hours: PLACE_HOURS.myans, place: 'myans' }), 'Myans accepté l’après-midi');
+  const busyM = [{ start: P(2026, 11, 18, 15), end: P(2026, 11, 18, 16), place: 'myans' }];
+  assert(!isFree({ start: P(2026, 11, 18, 17), duration: 60, busy: busyM, now: n, hours: PLACE_HOURS.bassens, place: 'bassens' }), 'Bassens refusé l’après-midi où Alexandra est à Myans');
+  assert(isFree({ start: P(2026, 11, 18, 9), duration: 60, busy: busyM, now: n, hours: PLACE_HOURS.bassens, place: 'bassens' }), 'Bassens accepté le matin');
+  const sl = computeSlots({ duration: 60, busy: busyB, now: n, days: 3, hours: PLACE_HOURS.myans, place: 'myans' }).find((d) => d.date === '2026-11-18');
+  assert(sl.slots.every((s) => s.label >= '13:00'), 'Myans mercredi : seulement l’après-midi');
+  console.log('Demi-journée par cabinet : OK');
+}

@@ -387,12 +387,17 @@ import { site } from '@data/site';
       wrap.parentElement!.querySelectorAll('.bk__next').forEach((n) => n.remove());
       const wd = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Paris', weekday: 'short' }).format(new Date(st.start!)).replace(/Sun|Mon|Tue|Wed|Thu|Fri|Sat/, (m) => String(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(m))));
       const dayName = DAY_NAMES[wd];
+      const hour = Number(new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', hourCycle: 'h23' }).format(new Date(st.start!)));
+      const halfDay = hour < 13 ? 'ce matin-là' : 'cet après-midi-là';
       q('[data-where]').textContent = keys.length === 1
         ? `Le ${dayName} à cette heure, Alexandra consulte à ${places[keys[0]].name}.`
         : 'Les deux cabinets sont disponibles à cette heure : choisissez le plus pratique pour vous.';
       for (const key of st.item!.places) {
         const ok = keys.includes(key);
-        const why = ok ? '' : (OPEN_DAYS[key] || []).includes(wd) ? 'Déjà réservé à cette heure' : `${closedLabel(key)}`;
+        // Une demi-journée = un seul cabinet : si l'autre est proposé à cette heure, c'est qu'Alexandra y consulte déjà.
+        const other = keys.find((k) => k !== key);
+        const why = ok ? '' : !(OPEN_DAYS[key] || []).includes(wd) ? `${closedLabel(key)}`
+          : other ? `Alexandra consulte à ${places[other].name} ${halfDay}` : 'Déjà réservé à cette heure';
         const b = chip(`<b>${esc(places[key].name)}</b>`, `${esc(places[key].address)}${why ? `<em class="chip__why">${esc(why)}</em>` : ''}`);
         if (!ok) { b.disabled = true; b.classList.add('is-off'); b.setAttribute('aria-disabled', 'true'); }
         else b.addEventListener('click', () => { check(wrap, b); choosePlace(key); });

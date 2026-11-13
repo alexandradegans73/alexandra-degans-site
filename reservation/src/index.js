@@ -84,7 +84,7 @@ async function calendarBusy(env, ctx, from, to) {
         console.log('Agenda direct injoignable', String(e));
       }
     }
-    if (res) return (await res.json()).map(([start, end]) => ({ start, end }));
+    if (res) return (await res.json()).map(([start, end, place]) => ({ start, end, place: place || null }));
   }
   // 2) Secours : adresse iCal secrète (mise à jour par Google avec plusieurs heures de retard).
   if (!env.ICAL_URL) return [];
@@ -102,9 +102,9 @@ async function calendarBusy(env, ctx, from, to) {
 
 async function bookingBusy(env, now, excludeId) {
   const { results } = await env.DB.prepare(
-    `SELECT id, start, end FROM bookings WHERE end > ?1 AND (status = 'confirmed' OR (status = 'hold' AND hold_until > ?1))`,
+    `SELECT id, start, end, place FROM bookings WHERE end > ?1 AND (status = 'confirmed' OR (status = 'hold' AND hold_until > ?1))`,
   ).bind(now).all();
-  return results.filter((r) => r.id !== excludeId).map((r) => ({ start: r.start, end: r.end }));
+  return results.filter((r) => r.id !== excludeId).map((r) => ({ start: r.start, end: r.end, place: r.place || null }));
 }
 
 async function allBusy(env, ctx, now, excludeId) {
@@ -158,7 +158,7 @@ async function handle(req, env, ctx) {
     // Sans lieu : on fusionne les cabinets, chaque créneau indique où il est possible.
     const byDate = new Map();
     for (const p of place ? [place] : item.places) {
-      for (const d of computeSlots({ duration: item.duration, busy, now, hours: PLACE_HOURS[p] })) {
+      for (const d of computeSlots({ duration: item.duration, busy, now, hours: PLACE_HOURS[p], place: p })) {
         const day = byDate.get(d.date) || new Map();
         for (const s of d.slots) {
           const slot = day.get(s.start) || { ...s, places: [] };
@@ -199,7 +199,7 @@ async function handle(req, env, ctx) {
       }
     }
     const busy = await allBusy(env, ctx, now);
-    if (!isFree({ start, duration: item.duration, busy, now, hours: PLACE_HOURS[place] })) return json({ error: 'Ce créneau vient d’être pris. Merci d’en choisir un autre.', code: 'taken' }, 409);
+    if (!isFree({ start, duration: item.duration, busy, now, hours: PLACE_HOURS[place], place })) return json({ error: 'Ce créneau vient d’être pris. Merci d’en choisir un autre.', code: 'taken' }, 409);
 
     const id = randomId(12);
     const end = start + item.duration * MIN;

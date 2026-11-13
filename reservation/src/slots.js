@@ -4,6 +4,23 @@ import { wallToUtc, addDays, parisParts, hm, ymd, pad } from './time.js';
 
 const MIN = 60000;
 
+/** Heure (Paris) qui sépare le matin de l'après-midi. */
+export const MIDDAY = 13;
+
+/**
+ * Alexandra ne change pas de cabinet dans une même demi-journée : si un rendez-vous
+ * (agenda ou site) est déjà situé dans l'autre cabinet le même matin / après-midi,
+ * ce créneau n'est pas proposé ici.
+ */
+function otherPlaceSameHalfDay(t, place, busy) {
+  if (!place) return false;
+  const p = parisParts(t);
+  const am = p.h < MIDDAY;
+  const from = am ? wallToUtc(p.y, p.m, p.d, 0, 0) : wallToUtc(p.y, p.m, p.d, MIDDAY, 0);
+  const to = am ? wallToUtc(p.y, p.m, p.d, MIDDAY, 0) : wallToUtc(p.y, p.m, p.d, 23, 59);
+  return busy.some((b) => b.place && b.place !== place && b.start < to && b.end > from);
+}
+
 /**
  * @param {object} o
  * @param {number} o.duration  durée en minutes
@@ -11,9 +28,10 @@ const MIN = 60000;
  * @param {number} o.now  instant présent (ms)
  * @param {number} o.days  nombre de jours à couvrir à partir d'aujourd'hui
  * @param {object} [o.hours]  horaires d'ouverture (par défaut : horaires généraux)
+ * @param {string} [o.place]  cabinet demandé (bassens | myans)
  * @returns {{date:string, slots:{start:number,label:string}[]}[]}
  */
-export function computeSlots({ duration, busy, now, days = RULES.maxDaysAhead, hours = HOURS }) {
+export function computeSlots({ duration, busy, now, days = RULES.maxDaysAhead, hours = HOURS, place }) {
   const earliest = now + RULES.minNoticeHours * 3600000;
   const need = (duration + RULES.bufferMinutes) * MIN;
   const today = parisParts(now);
@@ -31,7 +49,7 @@ export function computeSlots({ duration, busy, now, days = RULES.maxDaysAhead, h
         // le temps tampon après le rendez-vous peut déborder sur la fermeture
         const end = t + need;
         const clash = busy.some((b) => b.start < end && b.end > t - RULES.bufferMinutes * MIN);
-        if (!clash) {
+        if (!clash && !otherPlaceSameHalfDay(t, place, busy)) {
           const p = parisParts(t);
           slots.push({ start: t, label: `${pad(p.h)}:${pad(p.min)}` });
         }
@@ -43,7 +61,7 @@ export function computeSlots({ duration, busy, now, days = RULES.maxDaysAhead, h
 }
 
 /** Vérifie qu'un créneau précis est encore libre (au moment du paiement). */
-export function isFree({ start, duration, busy, now, hours = HOURS }) {
+export function isFree({ start, duration, busy, now, hours = HOURS, place }) {
   if (start < now + RULES.minNoticeHours * 3600000) return false;
   if (start > now + (RULES.maxDaysAhead + 1) * 86400000) return false;
   const p = parisParts(start);
@@ -55,5 +73,6 @@ export function isFree({ start, duration, busy, now, hours = HOURS }) {
   });
   if (!inHours) return false;
   const end = start + (duration + RULES.bufferMinutes) * MIN;
+  if (otherPlaceSameHalfDay(start, place, busy)) return false;
   return !busy.some((b) => b.start < end && b.end > start - RULES.bufferMinutes * MIN);
 }

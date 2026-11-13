@@ -32,7 +32,10 @@ function doPost(e) {
       c.getEvents(from, to).forEach((ev) => {
         try { if (String(ev.getTransparency()) === 'TRANSPARENT') return; } catch (err) { if (ev.isAllDayEvent()) return; }
         try { if (String(ev.getMyStatus()) === 'NO') return; } catch (err) { /* sans objet */ }
-        busy.push([ev.getStartTime().getTime(), ev.getEndTime().getTime()]);
+        // Cabinet du rendez-vous, déduit du lieu ou du titre (sert à ne proposer que ce cabinet sur la même demi-journée).
+        const txt = (ev.getLocation() + ' ' + ev.getTitle()).toLowerCase();
+        const place = /myans|gardeny/.test(txt) ? 'myans' : /bassens|cobalt|haulotte/.test(txt) ? 'bassens' : '';
+        busy.push([ev.getStartTime().getTime(), ev.getEndTime().getTime(), place]);
       });
     });
     return out({ ok: true, busy });
