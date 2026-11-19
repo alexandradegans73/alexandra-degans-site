@@ -18,6 +18,7 @@ import { busyFromIcs } from './ics.js';
 import { computeSlots, isFree } from './slots.js';
 import { sendConfirmation, sendCancellation, sendReminder, sendReviewRequest, sendInvoice, calendarSync } from './mail.js';
 import { frLabel, parisParts, addDays, wallToUtc } from './time.js';
+import { newsletterAdmin } from './admin.js';
 
 const MIN = 60000;
 
@@ -305,6 +306,7 @@ async function handle(req, env, ctx) {
     return json({ received: true });
   }
 
+  if (req.method === 'GET' && path === '/admin/newsletter') return newsletterAdmin(req, env, url);
   if (req.method === 'GET' && path === '/api/health') return json({ ok: true, ical: !!env.ICAL_URL, stripe: !!env.STRIPE_SECRET_KEY, mail: !!env.RESEND_API_KEY, agenda: !!env.GCAL_HOOK_URL });
 
   return json({ error: 'Not found' }, 404);
